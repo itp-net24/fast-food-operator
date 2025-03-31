@@ -8,17 +8,17 @@ namespace FastFoodOperator.Api.Data.Models
     public class AppDbContext(DbContextOptions<AppDbContext> options)
         : DbContext(options)
     {
-        public DbSet<Item> Items { get; set; }
+        public DbSet<Product> Items { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<ItemIngredient> ItemIngredients {get;set;}
+        public DbSet<ProductIngredient> ItemIngredients {get;set;}
         public DbSet<Ingredient> Ingredients { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Item>()
+            modelBuilder.Entity<Product>()
                 .HasMany(e => e.Ingredients)
                 .WithMany(e => e.Items)
-                .UsingEntity<ItemIngredient>();
+                .UsingEntity<ProductIngredient>();
         }
 
     }

@@ -14,7 +14,7 @@ namespace FastFoodOperator.Api.Data.Models
 		public int OrderId { get; set; }
 		
 		/// <summary>
-		/// This is a foreign key to the <see cref="Item"/> class.
+		/// This is a foreign key to the <see cref="Product"/> class.
 		/// </summary>
 		public int ItemId { get; set; }
 
@@ -30,7 +30,7 @@ namespace FastFoodOperator.Api.Data.Models
 		public Order? Order { get; set; }
 
 		/// <summary>
-		/// Navigation property for <see cref="Item"/>.
+		/// Navigation property for <see cref="Product"/>.
 		/// </summary>
 		//public Item Item { get; set; }
 	}

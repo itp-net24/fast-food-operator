@@ -14,9 +14,9 @@ namespace FastFoodOperator.Api.Data
         public DbSet<Combo> Combos { get; set; }
         public DbSet<ComboProduct> ComboProducts { get; set; }
 
-        public DbSet<Item> Items { get; set; }
+        public DbSet<Product> Items { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<ItemIngredient> ItemIngredients { get; set; }
+        public DbSet<ProductIngredient> ItemIngredients { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

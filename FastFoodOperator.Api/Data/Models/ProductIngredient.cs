@@ -1,6 +1,6 @@
 ﻿namespace FastFoodOperator.Api.Data.Models
 {
-    public class ItemIngredient
+    public class ProductIngredient
     {
         public int? IngredientId { get; set; }
         public int? ItemId { get; set; }

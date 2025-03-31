@@ -5,8 +5,8 @@
         public int Id { get; set; }
         public required string Name { get; set; }
         public required decimal PriceModefier { get; set; }
-        public List<Item>? Items { get; }
-        public List<ItemIngredient>? ItemIngredients { get; }
+        public List<Product>? Items { get; }
+        public List<ProductIngredient>? ItemIngredients { get; }
     }
 
 
