@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FastFoodOperator.Api.Data
+namespace FastFoodOperator.Api.Data.Models
 {
     public class ProductVariant
     {

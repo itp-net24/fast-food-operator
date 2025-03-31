@@ -9,6 +9,4 @@
         public List<ProductIngredient> ProductIngredients { get; } = [];
 
     }
-
-
 }

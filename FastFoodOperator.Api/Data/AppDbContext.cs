@@ -61,6 +61,7 @@ namespace FastFoodOperator.Api.Data
             modelBuilder.Entity<ComboProduct>()
              .HasKey(ci => new { ci.ComboId, ci.ProductId });
 
+
             modelBuilder.Entity<ProductIngredient>()
                 .HasKey(pi => new { pi.ProductId, pi.IngredientId });
 

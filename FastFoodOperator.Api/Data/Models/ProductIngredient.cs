@@ -8,8 +8,5 @@
 
         public Product Product { get; set; } = null!;
         public Ingredient Ingredient { get; set; } = null!;
-
     }
-
-
 }
