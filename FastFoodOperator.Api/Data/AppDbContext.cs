@@ -64,9 +64,7 @@ namespace FastFoodOperator.Api.Data
             modelBuilder.Entity<ProductIngredient>()
                 .HasKey(pi => new { pi.ProductId, pi.IngredientId });
 
-            modelBuilder.Entity<ProductIngredient>()
-                .HasOne(i => i.Ingredient)
-                .WithMany(pi => pi.Product)
+          
 
         }
 	}   
