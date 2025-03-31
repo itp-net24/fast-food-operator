@@ -3,25 +3,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FastFoodOperator.Api.Data
 {
-    public class ProductVariant
+    public class Combo
     {
         [Key]
         public int Id { get; set; }
 
-        public int ProductId { get; set; }
-
-
-        [ForeignKey(nameof(ProductId))]
-        public Product Product { get; set; } = null!;
+        public ICollection<ComboProduct> ComboProducts { get; set; } = [];
 
 
         [Required]
         [MaxLength(100)]
         public string Name { get; set; } = string.Empty;
 
-        public string? Description { get; set; }
-
         [Column(TypeName = "decimal(10, 2)")]
-        public decimal PriceModifier { get; set; }
+        public decimal BasePrice { get; set; }
     }
 }
