@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FastFoodOperator.Api.Data
 {
-    public partial class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderCombo> OrderCombos { get; set; }
@@ -25,7 +25,6 @@ namespace FastFoodOperator.Api.Data
                 .HasOne(oc => oc.Order)
                 .WithMany(o => o.OrderCombos)
                 .HasForeignKey(oc => oc.OrderId);
-
 
             modelBuilder.Entity<OrderItem>()
                 .HasKey(oi => new { oi.OrderId, oi.ItemId });

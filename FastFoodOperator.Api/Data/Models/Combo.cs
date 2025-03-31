@@ -17,5 +17,5 @@ namespace FastFoodOperator.Api.Data
 
         [Column(TypeName = "decimal(10, 2)")]
         public decimal BasePrice { get; set; }
-    }
+	}   
 }

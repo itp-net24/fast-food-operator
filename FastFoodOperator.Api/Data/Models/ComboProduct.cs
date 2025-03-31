@@ -8,7 +8,6 @@ namespace FastFoodOperator.Api.Data
         public int ProductId { get; set; }
         public int? ProductVariantId { get; set; }
 
-
         public Combo Combo { get; set; } = null!;
         public Product Product { get; set; } = null!;
 
