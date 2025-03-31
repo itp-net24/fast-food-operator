@@ -11,6 +11,6 @@ namespace FastFoodOperator.Api.Data.Models
         public required decimal BasePrice { get; set; }
         public ICollection<ComboProduct> ComboProducts { get; set; } = [];
         public ICollection<ProductIngredient> ProductIngredients { get; } = [];
-        public required Category ItemCategory { get; set; }
+        public required Category ProductCategory { get; set; }
     }
 }

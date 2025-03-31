@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FastFoodOperator.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250331134708_InitialCreate")]
+    [Migration("20250331163809_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -171,18 +171,18 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ItemCategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("ProductCategoryId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemCategoryId");
+                    b.HasIndex("ProductCategoryId");
 
-                    b.ToTable("Items");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Data.Models.ProductIngredient", b =>
@@ -200,7 +200,7 @@ namespace FastFoodOperator.Api.Data.Migrations
 
                     b.HasIndex("IngredientId");
 
-                    b.ToTable("ItemIngredients");
+                    b.ToTable("ProductIngredients");
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Data.Models.ProductVariant", b =>
@@ -281,13 +281,13 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             modelBuilder.Entity("FastFoodOperator.Api.Data.Models.Product", b =>
                 {
-                    b.HasOne("FastFoodOperator.Api.Data.Models.Category", "ItemCategory")
+                    b.HasOne("FastFoodOperator.Api.Data.Models.Category", "ProductCategory")
                         .WithMany()
-                        .HasForeignKey("ItemCategoryId")
+                        .HasForeignKey("ProductCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ItemCategory");
+                    b.Navigation("ProductCategory");
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Data.Models.ProductIngredient", b =>

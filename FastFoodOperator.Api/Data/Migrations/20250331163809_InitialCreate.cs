@@ -68,7 +68,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Items",
+                name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -76,14 +76,14 @@ namespace FastFoodOperator.Api.Data.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BasePrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    ItemCategoryId = table.Column<int>(type: "int", nullable: false)
+                    ProductCategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Items", x => x.Id);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Items_Categories_ItemCategoryId",
-                        column: x => x.ItemCategoryId,
+                        name: "FK_Products_Categories_ProductCategoryId",
+                        column: x => x.ProductCategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -128,7 +128,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ItemIngredients",
+                name: "ProductIngredients",
                 columns: table => new
                 {
                     IngredientId = table.Column<int>(type: "int", nullable: false),
@@ -137,17 +137,17 @@ namespace FastFoodOperator.Api.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ItemIngredients", x => new { x.ProductId, x.IngredientId });
+                    table.PrimaryKey("PK_ProductIngredients", x => new { x.ProductId, x.IngredientId });
                     table.ForeignKey(
-                        name: "FK_ItemIngredients_Ingredients_IngredientId",
+                        name: "FK_ProductIngredients_Ingredients_IngredientId",
                         column: x => x.IngredientId,
                         principalTable: "Ingredients",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ItemIngredients_Items_ProductId",
+                        name: "FK_ProductIngredients_Products_ProductId",
                         column: x => x.ProductId,
-                        principalTable: "Items",
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -167,9 +167,9 @@ namespace FastFoodOperator.Api.Data.Migrations
                 {
                     table.PrimaryKey("PK_ProductVariants", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductVariants_Items_ProductId",
+                        name: "FK_ProductVariants_Products_ProductId",
                         column: x => x.ProductId,
-                        principalTable: "Items",
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -192,16 +192,16 @@ namespace FastFoodOperator.Api.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ComboProducts_Items_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Items",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_ComboProducts_ProductVariants_ProductVariantId",
                         column: x => x.ProductVariantId,
                         principalTable: "ProductVariants",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ComboProducts_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -215,14 +215,14 @@ namespace FastFoodOperator.Api.Data.Migrations
                 column: "ProductVariantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ItemIngredients_IngredientId",
-                table: "ItemIngredients",
+                name: "IX_ProductIngredients_IngredientId",
+                table: "ProductIngredients",
                 column: "IngredientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Items_ItemCategoryId",
-                table: "Items",
-                column: "ItemCategoryId");
+                name: "IX_Products_ProductCategoryId",
+                table: "Products",
+                column: "ProductCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductVariants_ProductId",
@@ -237,13 +237,13 @@ namespace FastFoodOperator.Api.Data.Migrations
                 name: "ComboProducts");
 
             migrationBuilder.DropTable(
-                name: "ItemIngredients");
-
-            migrationBuilder.DropTable(
                 name: "OrderCombos");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");
+
+            migrationBuilder.DropTable(
+                name: "ProductIngredients");
 
             migrationBuilder.DropTable(
                 name: "Combos");
@@ -252,13 +252,13 @@ namespace FastFoodOperator.Api.Data.Migrations
                 name: "ProductVariants");
 
             migrationBuilder.DropTable(
-                name: "Ingredients");
-
-            migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Items");
+                name: "Ingredients");
+
+            migrationBuilder.DropTable(
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "Categories");
