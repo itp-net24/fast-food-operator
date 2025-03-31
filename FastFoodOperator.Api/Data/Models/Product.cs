@@ -7,7 +7,7 @@
         public string? Description { get; set; }
         public required decimal BasePrice { get; set; }
         public List<Ingredient> Ingredients { get; } = [];
-        public List<ProductIngredient> ProductIngredients { get; } = [];
+        public ICollection<ProductIngredient> ProductIngredients { get; } = [];
         public required Category ItemCategory {get;set;}
     }
 
