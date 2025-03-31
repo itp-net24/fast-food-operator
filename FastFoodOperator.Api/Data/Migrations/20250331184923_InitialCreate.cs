@@ -60,7 +60,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderNumber = table.Column<int>(type: "int", nullable: false),
                     OrderStatus = table.Column<bool>(type: "bit", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -101,6 +101,12 @@ namespace FastFoodOperator.Api.Data.Migrations
                 {
                     table.PrimaryKey("PK_OrderCombos", x => new { x.OrderId, x.ComboId });
                     table.ForeignKey(
+                        name: "FK_OrderCombos_Combos_ComboId",
+                        column: x => x.ComboId,
+                        principalTable: "Combos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_OrderCombos_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
@@ -109,21 +115,27 @@ namespace FastFoodOperator.Api.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderItems",
+                name: "OrderProducts",
                 columns: table => new
                 {
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    ItemId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderItems", x => new { x.OrderId, x.ItemId });
+                    table.PrimaryKey("PK_OrderProducts", x => new { x.OrderId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_OrderItems_Orders_OrderId",
+                        name: "FK_OrderProducts_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "OrderId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderProducts_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -215,6 +227,16 @@ namespace FastFoodOperator.Api.Data.Migrations
                 column: "ProductVariantId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderCombos_ComboId",
+                table: "OrderCombos",
+                column: "ComboId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderProducts_ProductId",
+                table: "OrderProducts",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductIngredients_IngredientId",
                 table: "ProductIngredients",
                 column: "IngredientId");
@@ -240,16 +262,16 @@ namespace FastFoodOperator.Api.Data.Migrations
                 name: "OrderCombos");
 
             migrationBuilder.DropTable(
-                name: "OrderItems");
+                name: "OrderProducts");
 
             migrationBuilder.DropTable(
                 name: "ProductIngredients");
 
             migrationBuilder.DropTable(
-                name: "Combos");
+                name: "ProductVariants");
 
             migrationBuilder.DropTable(
-                name: "ProductVariants");
+                name: "Combos");
 
             migrationBuilder.DropTable(
                 name: "Orders");

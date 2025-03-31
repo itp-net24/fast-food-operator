@@ -6,7 +6,7 @@ namespace FastFoodOperator.Api.Data.Models
 	/// Links an order with a specific item and includes the quantity of the items ordered
 	/// This class has composite key of OrderId and ItemId
 	/// </summary>
-	public class OrderItem
+	public class OrderProduct
 	{
 		/// <summary>
 		/// This is a foreign key to the <see cref="Order"/> class.
@@ -16,7 +16,7 @@ namespace FastFoodOperator.Api.Data.Models
 		/// <summary>
 		/// This is a foreign key to the <see cref="Product"/> class.
 		/// </summary>
-		public int ItemId { get; set; }
+		public int ProductId { get; set; }
 
 		/// <summary>
 		/// Sets the quantity of the items for the customers order
@@ -32,6 +32,6 @@ namespace FastFoodOperator.Api.Data.Models
 		/// <summary>
 		/// Navigation property for <see cref="Product"/>.
 		/// </summary>
-		//public Item Item { get; set; }
+		public Product? Product { get; set; }
 	}
 }

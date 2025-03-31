@@ -7,7 +7,7 @@ namespace FastFoodOperator.Api.Data
     {
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderCombo> OrderCombos { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderProduct> OrderProducts { get; set; }
 
         public DbSet<ProductVariant> ProductVariants { get; set; }
 
@@ -31,14 +31,19 @@ namespace FastFoodOperator.Api.Data
                 .WithMany(o => o.OrderCombos)
                 .HasForeignKey(oc => oc.OrderId);
 
-            modelBuilder.Entity<OrderItem>()
-                .HasKey(oi => new { oi.OrderId, oi.ItemId });
+            modelBuilder.Entity<OrderCombo>()
+                .HasOne(oc => oc.Combo);
 
-            modelBuilder.Entity<OrderItem>()
+			modelBuilder.Entity<OrderProduct>()
+                .HasKey(oi => new { oi.OrderId, oi.ProductId });
+
+            modelBuilder.Entity<OrderProduct>()
                 .HasOne(oi => oi.Order)
-                .WithMany(o => o.OrderItems)
+                .WithMany(o => o.OrderProducts)
                 .HasForeignKey(oi => oi.OrderId);
 
+            modelBuilder.Entity<OrderProduct>()
+                .HasOne(op => op.Product);
 
             modelBuilder.Entity<ComboProduct>()
                 .HasKey(ci => new { ci.ComboId, ci.ProductId });

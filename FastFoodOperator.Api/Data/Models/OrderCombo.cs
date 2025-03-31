@@ -32,6 +32,6 @@ namespace FastFoodOperator.Api.Data.Models
 		/// <summary>
 		/// Navigation property for <see cref="Combo"/>.
 		/// </summary>
-		//public Combo Combo { get; set; }
+		public Combo? Combo { get; set; }
 	}
 }

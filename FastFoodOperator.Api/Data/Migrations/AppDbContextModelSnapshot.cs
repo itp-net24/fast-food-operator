@@ -108,7 +108,7 @@ namespace FastFoodOperator.Api.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("OrderNumber")
@@ -135,23 +135,27 @@ namespace FastFoodOperator.Api.Data.Migrations
 
                     b.HasKey("OrderId", "ComboId");
 
+                    b.HasIndex("ComboId");
+
                     b.ToTable("OrderCombos");
                 });
 
-            modelBuilder.Entity("FastFoodOperator.Api.Data.Models.OrderItem", b =>
+            modelBuilder.Entity("FastFoodOperator.Api.Data.Models.OrderProduct", b =>
                 {
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ItemId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderId", "ItemId");
+                    b.HasKey("OrderId", "ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderProducts");
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Data.Models.Product", b =>
@@ -256,24 +260,40 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             modelBuilder.Entity("FastFoodOperator.Api.Data.Models.OrderCombo", b =>
                 {
+                    b.HasOne("FastFoodOperator.Api.Data.Models.Combo", "Combo")
+                        .WithMany()
+                        .HasForeignKey("ComboId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FastFoodOperator.Api.Data.Models.Order", "Order")
                         .WithMany("OrderCombos")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Combo");
+
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("FastFoodOperator.Api.Data.Models.OrderItem", b =>
+            modelBuilder.Entity("FastFoodOperator.Api.Data.Models.OrderProduct", b =>
                 {
                     b.HasOne("FastFoodOperator.Api.Data.Models.Order", "Order")
-                        .WithMany("OrderItems")
+                        .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FastFoodOperator.Api.Data.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Order");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Data.Models.Product", b =>
@@ -331,7 +351,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                 {
                     b.Navigation("OrderCombos");
 
-                    b.Navigation("OrderItems");
+                    b.Navigation("OrderProducts");
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Data.Models.Product", b =>
