@@ -21,6 +21,9 @@ namespace FastFoodOperator.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            string connection = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
+            Console.WriteLine(connection);
+
             builder.Services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
