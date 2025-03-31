@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using FastFoodOperator.Api.Data.Models;
 
 #nullable disable
 
