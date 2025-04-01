@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FastFoodOperator.Api.Data.Models
+﻿namespace FastFoodOperator.Api.Entities
 {
 	/// <summary>
 	/// Links an order with a specific combo and includes the quantity of the combo ordered.
@@ -18,20 +16,21 @@ namespace FastFoodOperator.Api.Data.Models
 		/// </summary>
 		public int ComboId { get; set; }
 
-		/// <summary>
-		/// Sets the quantity of Combos for the customers order.
-		/// </summary>
-		[Required]
-		public int Quantity { get; set; }
-
+		
 		/// <summary>
 		/// Navigation property for <see cref="Order"/>.
 		/// </summary>
-		public Order? Order { get; set; }
+		public Order Order { get; set; } = null!;
 
 		/// <summary>
 		/// Navigation property for <see cref="Combo"/>.
 		/// </summary>
-		public Combo? Combo { get; set; }
+		public Combo Combo { get; set; } = null!;
+		
+
+		/// <summary>
+		/// Sets the quantity of Combos for the customers order.
+		/// </summary>
+		public int Quantity { get; set; }
 	}
 }

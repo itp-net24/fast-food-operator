@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FastFoodOperator.Api.Data.Models
+﻿namespace FastFoodOperator.Api.Entities
 {
 	/// <summary>
 	/// Links an order with a specific item and includes the quantity of the items ordered
@@ -18,20 +16,22 @@ namespace FastFoodOperator.Api.Data.Models
 		/// </summary>
 		public int ProductId { get; set; }
 
-		/// <summary>
-		/// Sets the quantity of the items for the customers order
-		/// </summary>
-		[Required]
-		public int Quantity { get; set; }
-
+		
 		/// <summary>
 		/// Navigation property for <see cref="Order"/>.
 		/// </summary>
-		public Order? Order { get; set; }
+		public Order Order { get; set; } = null!;
 
 		/// <summary>
 		/// Navigation property for <see cref="Product"/>.
 		/// </summary>
-		public Product? Product { get; set; }
+
+		public Product Product { get; set; } = null!;
+		
+		
+		/// <summary>
+		/// Sets the quantity of the items for the customers order
+		/// </summary>
+		public int Quantity { get; set; }
 	}
 }
