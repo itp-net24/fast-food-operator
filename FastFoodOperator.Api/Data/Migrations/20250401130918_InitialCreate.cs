@@ -2,7 +2,9 @@
 
 #nullable disable
 
-namespace FastFoodOperator.Api.Data.Migrations
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
+namespace FastFoodOperator.Api.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -212,6 +214,103 @@ namespace FastFoodOperator.Api.Data.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Burgers" },
+                    { 2, "Drinks" },
+                    { 3, "Sides" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Combos",
+                columns: new[] { "Id", "BasePrice", "Name" },
+                values: new object[,]
+                {
+                    { 1, 8.99m, "Burger Combo" },
+                    { 2, 12.99m, "Big Meal" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Ingredients",
+                columns: new[] { "Id", "Name", "PriceModifier" },
+                values: new object[,]
+                {
+                    { 1, "Lettuce", 0.50m },
+                    { 2, "Tomato", 0.50m },
+                    { 3, "Pickles", 0.25m }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Orders",
+                columns: new[] { "Id", "OrderNumber", "OrderStatus" },
+                values: new object[,]
+                {
+                    { 1, 1001, true },
+                    { 2, 1002, false }
+                });
+
+            migrationBuilder.InsertData(
+                table: "OrderCombos",
+                columns: new[] { "ComboId", "OrderId", "Quantity" },
+                values: new object[,]
+                {
+                    { 1, 1, 1 },
+                    { 2, 2, 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "BasePrice", "CategoryId", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, 5.99m, 1, "A classic cheeseburger", "Cheeseburger" },
+                    { 2, 1.99m, 2, "Refreshing soda", "Coca-Cola" },
+                    { 3, 2.99m, 3, "Crispy golden fries", "French Fries" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ComboProducts",
+                columns: new[] { "ComboId", "ProductId", "ProductVariantId" },
+                values: new object[,]
+                {
+                    { 1, 1, null },
+                    { 1, 2, null },
+                    { 2, 1, null },
+                    { 2, 3, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "OrderProducts",
+                columns: new[] { "OrderId", "ProductId", "Quantity" },
+                values: new object[,]
+                {
+                    { 1, 1, 1 },
+                    { 1, 2, 2 },
+                    { 2, 3, 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProductIngredients",
+                columns: new[] { "IngredientId", "ProductId", "Required" },
+                values: new object[,]
+                {
+                    { 1, 1, true },
+                    { 2, 1, true },
+                    { 3, 3, false }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProductVariants",
+                columns: new[] { "Id", "Description", "Name", "PriceModifier", "ProductId" },
+                values: new object[,]
+                {
+                    { 1, "Extra patty", "Double Cheeseburger", 2.00m, 1 },
+                    { 2, "Bigger size", "Large Coke", 1.00m, 2 }
                 });
 
             migrationBuilder.CreateIndex(

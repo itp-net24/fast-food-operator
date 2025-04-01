@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace FastFoodOperator.Api.Data.Migrations
+namespace FastFoodOperator.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250401125026_InitialCreate")]
+    [Migration("20250401130918_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -40,6 +40,23 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Burgers"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Drinks"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Sides"
+                        });
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.Combo", b =>
@@ -61,6 +78,20 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Combos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BasePrice = 8.99m,
+                            Name = "Burger Combo"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BasePrice = 12.99m,
+                            Name = "Big Meal"
+                        });
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.ComboProduct", b =>
@@ -81,6 +112,28 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.HasIndex("ProductVariantId");
 
                     b.ToTable("ComboProducts");
+
+                    b.HasData(
+                        new
+                        {
+                            ComboId = 1,
+                            ProductId = 1
+                        },
+                        new
+                        {
+                            ComboId = 1,
+                            ProductId = 2
+                        },
+                        new
+                        {
+                            ComboId = 2,
+                            ProductId = 1
+                        },
+                        new
+                        {
+                            ComboId = 2,
+                            ProductId = 3
+                        });
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.Ingredient", b =>
@@ -102,6 +155,26 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Ingredients");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Lettuce",
+                            PriceModifier = 0.50m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Tomato",
+                            PriceModifier = 0.50m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Pickles",
+                            PriceModifier = 0.25m
+                        });
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.Order", b =>
@@ -121,6 +194,20 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            OrderNumber = 1001,
+                            OrderStatus = true
+                        },
+                        new
+                        {
+                            Id = 2,
+                            OrderNumber = 1002,
+                            OrderStatus = false
+                        });
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.OrderCombo", b =>
@@ -139,6 +226,20 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.HasIndex("ComboId");
 
                     b.ToTable("OrderCombos");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderId = 1,
+                            ComboId = 1,
+                            Quantity = 1
+                        },
+                        new
+                        {
+                            OrderId = 2,
+                            ComboId = 2,
+                            Quantity = 2
+                        });
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.OrderProduct", b =>
@@ -157,6 +258,26 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderProducts");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderId = 1,
+                            ProductId = 1,
+                            Quantity = 1
+                        },
+                        new
+                        {
+                            OrderId = 1,
+                            ProductId = 2,
+                            Quantity = 2
+                        },
+                        new
+                        {
+                            OrderId = 2,
+                            ProductId = 3,
+                            Quantity = 1
+                        });
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.Product", b =>
@@ -187,6 +308,32 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BasePrice = 5.99m,
+                            CategoryId = 1,
+                            Description = "A classic cheeseburger",
+                            Name = "Cheeseburger"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BasePrice = 1.99m,
+                            CategoryId = 2,
+                            Description = "Refreshing soda",
+                            Name = "Coca-Cola"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BasePrice = 2.99m,
+                            CategoryId = 3,
+                            Description = "Crispy golden fries",
+                            Name = "French Fries"
+                        });
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.ProductIngredient", b =>
@@ -205,6 +352,26 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.HasIndex("IngredientId");
 
                     b.ToTable("ProductIngredients");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductId = 1,
+                            IngredientId = 1,
+                            Required = true
+                        },
+                        new
+                        {
+                            ProductId = 1,
+                            IngredientId = 2,
+                            Required = true
+                        },
+                        new
+                        {
+                            ProductId = 3,
+                            IngredientId = 3,
+                            Required = false
+                        });
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.ProductVariant", b =>
@@ -235,6 +402,24 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductVariants");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Extra patty",
+                            Name = "Double Cheeseburger",
+                            PriceModifier = 2.00m,
+                            ProductId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Bigger size",
+                            Name = "Large Coke",
+                            PriceModifier = 1.00m,
+                            ProductId = 2
+                        });
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.ComboProduct", b =>

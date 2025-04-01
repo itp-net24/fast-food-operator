@@ -1,4 +1,5 @@
-﻿using FastFoodOperator.Api.Entities;
+﻿using FastFoodOperator.Api.Data.Models;
+using FastFoodOperator.Api.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace FastFoodOperator.Api.Data
@@ -157,6 +158,11 @@ namespace FastFoodOperator.Api.Data
             modelBuilder.Entity<ProductVariant>()
                 .Property(pv => pv.PriceModifier)
                 .HasColumnType("decimal(10, 2)");
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development") 
+            {
+                DatabaseSeeder.Seed(modelBuilder);
+            }
         }
 	}   
 }
