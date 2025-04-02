@@ -4,7 +4,7 @@
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace FastFoodOperator.Api.Migrations
+namespace FastFoodOperator.Api.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -231,8 +231,8 @@ namespace FastFoodOperator.Api.Migrations
                 columns: new[] { "Id", "BasePrice", "Name" },
                 values: new object[,]
                 {
-                    { 1, 8.99m, "Burger Combo" },
-                    { 2, 12.99m, "Big Meal" }
+                    { 1, 8.99m, "Cheeseburger Combo" },
+                    { 2, 12.99m, "Cheeseburger Combo Deluxe" }
                 });
 
             migrationBuilder.InsertData(
@@ -269,7 +269,7 @@ namespace FastFoodOperator.Api.Migrations
                 values: new object[,]
                 {
                     { 1, 5.99m, 1, "A classic cheeseburger", "Cheeseburger" },
-                    { 2, 1.99m, 2, "Refreshing soda", "Coca-Cola" },
+                    { 2, 1.99m, 2, "Refreshing soda", "Coke" },
                     { 3, 2.99m, 3, "Crispy golden fries", "French Fries" }
                 });
 
@@ -279,9 +279,7 @@ namespace FastFoodOperator.Api.Migrations
                 values: new object[,]
                 {
                     { 1, 1, null },
-                    { 1, 2, null },
-                    { 2, 1, null },
-                    { 2, 3, null }
+                    { 2, 1, null }
                 });
 
             migrationBuilder.InsertData(
@@ -309,8 +307,23 @@ namespace FastFoodOperator.Api.Migrations
                 columns: new[] { "Id", "Description", "Name", "PriceModifier", "ProductId" },
                 values: new object[,]
                 {
-                    { 1, "Extra patty", "Double Cheeseburger", 2.00m, 1 },
-                    { 2, "Bigger size", "Large Coke", 1.00m, 2 }
+                    { 1, null, "Small", 0m, 2 },
+                    { 2, null, "Medium", 1.49m, 2 },
+                    { 3, null, "Large", 2.49m, 2 },
+                    { 4, null, "Small", 0m, 3 },
+                    { 5, null, "Medium", 1.49m, 3 },
+                    { 6, null, "Large", 2.49m, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ComboProducts",
+                columns: new[] { "ComboId", "ProductId", "ProductVariantId" },
+                values: new object[,]
+                {
+                    { 1, 2, 1 },
+                    { 1, 3, 4 },
+                    { 2, 2, 3 },
+                    { 2, 3, 6 }
                 });
 
             migrationBuilder.CreateIndex(

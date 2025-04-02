@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace FastFoodOperator.Api.Migrations
+namespace FastFoodOperator.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -81,13 +81,13 @@ namespace FastFoodOperator.Api.Migrations
                         {
                             Id = 1,
                             BasePrice = 8.99m,
-                            Name = "Burger Combo"
+                            Name = "Cheeseburger Combo"
                         },
                         new
                         {
                             Id = 2,
                             BasePrice = 12.99m,
-                            Name = "Big Meal"
+                            Name = "Cheeseburger Combo Deluxe"
                         });
                 });
 
@@ -119,7 +119,14 @@ namespace FastFoodOperator.Api.Migrations
                         new
                         {
                             ComboId = 1,
-                            ProductId = 2
+                            ProductId = 2,
+                            ProductVariantId = 1
+                        },
+                        new
+                        {
+                            ComboId = 1,
+                            ProductId = 3,
+                            ProductVariantId = 4
                         },
                         new
                         {
@@ -129,7 +136,14 @@ namespace FastFoodOperator.Api.Migrations
                         new
                         {
                             ComboId = 2,
-                            ProductId = 3
+                            ProductId = 2,
+                            ProductVariantId = 3
+                        },
+                        new
+                        {
+                            ComboId = 2,
+                            ProductId = 3,
+                            ProductVariantId = 6
                         });
                 });
 
@@ -321,7 +335,7 @@ namespace FastFoodOperator.Api.Migrations
                             BasePrice = 1.99m,
                             CategoryId = 2,
                             Description = "Refreshing soda",
-                            Name = "Coca-Cola"
+                            Name = "Coke"
                         },
                         new
                         {
@@ -404,18 +418,44 @@ namespace FastFoodOperator.Api.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Extra patty",
-                            Name = "Double Cheeseburger",
-                            PriceModifier = 2.00m,
-                            ProductId = 1
+                            Name = "Small",
+                            PriceModifier = 0m,
+                            ProductId = 2
                         },
                         new
                         {
                             Id = 2,
-                            Description = "Bigger size",
-                            Name = "Large Coke",
-                            PriceModifier = 1.00m,
+                            Name = "Medium",
+                            PriceModifier = 1.49m,
                             ProductId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Large",
+                            PriceModifier = 2.49m,
+                            ProductId = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Small",
+                            PriceModifier = 0m,
+                            ProductId = 3
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Medium",
+                            PriceModifier = 1.49m,
+                            ProductId = 3
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Large",
+                            PriceModifier = 2.49m,
+                            ProductId = 3
                         });
                 });
 
