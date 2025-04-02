@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using FastFoodOperator.Api.Data;
+using FastFoodOperator.Api.Services;
 
 namespace FastFoodOperator.Api
 {
@@ -18,6 +19,7 @@ namespace FastFoodOperator.Api
 
             builder.Services.AddControllers();
 
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -27,6 +29,7 @@ namespace FastFoodOperator.Api
             });
 
 
+            builder.Services.AddScoped<OrderService>();
 
             // Configure middlewares
             var app = builder.Build();

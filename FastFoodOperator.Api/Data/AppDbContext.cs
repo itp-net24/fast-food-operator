@@ -100,6 +100,11 @@ namespace FastFoodOperator.Api.Data
                 .HasOne(op => op.Product)
                 .WithMany()
                 .HasForeignKey(op => op.ProductId);
+
+            // Order
+            modelBuilder.Entity<Order>()
+                .Property(o => o.CreatedAt)
+                .HasDefaultValueSql("GETUTCDATE()");
             
             
             // Product

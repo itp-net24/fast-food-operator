@@ -34,7 +34,7 @@
 		/// <summary>
 		/// Gets the date the order was placed.
 		/// </summary>
-		public DateTime CreatedAt { get; } = DateTime.UtcNow;
+		public DateTime CreatedAt { get; set; }
 
 	}
 }
