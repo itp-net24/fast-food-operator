@@ -1,5 +1,5 @@
-using FastFoodOperator.Api.Data;
 using Microsoft.EntityFrameworkCore;
+using FastFoodOperator.Api.Data;
 
 namespace FastFoodOperator.Api
 {
@@ -25,7 +25,6 @@ namespace FastFoodOperator.Api
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-
 
 
 
