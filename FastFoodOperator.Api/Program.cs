@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using FastFoodOperator.Api.Data;
+using FastFoodOperator.Api.Services;
 
 namespace FastFoodOperator.Api
 {
@@ -26,7 +27,7 @@ namespace FastFoodOperator.Api
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-
+            builder.Services.AddScoped<ProductService>();
 
             // Configure middlewares
             var app = builder.Build();
