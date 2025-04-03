@@ -90,6 +90,24 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 			throw;
 		}
 	}
+
+	public async Task DeleteComboAsync(int id)
+	{
+		logger.LogInformation("Deleting combo with ID: {ComboId}", id);
+		var combo = new Combo { Id = id };
+
+		try
+		{
+			context.Combos.Remove(combo);
+			await context.SaveChangesAsync();
+			logger.LogInformation("Successfully deleted combo: {ComboId}", id);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to delete combo: {ComboId}", id);
+			throw;
+		}
+	}
 	#endregion
 	
 	#region Product

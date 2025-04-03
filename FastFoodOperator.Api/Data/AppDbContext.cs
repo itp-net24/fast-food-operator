@@ -48,12 +48,14 @@ namespace FastFoodOperator.Api.Data
             modelBuilder.Entity<ComboProduct>()
                 .HasOne(cp => cp.Combo)
                 .WithMany(c => c.ComboProducts)
-                .HasForeignKey(cp => cp.ComboId);
+                .HasForeignKey(cp => cp.ComboId)
+                .OnDelete(DeleteBehavior.Cascade);
            
             modelBuilder.Entity<ComboProduct>()
                 .HasOne(cp => cp.Product)
                 .WithMany(p => p.ComboProducts)
-                .HasForeignKey(cp => cp.ProductId);
+                .HasForeignKey(cp => cp.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
            
             modelBuilder.Entity<ComboProduct>()
                 .HasOne(cp => cp.ProductVariant)
