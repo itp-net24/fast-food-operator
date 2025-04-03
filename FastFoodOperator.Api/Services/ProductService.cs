@@ -8,6 +8,68 @@ namespace FastFoodOperator.Api.Services;
 public class ProductService(AppDbContext context, ILogger<ProductService> logger)
 {
 	#region Combo
+	public async Task<ComboResponseDto[]> GetCombosAsync(int limit = 5, int offset = 0)
+	{
+		logger.LogInformation("Fetching combos with limit {Limit} and offset {Offset}", limit, offset);
+
+		try
+		{
+			var combos = await context.Combos
+				.AsNoTracking()
+				.OrderBy(c => c.Name)
+				.Skip(offset)
+				.Take(limit)
+				.Select(c => new ComboResponseDto
+				{
+					Id = c.Id,
+					Name = c.Name,
+					BasePrice = c.BasePrice,
+				})
+				.ToArrayAsync();
+			
+			logger.LogInformation("Fetched {Count} combos", combos.Length);
+
+			return combos;
+		}
+		catch (Exception)
+		{
+			logger.LogError("Failed fetching combos with limit {Limit} and offset {Offset}", limit, offset);
+			throw;
+		}
+	}
+
+	public async Task<ComboResponseDto[]> GetCombosByProductIdAsync(int productId)
+	{
+		logger.LogInformation("Fetching combos for product {ProductId}", productId);
+
+		try
+		{
+			var combos = await context.ComboProducts
+				.AsNoTracking()
+				.Where(c => c.ProductId == productId)
+				.Include(cp => cp.Combo)
+				.Select(cp => new ComboResponseDto
+				{
+					Id = cp.ComboId,
+					Name = cp.Combo.Name,
+					BasePrice = cp.Combo.BasePrice,
+				})
+				.ToArrayAsync();
+			
+			if (combos.Length == 0)
+				logger.LogWarning("No combos found for product {ProductId}", productId);
+			else
+				logger.LogInformation("Fetched {Count} combos for product {ProductId}", combos.Length, productId);
+
+			return combos;
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Error fetching combos for product {ProductId}", productId);
+			throw;
+		}
+	}
+	
 	public async Task CreateComboAsync(ComboCreateDto dto)
 	{
 		logger.LogInformation("Creating a new combo: {ComboName}", dto.Name);
