@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.Services;
+using FastFoodOperator.Api.Interfaces;
 
 namespace FastFoodOperator.Api
 {
@@ -11,8 +12,9 @@ namespace FastFoodOperator.Api
             // Add services to the container.
             var builder = WebApplication.CreateBuilder(args);
 
-            // Development
-            if (builder.Environment.IsDevelopment())
+
+			// Development
+			if (builder.Environment.IsDevelopment())
             {
                 builder.Configuration.AddUserSecrets<Program>();
             }
@@ -29,7 +31,7 @@ namespace FastFoodOperator.Api
             });
 
 
-            builder.Services.AddScoped<OrderService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
 
             // Configure middlewares
             var app = builder.Build();
@@ -41,7 +43,9 @@ namespace FastFoodOperator.Api
                 app.UseSwaggerUI();
             }
 
+
             app.UseHttpsRedirection();
+            app.MapControllers();
 
             app.Run();
         }

@@ -85,9 +85,8 @@ namespace FastFoodOperator.Api.Data
                 .HasOne(oc => oc.Combo)
                 .WithMany()
                 .HasForeignKey(oc => oc.ComboId);
-            
-            
-            // OrderProduct
+
+			// OrderProduct
 			modelBuilder.Entity<OrderProduct>()
                 .HasKey(op => new { op.OrderId, op.ProductId });
 
@@ -99,13 +98,7 @@ namespace FastFoodOperator.Api.Data
             modelBuilder.Entity<OrderProduct>()
                 .HasOne(op => op.Product)
                 .WithMany()
-                .HasForeignKey(op => op.ProductId);
-
-            // Order
-            modelBuilder.Entity<Order>()
-                .Property(o => o.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
-            
+                .HasForeignKey(op => op.ProductId);            
             
             // Product
             modelBuilder.Entity<Product>()
