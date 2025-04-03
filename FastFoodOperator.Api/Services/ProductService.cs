@@ -244,5 +244,24 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 			throw;
 		}
 	}
+
+	public async Task DeleteProductAsync(int id)
+	{
+		logger.LogInformation("Deleting product: {ProductId}", id);
+		var product = new Product { Id = id };
+		
+		try
+		{
+			context.Products.Remove(product);
+			await context.SaveChangesAsync();
+			
+			logger.LogInformation("Successfully deleted product: {ProductId}", product.Id);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to delete product: {Id}", id);
+			throw;
+		}
+	}
 	#endregion
 }
