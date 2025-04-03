@@ -7,6 +7,7 @@ namespace FastFoodOperator.Api.Services;
 
 public class ProductService(AppDbContext context, ILogger<ProductService> logger)
 {
+	#region Combo
 	public async Task CreateNewComboAsync(ComboCreateDto dto)
 	{
 		logger.LogInformation("Creating a new combo: {ComboName}", dto.Name);
@@ -89,7 +90,9 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 			throw;
 		}
 	}
-
+	#endregion
+	
+	#region Product
 	public async Task<ProductResponseDto[]> GetProductsAsync(int limit = 5, int offset = 0)
 	{
 		logger.LogInformation("Fetching products with limit {Limit} and offset {Offset}", limit, offset);
@@ -98,9 +101,9 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 		{
 			var products = await context.Products
 				.AsNoTracking()
+				.OrderBy(p => p.CategoryId)
 				.Skip(offset)
 				.Take(limit)
-				.OrderBy(p => p.CategoryId)
 				.Select(p => new ProductResponseDto
 				{
 					Id = p.Id,
@@ -120,4 +123,40 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 			 throw;
 		}
 	}
+
+	public async Task<ProductResponseDto[]> GetProductsByCategoryIdAsync(int categoryId, int limit = 5, int offset = 0)
+	{
+		logger.LogInformation("Fetching products for category {CategoryId} with limit {Limit} and offset {Offset}", categoryId, limit, offset);
+		
+		try
+		{
+			var products = await context.Products
+				.AsNoTracking()
+				.Where(p => p.CategoryId == categoryId)
+				.OrderBy(p => p.Id)
+				.Skip(offset)
+				.Take(limit)
+				.Select(p => new ProductResponseDto
+				{
+					Id = p.Id,
+					Name = p.Name,
+					Description = p.Description,
+					BasePrice = p.BasePrice
+				})
+				.ToArrayAsync();
+
+			if (products.Length == 0)
+				logger.LogWarning("No products found for category {CategoryId}", categoryId);
+			else
+				logger.LogInformation("Fetched {Count} products for category {CategoryId}", products.Length, categoryId);
+			
+			return products;
+		}
+		catch (Exception ex)
+		{
+			 logger.LogError(ex, "Error fetching products for category {CategoryId} with limit {Limit} and offset {Offset}", categoryId, limit, offset);
+			 throw;
+		}
+	}
+	#endregion
 }
