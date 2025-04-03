@@ -1,5 +1,8 @@
 using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.DTOs;
+using FastFoodOperator.Api.DTOs.Category;
+using FastFoodOperator.Api.DTOs.Combo;
+using FastFoodOperator.Api.DTOs.Product;
 using FastFoodOperator.Api.Entities;
 using Microsoft.EntityFrameworkCore;
 

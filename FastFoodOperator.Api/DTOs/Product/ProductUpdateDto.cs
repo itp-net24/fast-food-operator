@@ -1,6 +1,4 @@
-using FastFoodOperator.Api.Services;
-
-namespace FastFoodOperator.Api.DTOs;
+namespace FastFoodOperator.Api.DTOs.Product;
 
 public class ProductUpdateDto
 {

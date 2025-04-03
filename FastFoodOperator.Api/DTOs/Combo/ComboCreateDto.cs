@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FastFoodOperator.Api.DTOs;
+namespace FastFoodOperator.Api.DTOs.Combo;
 
 public class ComboCreateDto
 {
