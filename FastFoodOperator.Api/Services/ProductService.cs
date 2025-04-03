@@ -8,6 +8,40 @@ namespace FastFoodOperator.Api.Services;
 public class ProductService(AppDbContext context, ILogger<ProductService> logger)
 {
 	#region Combo
+
+	public async Task<ProductResponseDto[]> GetComboByIdAsync(int id)
+	{
+		logger.LogInformation("Fetching products for combo {ComboId}", id);
+		
+		try
+		{
+			var products = await context.ComboProducts
+				.AsNoTracking()
+				.Where(cp => cp.ComboId == id)
+				.Include(cp => cp.Product)
+				.Select(cp => new ProductResponseDto
+				{
+					Id = cp.ProductId,
+					Name = cp.Product.Name,
+					Description = cp.Product.Description,
+					BasePrice = cp.Product.BasePrice
+				})
+				.ToArrayAsync();
+
+			if (products.Length == 0)
+				logger.LogWarning("No products found for combo {ComboId}", id);
+			else
+				logger.LogInformation("Fetched {Count} products for combo {ComboId}", products.Length, id);
+			
+			return products;
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Error fetching products for combo {ComboId}", id);
+			throw;
+		}
+	}
+	
 	public async Task<ComboResponseDto[]> GetCombosAsync(int limit = 5, int offset = 0)
 	{
 		logger.LogInformation("Fetching combos with limit {Limit} and offset {Offset}", limit, offset);
