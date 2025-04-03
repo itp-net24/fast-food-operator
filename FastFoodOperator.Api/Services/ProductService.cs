@@ -89,4 +89,35 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 			throw;
 		}
 	}
+
+	public async Task<ProductResponseDto[]> GetProductsAsync(int limit = 5, int offset = 0)
+	{
+		logger.LogInformation("Fetching products with limit {Limit} and offset {Offset}", limit, offset);
+
+		try
+		{
+			var products = await context.Products
+				.AsNoTracking()
+				.Skip(offset)
+				.Take(limit)
+				.OrderBy(p => p.CategoryId)
+				.Select(p => new ProductResponseDto
+				{
+					Id = p.Id,
+					Name = p.Name,
+					Description = p.Description,
+					BasePrice = p.BasePrice
+				})
+				.ToArrayAsync();
+
+			logger.LogInformation("Fetched {Count} products", products.Length);
+			
+			return products;
+		}
+		catch (Exception ex)
+		{
+			 logger.LogError(ex, "Error fetching products with limit {Limit} and offset {Offset}", limit, offset);
+			 throw;
+		}
+	}
 }
