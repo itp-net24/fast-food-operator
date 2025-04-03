@@ -8,7 +8,7 @@ namespace FastFoodOperator.Api.Services;
 public class ProductService(AppDbContext context, ILogger<ProductService> logger)
 {
 	#region Combo
-	public async Task CreateNewComboAsync(ComboCreateDto dto)
+	public async Task CreateComboAsync(ComboCreateDto dto)
 	{
 		logger.LogInformation("Creating a new combo: {ComboName}", dto.Name);
 		
@@ -156,6 +156,46 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 		{
 			 logger.LogError(ex, "Error fetching products for category {CategoryId} with limit {Limit} and offset {Offset}", categoryId, limit, offset);
 			 throw;
+		}
+	}
+
+	public async Task CreateProductAsync(ProductCreateDto dto)
+	{
+		logger.LogInformation("Creating a new product: {ProductName}", dto.Name);
+		
+		await using var transaction = await context.Database.BeginTransactionAsync();
+		try
+		{
+			var product = new Product
+			{
+				Name = dto.Name,
+				Description = dto.Description,
+				BasePrice = dto.BasePrice,
+				CategoryId = dto.CategoryId,
+			};
+
+			context.Products.Add(product);
+			await context.SaveChangesAsync();
+
+			var ingredients = dto.Ingredients
+				.Select(i => new ProductIngredient
+				{
+					ProductId = product.Id,
+					IngredientId = i.IngredientId,
+					Required = i.IsRequired
+				});
+
+			context.ProductIngredients.AddRange(ingredients);
+			await context.SaveChangesAsync();
+
+			await transaction.CommitAsync();
+			
+			logger.LogInformation("Successfully created product: {ProductId}", product.Id);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to create product: {ProductName}", dto.Name);	
+			throw;
 		}
 	}
 	#endregion
