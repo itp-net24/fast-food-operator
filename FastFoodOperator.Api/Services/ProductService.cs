@@ -61,8 +61,11 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 				})
 				.ToArrayAsync();
 			
-			logger.LogInformation("Fetched {Count} combos", combos.Length);
-
+			if (combos.Length == 0)
+				logger.LogWarning("No combos found");
+			else
+				logger.LogInformation("Fetched {Count} combos", combos.Length);
+			
 			return combos;
 		}
 		catch (Exception)
@@ -226,8 +229,11 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 					BasePrice = p.BasePrice
 				})
 				.ToArrayAsync();
-
-			logger.LogInformation("Fetched {Count} products", products.Length);
+			
+			if (products.Length == 0)
+				logger.LogWarning("No products found");
+			else
+				logger.LogInformation("Fetched {Count} products", products.Length);
 			
 			return products;
 		}
@@ -374,6 +380,136 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 		catch (Exception ex)
 		{
 			logger.LogError(ex, "Failed to delete product: {Id}", id);
+			throw;
+		}
+	}
+	#endregion
+	
+	#region Category
+	public async Task<CategoryResponseDto?> GetCategoryByIdAsync(int id)
+	{
+		logger.LogInformation("Fetching category: {CategoryId}", id);
+
+		try
+		{
+			var category = await context.Categories
+				.Select(c => new CategoryResponseDto
+				{
+					Id = c.Id,
+					Name = c.Name
+				})
+				.FirstOrDefaultAsync(c => c.Id == id);
+			
+			if (category is null)
+			{
+				logger.LogWarning("Category with ID {CategoryId} not found", id);
+				return null;
+			}
+
+			logger.LogInformation("Successfully fetched category: {CategoryId}", category.Id);
+			return category;
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to fetch category: {CategoryId}", id);
+			throw;
+		}
+	}
+	
+	public async Task<CategoryResponseDto[]> GetCategoriesAsync(int limit = 5, int offset = 0)
+	{
+			logger.LogInformation("Fetching categories with limit {Limit} and offset {Offset}", limit, offset);
+        
+        		try
+        		{
+        			var categories = await context.Categories
+        				.AsNoTracking()
+        				.OrderBy(c => c.Id)
+        				.Skip(offset)
+        				.Take(limit)
+        				.Select(p => new CategoryResponseDto
+        				{
+        					Id = p.Id,
+        					Name = p.Name,
+        				})
+        				.ToArrayAsync();
+			        
+			        if (categories.Length == 0)
+				        logger.LogWarning("No categories found");
+			        else
+				        logger.LogInformation("Fetched {Count} categories", categories.Length);
+        			
+        			return categories;
+        		}
+        		catch (Exception ex)
+        		{
+        			 logger.LogError(ex, "Error fetching products with limit {Limit} and offset {Offset}", limit, offset);
+        			 throw;
+        		}
+	}
+
+	public async Task CreateCategoryAsync(CategoryCreateDto dto)
+	{
+		logger.LogInformation("Creating category: {CategoryName}", dto.Name);
+		
+		var category = new Category { Name = dto.Name };
+
+		try
+		{
+			context.Categories.Add(category);
+			await context.SaveChangesAsync();
+
+			logger.LogInformation("Successfully created new category: {CategoryName}", dto.Name);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to create category: {CategoryName}", dto.Name);
+			throw;
+		}
+	}
+
+	public async Task UpdateCategoryAsync(CategoryUpdateDto dto)
+	{
+		logger.LogInformation("Updating category: {CategoryId}", dto.Id);
+
+		try
+		{
+			var category = await context.Categories
+				.FirstOrDefaultAsync(c => c.Id == dto.Id);
+
+			if (category is null)
+			{
+				logger.LogWarning("Category with ID {CategoryId} not found", dto.Id);
+				return;
+			}
+		
+			category.Name = dto.Name ?? category.Name;
+		
+			await context.SaveChangesAsync();
+			logger.LogInformation("Successfully updated category: {CategoryId}", dto.Id);
+		}
+		catch (Exception e)
+		{
+			logger.LogError(e, "Failed to update category: {CategoryId}", dto.Id);
+			throw;
+		}
+	}
+
+	public async Task DeleteCategoryAsync(int id)
+	{
+		logger.LogInformation("Deleting category");
+		var category = new Category { Id = id };
+
+		try
+		{
+			context.Categories.Remove(category);
+			await context.SaveChangesAsync();
+		
+			logger.LogInformation("Successfully deleted category: {CategoryId}", category.Id);
+		}
+		catch (Exception e)
+		{
+			logger.LogError(e, "Failed to delete category: {CategoryId}", category.Id);
 			throw;
 		}
 	}
