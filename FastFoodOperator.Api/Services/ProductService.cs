@@ -54,7 +54,7 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 		{
 			var combo = await context.Combos
 				.Include(c => c.ComboProducts)
-				.FirstOrDefaultAsync();
+				.FirstOrDefaultAsync(c => c.Id == dto.Id);
 
 			if (combo is null)
 			{
@@ -82,7 +82,7 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 
 			await context.SaveChangesAsync();
 
-			logger.LogInformation("Successfully updated combo {ComboId}", combo.Id);
+			logger.LogInformation("Successfully updated combo {ComboId}", dto.Id);
 		}
 		catch (Exception ex)
 		{
@@ -195,6 +195,52 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 		catch (Exception ex)
 		{
 			logger.LogError(ex, "Failed to create product: {ProductName}", dto.Name);	
+			throw;
+		}
+	}
+
+	public async Task UpdateProductAsync(ProductUpdateDto dto)
+	{
+		logger.LogInformation("Updating product: {ProductName}", dto.Name);
+
+		try
+		{
+			var product = await context.Products
+				.Include(c => c.ProductIngredients)
+				.FirstOrDefaultAsync(p => p.Id == dto.Id);
+
+			if (product is null)
+			{
+				logger.LogWarning("Product with ID {ProductId} not found", dto.Id);
+				return;
+			}
+
+			product.Name = dto.Name ?? product.Name;
+			product.Description = dto.Description ?? product.Description;
+			product.BasePrice = dto.BasePrice ?? product.BasePrice;
+
+			var existingIngredients = product.ProductIngredients.ToHashSet();
+			var newIngredients = dto.Ingredients
+				.Select(p => new ProductIngredient
+				{
+					ProductId = product.Id,
+					IngredientId = p.IngredientId,
+					Required = p.Required
+				}).ToHashSet();
+
+			var ingredientsToRemove = existingIngredients.Except(newIngredients);
+			var ingredientsToAdd = newIngredients.Except(existingIngredients);
+
+			context.ProductIngredients.RemoveRange(ingredientsToRemove);
+			context.ProductIngredients.AddRange(ingredientsToAdd);
+
+			await context.SaveChangesAsync();
+
+			logger.LogInformation("Successfully updated product: {ProductId}", dto.Id);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to update product: {ProductId}", dto.Id);
 			throw;
 		}
 	}
