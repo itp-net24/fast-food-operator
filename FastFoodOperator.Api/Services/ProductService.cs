@@ -282,7 +282,7 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 		}
 	}
 
-	public async Task CreateProductAsync(ProductCreateDto dto)
+	public async Task<ProductResponseDto> CreateProductAsync(ProductCreateDto dto)
 	{
 		logger.LogInformation("Creating a new product: {ProductName}", dto.Name);
 		
@@ -314,6 +314,14 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 			await transaction.CommitAsync();
 			
 			logger.LogInformation("Successfully created product: {ProductId}", product.Id);
+
+			return new ProductResponseDto
+			{
+				Id = product.Id,
+				Name = product.Name,
+				Description = product.Description,
+				BasePrice = product.BasePrice
+			};
 		}
 		catch (Exception ex)
 		{
