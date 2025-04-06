@@ -9,7 +9,24 @@ namespace FastFoodOperator.Api.Controller;
 [Route("api/[controller]")]
 public class ProductController(ProductService service, ILogger<ProductController> logger) : ControllerBase
 {
-	[HttpGet]
+	[HttpGet("/{id}")]
+	public async Task<IActionResult> GetProduct(int id)
+	{
+		try
+		{
+			var product = await service.GetProductByIdAsync(id);
+			var category = await service.GetCategoryByIdAsync(product.CategoryId);
+			return Ok(product);
+
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Could not find a product with this id");
+			return BadRequest(ex.Message);
+		}
+	}
+
+    [HttpGet]
 	public async Task<IActionResult> GetProducts([FromQuery] PaginationParams pagination)
 	{
 		try

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FastFoodOperator.Api.Services;
 
-public class ProductService(AppDbContext context, ILogger<ProductService> logger)
+public class ProductService (AppDbContext context, ILogger<ProductService> logger)
 {
 	#region Combo
 
@@ -211,8 +211,63 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 		}
 	}
 	#endregion
-	
+
 	#region Product
+
+	public async Task<ProductResponseDto> GetProductByIdAsync(int id)
+	{
+		logger.LogInformation("Fetching product with {product.Id}: ", id);
+
+		try
+		{
+			var product1 = await context.Products
+				.Select(p => new ProductResponseDto 
+				{
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    BasePrice = p.BasePrice,
+                    CategoryId =p.CategoryId
+                })
+				.FirstOrDefaultAsync(p => p.Id == id);
+
+			var productQuery = await context.Products
+				.AsNoTracking()
+				.Where(p => p.Id == id)
+				.Include(p => p.CategoryId)
+				.Select(p => new ProductCategoryResponseDto
+				{
+					Id = p.Id,
+					Name = p.Name,
+					Description = p.Description,
+					BasePrice = p.BasePrice,
+					CategoryResponseDto = new CategoryResponseDto
+					{
+						Id = p.CategoryId,
+						Name = p.Category.Name
+					}
+				}).ToArrayAsync();
+
+			if (productQuery[0] == null)
+			{
+				logger.LogError("Product was not found");
+			}
+			else
+			{
+				logger.LogInformation($"Fetching product {productQuery[0]}");
+			}
+            var product = productQuery[0];
+
+            return product;
+
+        }	
+		catch (Exception ex)
+		{
+			logger.LogError(ex, $"Error fetching product with product.Id: {id}");
+			throw;
+		}
+	}
+
 	public async Task<ProductResponseDto[]> GetProductsAsync(int limit = 5, int offset = 0)
 	{
 		logger.LogInformation("Fetching products with limit {Limit} and offset {Offset}", limit, offset);
@@ -294,7 +349,7 @@ public class ProductService(AppDbContext context, ILogger<ProductService> logger
 				Name = dto.Name,
 				Description = dto.Description,
 				BasePrice = dto.BasePrice,
-				CategoryId = dto.CategoryId,
+				CategoryId = dto.CategoryId
 			};
 
 			context.Products.Add(product);
