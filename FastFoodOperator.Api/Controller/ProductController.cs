@@ -15,9 +15,29 @@ public class ProductController(ProductService service, ILogger<ProductController
 		try
 		{
 			var product = await service.GetProductByIdAsync(id);
+			if (product is null)
+			{
+				logger.LogError($"Could not find a product with this id: {id} product is null");
+				return NotFound();
+			}
+						
 			var category = await service.GetCategoryByIdAsync(product.CategoryId);
-			return Ok(product);
 
+			if (category is null)
+			{
+                logger.LogError($"Could not find a product with this category, category is null");
+                return NotFound();
+            }
+			var productCategoryResponseDto = new ProductCategoryResponseDto
+			{
+				Id = product.Id,
+				Name = product.Name,
+				Description = product.Description,
+				BasePrice = product.BasePrice,
+				CategoryResponseDto = category
+			};
+			return Ok(productCategoryResponseDto);
+			
 		}
 		catch (Exception ex)
 		{

@@ -214,50 +214,31 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 
 	#region Product
 
-	public async Task<ProductResponseDto> GetProductByIdAsync(int id)
+	public async Task<ProductResponseDto?> GetProductByIdAsync(int id)
 	{
 		logger.LogInformation("Fetching product with {product.Id}: ", id);
 
 		try
 		{
-			var product1 = await context.Products
+			var product = await context.Products
 				.Select(p => new ProductResponseDto 
 				{
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
                     BasePrice = p.BasePrice,
-                    CategoryId =p.CategoryId
+                    CategoryId = p.CategoryId
                 })
 				.FirstOrDefaultAsync(p => p.Id == id);
 
-			var productQuery = await context.Products
-				.AsNoTracking()
-				.Where(p => p.Id == id)
-				.Include(p => p.CategoryId)
-				.Select(p => new ProductCategoryResponseDto
-				{
-					Id = p.Id,
-					Name = p.Name,
-					Description = p.Description,
-					BasePrice = p.BasePrice,
-					CategoryResponseDto = new CategoryResponseDto
-					{
-						Id = p.CategoryId,
-						Name = p.Category.Name
-					}
-				}).ToArrayAsync();
 
-			if (productQuery[0] == null)
+			if (product == null)
 			{
-				logger.LogError("Product was not found");
+				logger.LogError($"Product with Id {id} was not found");
+				return null;
 			}
-			else
-			{
-				logger.LogInformation($"Fetching product {productQuery[0]}");
-			}
-            var product = productQuery[0];
 
+			logger.LogInformation($"Successfully fetching product: {product}");
             return product;
 
         }	
