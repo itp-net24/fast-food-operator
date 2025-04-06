@@ -1,4 +1,7 @@
-﻿namespace FastFoodOperator.Api.DTOs
+﻿using FastFoodOperator.Api.DTOs.OrderComboDTOs;
+using FastFoodOperator.Api.DTOs.OrderProductDTOs;
+
+namespace FastFoodOperator.Api.DTOs.OrderDTOs
 {
 	public class AddOrderDto
 	{

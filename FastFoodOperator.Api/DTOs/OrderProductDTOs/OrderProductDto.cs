@@ -1,4 +1,4 @@
-﻿namespace FastFoodOperator.Api.DTOs
+﻿namespace FastFoodOperator.Api.DTOs.OrderProductDTOs
 {
 	public class OrderProductDto
 	{

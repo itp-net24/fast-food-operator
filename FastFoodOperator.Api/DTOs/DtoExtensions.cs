@@ -1,4 +1,7 @@
-﻿using FastFoodOperator.Api.Entities;
+﻿using FastFoodOperator.Api.DTOs.OrderDTOs;
+using FastFoodOperator.Api.DTOs.OrderProductDTOs;
+using FastFoodOperator.Api.DTOs.OrderComboDTOs;
+using FastFoodOperator.Api.Entities;
 
 namespace FastFoodOperator.Api.DTOs
 {

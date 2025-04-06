@@ -1,5 +1,6 @@
 ﻿using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.DTOs;
+using FastFoodOperator.Api.DTOs.OrderDTOs;
 using FastFoodOperator.Api.Entities;
 using FastFoodOperator.Api.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ namespace FastFoodOperator.Api.Services
 
 		public async Task AddOrder(AddOrderDto orderDto)
 		{
+			await using var transaction = await _context.Database.BeginTransactionAsync();
 			try {
 
 				var order = new Order
@@ -28,7 +30,6 @@ namespace FastFoodOperator.Api.Services
 				};
 
 				await _context.Orders.AddAsync(order);
-				await _context.SaveChangesAsync();
 
 				order.OrderProducts = orderDto.OrderProductDtos.Select(op => new OrderProduct
 				{
@@ -45,10 +46,13 @@ namespace FastFoodOperator.Api.Services
 				}).ToList();
 
 				await _context.SaveChangesAsync();
+				await transaction.CommitAsync();
 			}
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Error adding order");
+
+				await transaction.RollbackAsync();
 				throw;
 			}
 		}
@@ -76,22 +80,29 @@ namespace FastFoodOperator.Api.Services
 			} 
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "Failed to get orders");
+				_logger.LogError(ex, "Failed to get order");
 				return new GetOrderDto();
 			}
 		}
 
-		public async Task CompleteOrder(int orderId)
+		public async Task CompleteOrder(CompleteOrderDto orderDto)
 		{
-			var order = await _context.Orders.FindAsync(orderId);
-
-			if (order == null)
+			try 
 			{
-				throw new KeyNotFoundException($"Order with ID {orderId} not found.");
-			}
+				var order = await _context.Orders.FindAsync(orderDto.OrderId);
 
-			order.OrderStatus = true;
-			await _context.SaveChangesAsync();
+				if (order == null)
+				{
+					throw new KeyNotFoundException($"Order with ID {orderDto.OrderId} not found.");
+				}
+
+				order.OrderStatus = true;
+				await _context.SaveChangesAsync();
+			} 
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, $"Failed to complete order with order ID {orderDto.OrderId}");
+			}
 		}
 
 		public async Task DeleteOrder(int orderId)

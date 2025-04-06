@@ -1,6 +1,5 @@
-﻿using FastFoodOperator.Api.DTOs;
+﻿using FastFoodOperator.Api.DTOs.OrderDTOs;
 using FastFoodOperator.Api.Interfaces;
-using FastFoodOperator.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FastFoodOperator.Api.Controllers
@@ -23,9 +22,22 @@ namespace FastFoodOperator.Api.Controllers
 		{
 			try
 			{
-				_logger.LogInformation("Attempting to add an order...");
 				await _orderService.AddOrder(orderDto);
 				return Ok(new { message = "Order added successfully" });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
+
+		[HttpPut("completeOrder")]
+		public async Task<IActionResult> CompleteOrder([FromBody] CompleteOrderDto order)
+		{
+			try
+			{
+				await _orderService.CompleteOrder(order);
+				return Ok(new { message = "Order completed successfully." });
 			}
 			catch (Exception ex)
 			{
