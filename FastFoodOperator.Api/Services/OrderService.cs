@@ -1,6 +1,8 @@
 ﻿using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.DTOs;
 using FastFoodOperator.Api.DTOs.OrderDTOs;
+using FastFoodOperator.Api.DTOs.OrderProductDTOs;
+using FastFoodOperator.Api.DTOs.OrderComboDTOs;
 using FastFoodOperator.Api.Entities;
 using FastFoodOperator.Api.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -85,6 +87,52 @@ namespace FastFoodOperator.Api.Services
 			}
 		}
 
+		public async Task<List<GetOrderDto>> GetOrders()
+		{
+			try
+			{
+				var orders = await _context.Orders
+					.Include(o => o.OrderProducts)
+						.ThenInclude(op => op.Product)
+					.Include(o => o.OrderCombos)
+						.ThenInclude(oc => oc.Combo)
+					.ToListAsync();
+
+				var ordersDto = orders.Select(o => o.OrderToOrderDto()).ToList();
+
+				return ordersDto;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError("Failed to retrieve orders");
+				throw;
+			}
+		}
+
+		public async Task<GetOrdernumbersDto> DisplayOrderNumbers() 
+		{
+			try
+			{
+				var threeMinutesAgo = DateTime.UtcNow.AddMinutes(-3);
+
+				var orders = await _context.Orders
+					.Where(o => !o.OrderStatus || (o.OrderStatus && o.CompletedAt >= threeMinutesAgo))
+					.ToListAsync();
+
+				var OrderNumbersDto = new GetOrdernumbersDto
+				{
+					OrderNumbers = orders.Select(o => o.OrderNumber).ToList()
+				};
+
+				return OrderNumbersDto;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError("Failed to display ordernumbers");
+				throw;
+			}
+		}
+
 		public async Task CompleteOrder(CompleteOrderDto orderDto)
 		{
 			try 
@@ -97,6 +145,7 @@ namespace FastFoodOperator.Api.Services
 				}
 
 				order.OrderStatus = true;
+				order.CompletedAt = DateTime.UtcNow;
 				await _context.SaveChangesAsync();
 			} 
 			catch (Exception ex)

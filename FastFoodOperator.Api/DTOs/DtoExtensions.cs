@@ -15,11 +15,15 @@ namespace FastFoodOperator.Api.DTOs
 				CreatedAt = order.CreatedAt,
 				OrderProducts = order.OrderProducts.Select(op => new OrderProductDto
 				{
-					Quantity = op.Quantity,
+					ProductId = op.ProductId,
+					ProductName = op.Product.Name,
+					Quantity = op.Quantity
 				}).ToList(),
 				OrderCombos = order.OrderCombos.Select(oc => new OrderComboDto
 				{
-					Quantity = oc.Quantity,
+					ComboId = oc.ComboId,
+					ComboName = oc.Combo.Name,
+					Quantity = oc.Quantity
 				}).ToList()
 			};
 

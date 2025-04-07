@@ -44,5 +44,19 @@ namespace FastFoodOperator.Api.Controllers
 				return BadRequest(new { message = ex.Message });
 			}
 		}
+
+		[HttpGet("displayOrderNumbers")]
+		public async Task<IActionResult> GetOrderNumbers()
+		{
+			var result = await _orderService.DisplayOrderNumbers();
+			return Ok(result);
+		}
+
+		[HttpGet("GetOrders")]
+		public async Task<ActionResult<List<GetOrderDto>>> GetOrders()
+		{
+			var result = await _orderService.GetOrders();
+			return Ok(result);
+		}
 	}
 }
