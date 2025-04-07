@@ -1,8 +1,6 @@
 ﻿using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.DTOs;
 using FastFoodOperator.Api.DTOs.OrderDTOs;
-using FastFoodOperator.Api.DTOs.OrderProductDTOs;
-using FastFoodOperator.Api.DTOs.OrderComboDTOs;
 using FastFoodOperator.Api.Entities;
 using FastFoodOperator.Api.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -92,6 +90,7 @@ namespace FastFoodOperator.Api.Services
 			try
 			{
 				var orders = await _context.Orders
+					.AsNoTracking()
 					.Include(o => o.OrderProducts)
 						.ThenInclude(op => op.Product)
 					.Include(o => o.OrderCombos)
@@ -104,7 +103,7 @@ namespace FastFoodOperator.Api.Services
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError("Failed to retrieve orders");
+				_logger.LogError(ex, "Failed to retrieve orders");
 				throw;
 			}
 		}
@@ -128,7 +127,7 @@ namespace FastFoodOperator.Api.Services
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError("Failed to display ordernumbers");
+				_logger.LogError(ex, "Failed to display ordernumbers");
 				throw;
 			}
 		}
