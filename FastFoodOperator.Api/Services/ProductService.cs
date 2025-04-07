@@ -221,6 +221,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		try
 		{
 			var product = await context.Products
+				.AsNoTracking()
 				.Select(p => new ProductResponseDto 
 				{
                     Id = p.Id,
