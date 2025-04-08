@@ -1,6 +1,7 @@
 using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.DTOs.Category;
 using FastFoodOperator.Api.DTOs.Combo;
+using FastFoodOperator.Api.DTOs.Ingredient;
 using FastFoodOperator.Api.DTOs.Product;
 using FastFoodOperator.Api.DTOs.ProductVariant;
 using FastFoodOperator.Api.Entities;
@@ -432,151 +433,265 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			}
 		}
 		#endregion
-	
-		#region Variant
 
-		public async Task<ProductVariantResponseDto[]> GetVariantsByProductIdAsync(int productId)
+	#region Variant
+
+	public async Task<ProductVariantResponseDto[]> GetVariantsByProductIdAsync(int productId)
+	{
+		logger.LogInformation("Getting variant by product: {ProductId}", productId);
+
+		try
 		{
-			logger.LogInformation("Getting variant by product: {ProductId}", productId);
-
-			try
-			{
-				var variants = await context.ProductVariants
-					.AsNoTracking()
-					.Where(v => v.ProductId == productId)
-					.Select(v => new ProductVariantResponseDto
-					{
-						Id = v.Id,
-						Name = v.Name,
-						Description = v.Description,
-						ProductId = v.ProductId,
-						PriceModifier = v.PriceModifier
-					})
-					.ToArrayAsync();
-
-				if (variants.Length == 0)
+			var variants = await context.ProductVariants
+				.AsNoTracking()
+				.Where(v => v.ProductId == productId)
+				.Select(v => new ProductVariantResponseDto
 				{
-					logger.LogWarning("No variant found for product: {ProductId}", productId);
-				}
-				else
-				{
-					logger.LogInformation("Found {Count} variant products", variants.Length);
-				}
+					Id = v.Id,
+					Name = v.Name,
+					Description = v.Description,
+					ProductId = v.ProductId,
+					PriceModifier = v.PriceModifier
+				})
+				.ToArrayAsync();
 
-				return variants;
-			}
-			catch (Exception ex)
+			if (variants.Length == 0)
 			{
-				logger.LogError(ex, "Failed to get variant by product: {ProductId}", productId);
-				throw;
+				logger.LogWarning("No variant found for product: {ProductId}", productId);
 			}
+			else
+			{
+				logger.LogInformation("Found {Count} variant products", variants.Length);
+			}
+
+			return variants;
 		}
-	
-		public async Task<ProductVariantResponseDto> CreateProductVariantAsync(ProductVariantCreateDto dto)
+		catch (Exception ex)
 		{
-			logger.LogInformation("Creating a new product variant: {VariantName}", dto.Name);
-		
-			try
+			logger.LogError(ex, "Failed to get variant by product: {ProductId}", productId);
+			throw;
+		}
+	}
+
+	public async Task<ProductVariantResponseDto> CreateProductVariantAsync(ProductVariantCreateDto dto)
+	{
+		logger.LogInformation("Creating a new product variant: {VariantName}", dto.Name);
+
+		try
+		{
+			var productExists = await context.Products.AnyAsync(p => p.Id == dto.ProductId);
+			if (!productExists)
 			{
-				var productExists = await context.Products.AnyAsync(p => p.Id == dto.ProductId);
+				logger.LogWarning("Product with ID {ProductId} not found", dto.ProductId);
+				throw new Exception($"Product with ID {dto.ProductId} not found");
+			}
+
+			var variant = new ProductVariant
+			{
+				Name = dto.Name,
+				Description = dto.Description,
+				ProductId =dto.ProductId,
+				PriceModifier = dto.PriceModifier,
+			};
+
+			context.ProductVariants.Add(variant);
+			await context.SaveChangesAsync();
+
+			logger.LogInformation("Successfully created product variant: {VariantId}", variant.Id);
+
+			return new ProductVariantResponseDto
+			{
+				Id = variant.Id,
+				ProductId = variant.ProductId,
+				Name = variant.Name,
+				Description = variant.Description,
+				PriceModifier = variant.PriceModifier,
+			};
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to create product variant: {VariantName}", dto.Name);	
+			throw;
+		}
+	}
+
+	public async Task UpdateProductVariantAsync(ProductVariantUpdateDto dto)
+	{
+		logger.LogInformation("Updating product variant: {VariantName}", dto.Name);
+
+		try
+		{
+			var variant = await context.ProductVariants
+				.FirstOrDefaultAsync(p => p.Id == dto.Id);
+
+			if (variant is null)
+			{
+				logger.LogWarning("Product variant with ID {VariantId} not found", dto.Id);
+				return;
+			}
+
+			variant.Name = dto.Name ?? variant.Name;
+			variant.Description = dto.Description ?? variant.Description;
+			variant.PriceModifier = dto.PriceModifier?? variant.PriceModifier;
+
+			if (variant.ProductId != dto.ProductId)
+			{
+				var productExists = await context.Products.AnyAsync(p => p.Id == variant.ProductId);
 				if (!productExists)
 				{
-					logger.LogWarning("Product with ID {ProductId} not found", dto.ProductId);
-					throw new Exception($"Product with ID {dto.ProductId} not found");
+					logger.LogWarning("Product with ID {ProductId} not found", variant.ProductId);
+					throw new Exception($"Product with ID {variant.ProductId} not found");
 				}
-			
-				var variant = new ProductVariant
-				{
-					Name = dto.Name,
-					Description = dto.Description,
-					ProductId =dto.ProductId,
-					PriceModifier = dto.PriceModifier,
-				};
-
-				context.ProductVariants.Add(variant);
-				await context.SaveChangesAsync();
-			
-				logger.LogInformation("Successfully created product variant: {VariantId}", variant.Id);
-
-				return new ProductVariantResponseDto
-				{
-					Id = variant.Id,
-					ProductId = variant.ProductId,
-					Name = variant.Name,
-					Description = variant.Description,
-					PriceModifier = variant.PriceModifier,
-				};
-			}
-			catch (Exception ex)
-			{
-				logger.LogError(ex, "Failed to create product variant: {VariantName}", dto.Name);	
-				throw;
-			}
-		}
-
-		public async Task UpdateProductVariantAsync(ProductVariantUpdateDto dto)
-		{
-			logger.LogInformation("Updating product variant: {VariantName}", dto.Name);
-
-			try
-			{
-				var variant = await context.ProductVariants
-					.FirstOrDefaultAsync(p => p.Id == dto.Id);
-
-				if (variant is null)
-				{
-					logger.LogWarning("Product variant with ID {VariantId} not found", dto.Id);
-					return;
-				}
-
-				variant.Name = dto.Name ?? variant.Name;
-				variant.Description = dto.Description ?? variant.Description;
-				variant.PriceModifier = dto.PriceModifier?? variant.PriceModifier;
-
-				if (variant.ProductId != dto.ProductId)
-				{
-					var productExists = await context.Products.AnyAsync(p => p.Id == variant.ProductId);
-					if (!productExists)
-					{
-						logger.LogWarning("Product with ID {ProductId} not found", variant.ProductId);
-						throw new Exception($"Product with ID {variant.ProductId} not found");
-					}
-					
-					variant.ProductId = variant.ProductId;
-				}
-			
-				await context.SaveChangesAsync();
-
-				logger.LogInformation("Successfully updated product variant: {VariantId}", dto.Id);
-			}
-			catch (Exception ex)
-			{
-				logger.LogError(ex, "Failed to update product variant: {VariantId}", dto.Id);
-				throw;
-			}
-		}
-
-		public async Task DeleteProductVariantAsync(int id)
-		{
-			logger.LogInformation("Deleting product variant: {VariantId}", id);
-			var variant = new ProductVariant { Id = id };
 		
-			// Potentially remove references from combos when variant is deleted?
-			try
-			{
-				context.ProductVariants.Remove(variant);
-				await context.SaveChangesAsync();
-			
-				logger.LogInformation("Successfully deleted product variant: {VariantId}", id);
+				variant.ProductId = variant.ProductId;
 			}
-			catch (Exception ex)
-			{
-				logger.LogError(ex, "Failed to delete product variant: {VariantId}", id);
-				throw;
-			}
+
+			await context.SaveChangesAsync();
+
+			logger.LogInformation("Successfully updated product variant: {VariantId}", dto.Id);
 		}
-		#endregion
-	
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to update product variant: {VariantId}", dto.Id);
+			throw;
+		}
+	}
+
+	public async Task DeleteProductVariantAsync(int id)
+	{
+		logger.LogInformation("Deleting product variant: {VariantId}", id);
+		var variant = new ProductVariant { Id = id };
+
+		// Potentially remove references from combos when variant is deleted?
+		try
+		{
+			context.ProductVariants.Remove(variant);
+			await context.SaveChangesAsync();
+
+			logger.LogInformation("Successfully deleted product variant: {VariantId}", id);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to delete product variant: {VariantId}", id);
+			throw;
+		}
+	}
+	#endregion
+
+	#region Ingredient
+	public async Task<IngredientResponseDto[]> GetIngredientsAsync(int limit = 5, int offset = 0)
+	{
+		logger.LogInformation("Fetching ingredients with limit {Limit} and offset {Offset}", limit, offset);
+
+		try
+		{
+			var ingredients = await context.Ingredients
+				.AsNoTracking()
+				.OrderBy(i => i.Name)
+				.Skip(offset)
+				.Take(limit)
+				.Select(i => new IngredientResponseDto
+				{
+					Id = i.Id,
+					Name = i.Name,
+					PriceModifier = i.PriceModifier,
+				})
+				.ToArrayAsync();
+
+			if (ingredients.Length == 0)
+				logger.LogWarning("No ingredients found");
+			else
+				logger.LogInformation("Fetched {Count} ingredients", ingredients.Length);
+
+			return ingredients;
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Error fetching ingredients with limit {Limit} and offset {Offset}", limit, offset);
+			throw;
+		}
+	}
+
+	public async Task<IngredientResponseDto> CreateIngredientAsync(IngredientCreateDto dto)
+	{
+		logger.LogInformation("Creating a new ingredient: {IngredientName}", dto.Name);
+
+		try
+		{
+			var ingredient = new Ingredient
+			{
+				Name = dto.Name,
+				PriceModifier = dto.PriceModifier,
+			};
+
+			context.Ingredients.Add(ingredient);
+			await context.SaveChangesAsync();
+
+			logger.LogInformation("Successfully created ingredient: {IngredientName}", ingredient.Id);
+
+			return new IngredientResponseDto
+			{
+				Id = ingredient.Id,
+				Name = ingredient.Name,
+				PriceModifier = ingredient.PriceModifier
+			};
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to create ingredient: {IngredientName}", dto.Name);	
+			throw;
+		}
+	}
+
+	public async Task UpdateIngredientAsync(IngredientUpdateDto dto)
+	{
+		logger.LogInformation("Updating ingredient: {IngredientName}", dto.Name);
+
+		try
+		{
+			var ingredient = await context.Ingredients
+				.FirstOrDefaultAsync(p => p.Id == dto.Id);
+
+			if (ingredient is null)
+			{
+				logger.LogWarning("Ingredient with ID {IngredientId} not found", dto.Id);
+				return;
+			}
+
+			ingredient.Name = dto.Name ?? ingredient.Name;
+			ingredient.PriceModifier = dto.PriceModifier ?? ingredient.PriceModifier;
+
+			await context.SaveChangesAsync();
+
+			logger.LogInformation("Successfully updated ingredient: {IngredientId}", dto.Id);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to update ingredient: {IngredientId}", dto.Id);
+			throw;
+		}
+	}
+
+	public async Task DeleteIngredientByIdAsync(int id)
+	{
+		logger.LogInformation("Deleting ingredient: {IngredientId}", id);
+		var ingredient = new Ingredient { Id = id };
+
+		try
+		{
+			context.Ingredients.Remove(ingredient);
+			await context.SaveChangesAsync();
+
+			logger.LogInformation("Successfully deleted ingredient: {IngredientId}", ingredient.Id);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to delete ingredient: {Id}", id);
+			throw;
+		}
+	}
+	#endregion
+
 	#region Category
 	public async Task<CategoryResponseDto?> GetCategoryByIdAsync(int id)
 	{
