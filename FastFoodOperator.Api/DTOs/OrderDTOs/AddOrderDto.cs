@@ -6,7 +6,7 @@ namespace FastFoodOperator.Api.DTOs.OrderDTOs
 	public class AddOrderDto
 	{
 		public string CustomerNote { get; set; } = string.Empty!;
-		public ICollection<OrderComboDto> OrderComboDtos { get; set; } = [];
-		public ICollection<OrderProductDto> OrderProductDtos { get; set; } = [];
+		public ICollection<AddOrderComboDto> OrderComboDtos { get; set; } = [];
+		public ICollection<AddOrderProductDto> OrderProductDtos { get; set; } = [];
 	}
 }

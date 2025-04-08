@@ -31,5 +31,6 @@ namespace FastFoodOperator.Api.DTOs
 
 			return orderDto;
 		}
+
 	}
 }
