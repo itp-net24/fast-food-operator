@@ -76,7 +76,7 @@ public class ProductController(ProductService service, ILogger<ProductController
 		}
 	}
 	
-	[HttpPut("/{id}")]
+	[HttpDelete("/{id}")]
 	public async Task<IActionResult> DeleteProduct(int id)
 	{
 		try
