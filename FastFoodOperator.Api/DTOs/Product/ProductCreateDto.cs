@@ -19,4 +19,6 @@ public class ProductCreateDto
 	public decimal BasePrice { get; init; }
 
 	public ProductIngredientCreateDto[] Ingredients { get; init; } = [];
+
+	public string? PictureUrl { get; init; }
 }

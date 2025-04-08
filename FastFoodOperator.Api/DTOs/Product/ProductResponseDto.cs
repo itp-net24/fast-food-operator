@@ -9,4 +9,5 @@ public class ProductResponseDto
 	public string? Description { get; init; }
 	public decimal BasePrice { get; init; }
 	public int CategoryId { get; init; }
+	public string? PictureUrl { get; init; }
 }

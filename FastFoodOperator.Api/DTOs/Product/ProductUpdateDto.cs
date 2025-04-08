@@ -7,4 +7,5 @@ public class ProductUpdateDto
 	public string? Description { get; init; }
 	public decimal? BasePrice { get; init; }
 	public ProductIngredientUpdateDto[] Ingredients { get; init; } = [];
+	public string? PictureUrl { get; init; }
 }

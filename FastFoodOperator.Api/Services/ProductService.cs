@@ -28,7 +28,8 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 					Id = cp.ProductId,
 					Name = cp.Product.Name,
 					Description = cp.Product.Description,
-					BasePrice = cp.Product.BasePrice
+					BasePrice = cp.Product.BasePrice,
+					PictureUrl = cp.Product.PictureUrl
 				})
 				.ToArrayAsync();
 
@@ -229,7 +230,8 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
                     Name = p.Name,
                     Description = p.Description,
                     BasePrice = p.BasePrice,
-                    CategoryId = p.CategoryId
+                    CategoryId = p.CategoryId,
+					PictureUrl = p.PictureUrl
                 })
 				.FirstOrDefaultAsync(p => p.Id == id);
 
@@ -240,7 +242,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				return null;
 			}
 
-			logger.LogInformation($"Successfully fetching product: {product}");
+			logger.LogInformation($"Successfully fetching product: {product.Name} {product.Description}");
             return product;
 
         }	
@@ -267,7 +269,8 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 					Id = p.Id,
 					Name = p.Name,
 					Description = p.Description,
-					BasePrice = p.BasePrice
+					BasePrice = p.BasePrice,
+					PictureUrl= p.PictureUrl
 				})
 				.ToArrayAsync();
 			
@@ -302,7 +305,8 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 					Id = p.Id,
 					Name = p.Name,
 					Description = p.Description,
-					BasePrice = p.BasePrice
+					BasePrice = p.BasePrice,
+					PictureUrl = p.PictureUrl
 				})
 				.ToArrayAsync();
 
@@ -332,7 +336,8 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				Name = dto.Name,
 				Description = dto.Description,
 				BasePrice = dto.BasePrice,
-				CategoryId = dto.CategoryId
+				CategoryId = dto.CategoryId,
+				PictureUrl = dto.PictureUrl
 			};
 
 			context.Products.Add(product);
@@ -358,7 +363,8 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				Id = product.Id,
 				Name = product.Name,
 				Description = product.Description,
-				BasePrice = product.BasePrice
+				BasePrice = product.BasePrice,
+				PictureUrl = product.PictureUrl
 			};
 		}
 		catch (Exception ex)
@@ -387,6 +393,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			product.Name = dto.Name ?? product.Name;
 			product.Description = dto.Description ?? product.Description;
 			product.BasePrice = dto.BasePrice ?? product.BasePrice;
+			product.PictureUrl = dto.PictureUrl ?? product.PictureUrl;
 
 			var existingIngredients = product.ProductIngredients.ToHashSet();
 			var newIngredients = dto.Ingredients

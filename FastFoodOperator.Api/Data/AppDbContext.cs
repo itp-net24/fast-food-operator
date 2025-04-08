@@ -117,6 +117,11 @@ namespace FastFoodOperator.Api.Data
             modelBuilder.Entity<Product>()
                 .Property(p => p.BasePrice)
                 .HasColumnType("decimal(10, 2)");
+
+            modelBuilder.Entity<Product>()
+                .Property(p => p.PictureUrl)
+                .HasMaxLength(2048)
+                .IsUnicode(false);
             
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Category)
