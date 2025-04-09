@@ -173,7 +173,7 @@ namespace FastFoodOperator.Api.Services
 		}
 		public async Task<int> GenerateOrderNumber()
 		{
-			var today = DateTime.Today;
+			var today = DateTime.Today.ToUniversalTime();
 
 			var maxOrderNumber = await _context.Orders
 				.Where(o => o.CreatedAt.Date == today)
