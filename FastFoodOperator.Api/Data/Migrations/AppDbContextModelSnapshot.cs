@@ -197,6 +197,7 @@ namespace FastFoodOperator.Api.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+
                     b.Property<DateTime>("CompletedAt")
                         .HasColumnType("datetime2");
 
@@ -206,6 +207,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Property<string>("CustomerNote")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
 
                     b.Property<int>("OrderNumber")
                         .HasColumnType("int");
@@ -221,18 +223,22 @@ namespace FastFoodOperator.Api.Data.Migrations
                         new
                         {
                             Id = 1,
+
                             CompletedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedAt = new DateTime(2024, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc),
                             CustomerNote = "5kg extra onion",
+
                             OrderNumber = 1001,
                             OrderStatus = true
                         },
                         new
                         {
                             Id = 2,
+
                             CompletedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedAt = new DateTime(2024, 1, 1, 14, 30, 0, 0, DateTimeKind.Utc),
                             CustomerNote = "no peanuts",
+
                             OrderNumber = 1002,
                             OrderStatus = false
                         });
