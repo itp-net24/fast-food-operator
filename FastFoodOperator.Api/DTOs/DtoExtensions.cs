@@ -16,6 +16,7 @@ namespace FastFoodOperator.Api.DTOs
 				OrderNumber = order.OrderNumber,
 				CreatedAt = order.CreatedAt,
 				CustomerNote = order.CustomerNote,
+				OrderStatus = order.OrderStatus,
 				OrderProducts = order.OrderProducts.Select(op => new OrderProductDto
 				{
 					ProductId = op.ProductId,
