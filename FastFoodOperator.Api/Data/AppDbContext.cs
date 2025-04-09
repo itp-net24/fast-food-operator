@@ -48,12 +48,14 @@ namespace FastFoodOperator.Api.Data
             modelBuilder.Entity<ComboProduct>()
                 .HasOne(cp => cp.Combo)
                 .WithMany(c => c.ComboProducts)
-                .HasForeignKey(cp => cp.ComboId);
+                .HasForeignKey(cp => cp.ComboId)
+                .OnDelete(DeleteBehavior.Cascade);
            
             modelBuilder.Entity<ComboProduct>()
                 .HasOne(cp => cp.Product)
                 .WithMany(p => p.ComboProducts)
-                .HasForeignKey(cp => cp.ProductId);
+                .HasForeignKey(cp => cp.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
            
             modelBuilder.Entity<ComboProduct>()
                 .HasOne(cp => cp.ProductVariant)
@@ -115,6 +117,11 @@ namespace FastFoodOperator.Api.Data
             modelBuilder.Entity<Product>()
                 .Property(p => p.BasePrice)
                 .HasColumnType("decimal(10, 2)");
+
+            modelBuilder.Entity<Product>()
+                .Property(p => p.PictureUrl)
+                .HasMaxLength(2048)
+                .IsUnicode(false);
             
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Category)
@@ -130,12 +137,14 @@ namespace FastFoodOperator.Api.Data
             modelBuilder.Entity<ProductIngredient>()
                 .HasOne(pi => pi.Ingredient)
                 .WithMany(i => i.ProductIngredients)
-                .HasForeignKey(pi => pi.IngredientId);
+                .HasForeignKey(pi => pi.IngredientId)
+                .OnDelete(DeleteBehavior.Cascade);
             
             modelBuilder.Entity<ProductIngredient>()
                 .HasOne(pi => pi.Product)
                 .WithMany(p => p.ProductIngredients)
-                .HasForeignKey(pi => pi.ProductId);
+                .HasForeignKey(pi => pi.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
            
             
             // ProductVariant

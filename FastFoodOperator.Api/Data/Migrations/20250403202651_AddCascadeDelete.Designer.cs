@@ -3,6 +3,7 @@ using FastFoodOperator.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FastFoodOperator.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250403202651_AddCascadeDelete")]
+    partial class AddCascadeDelete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -314,11 +317,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("PictureUrl")
-                        .HasMaxLength(2048)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(2048)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -332,8 +330,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                             BasePrice = 5.99m,
                             CategoryId = 1,
                             Description = "A classic cheeseburger",
-                            Name = "Cheeseburger",
-                            PictureUrl = ""
+                            Name = "Cheeseburger"
                         },
                         new
                         {
@@ -341,8 +338,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                             BasePrice = 1.99m,
                             CategoryId = 2,
                             Description = "Refreshing soda",
-                            Name = "Coke",
-                            PictureUrl = ""
+                            Name = "Coke"
                         },
                         new
                         {
@@ -350,8 +346,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                             BasePrice = 2.99m,
                             CategoryId = 3,
                             Description = "Crispy golden fries",
-                            Name = "French Fries",
-                            PictureUrl = ""
+                            Name = "French Fries"
                         });
                 });
 
