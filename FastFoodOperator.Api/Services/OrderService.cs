@@ -173,10 +173,15 @@ namespace FastFoodOperator.Api.Services
 		}
 		public async Task<int> GenerateOrderNumber()
 		{
-			var today = DateTime.Today;
+			var todayLocal = DateTime.Today;
+			var tomorrowLocal = todayLocal.AddDays(1);
+
+			var timeZone = TimeZoneInfo.Local; 
+			var todayUtc = TimeZoneInfo.ConvertTimeToUtc(todayLocal, timeZone);
+			var tomorrowUtc = TimeZoneInfo.ConvertTimeToUtc(tomorrowLocal, timeZone);
 
 			var maxOrderNumber = await _context.Orders
-				.Where(o => o.CreatedAt.Date == today)
+				.Where(o => o.CreatedAt >= todayUtc && o.CreatedAt < tomorrowUtc)
 				.MaxAsync(o => (int?)o.OrderNumber);
 
 			return maxOrderNumber.HasValue ? maxOrderNumber.Value + 1 : 1000;
