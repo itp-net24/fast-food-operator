@@ -3,6 +3,7 @@ using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.Services;
 using FastFoodOperator.Api.Interfaces;
 
+
 namespace FastFoodOperator.Api
 {
     public class Program
@@ -31,7 +32,9 @@ namespace FastFoodOperator.Api
             });
 
 
+
             builder.Services.AddScoped<IOrderService, OrderService>();
+
 
             // Configure middlewares
             var app = builder.Build();
