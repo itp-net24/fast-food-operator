@@ -93,8 +93,14 @@ namespace FastFoodOperator.Api.Services
 					.AsNoTracking()
 					.Include(o => o.OrderProducts)
 						.ThenInclude(op => op.Product)
+							.ThenInclude(p => p.ProductIngredients)
+								.ThenInclude(pi => pi.Ingredient)
 					.Include(o => o.OrderCombos)
 						.ThenInclude(oc => oc.Combo)
+							.ThenInclude(c => c.ComboProducts)
+								.ThenInclude(cp => cp.Product)
+									.ThenInclude(p => p.ProductIngredients)
+										.ThenInclude(pi => pi.Ingredient)
 					.ToListAsync();
 
 				var ordersDto = orders.Select(o => o.OrderToOrderDto()).ToList();
