@@ -1,5 +1,21 @@
 <script setup lang="ts">
     import Sidebar from './Sidebar.vue'
+    import ProductCard from './ProductCard.vue';
+    import {ref, onMounted} from 'vue'
+    import {Product} from '@/models/product.ts'
+    
+    const products = ref<Product[]>([]);
+
+    onMounted(async () => {
+  try {
+    const response = await fetch('')
+    if (!response.ok) throw new Error('Failed to fetch')
+    products.value = await response.json()
+  } catch (err) {
+    console.error('Fetch error:', err)
+  }
+})
+
 </script>
 
 <template>
@@ -10,8 +26,8 @@
             </aside>
 
             <main>
-                <div class="article-container">
-        
+                <div v-for="product in products" :key="product.id" class="articles-container">
+                    <ProductCard :product="product" />
                 </div>
             </main>
         
