@@ -4,8 +4,8 @@
     {
         public int Id { get; set; }
         public ICollection<ProductIngredient> ProductIngredients { get; } = [];
-        
-        public required string Name { get; set; }
+
+        public string Name { get; set; } = null!;
         public decimal PriceModifier { get; set; }
     }
 }
