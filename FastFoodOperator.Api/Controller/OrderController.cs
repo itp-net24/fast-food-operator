@@ -2,7 +2,7 @@
 using FastFoodOperator.Api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FastFoodOperator.Api.Controllers
+namespace FastFoodOperator.Api.Controller
 {
 	[Route("api/[controller]")]
 	[ApiController]
