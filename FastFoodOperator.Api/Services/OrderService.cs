@@ -1,6 +1,6 @@
 ﻿using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.DTOs;
-using FastFoodOperator.Api.DTOs.OrderDTOs;
+using FastFoodOperator.Api.DTOs.Orders;
 using FastFoodOperator.Api.Entities;
 using FastFoodOperator.Api.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -186,11 +186,6 @@ namespace FastFoodOperator.Api.Services
 
 			return maxOrderNumber.HasValue ? maxOrderNumber.Value + 1 : 1000;
 
-			var maxOrderNumber = await _context.Orders
-				.Where(o => o.CreatedAt >= todayUtc && o.CreatedAt < tomorrowUtc)
-				.MaxAsync(o => (int?)o.OrderNumber);
-
-			return maxOrderNumber.HasValue ? maxOrderNumber.Value + 1 : 1000;
 		}
 
 	}

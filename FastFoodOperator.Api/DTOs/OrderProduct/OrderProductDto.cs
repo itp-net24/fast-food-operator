@@ -1,6 +1,6 @@
-﻿using FastFoodOperator.Api.DTOs.IngredientsDto;
+﻿using FastFoodOperator.Api.DTOs.Ingredient;
 
-namespace FastFoodOperator.Api.DTOs.OrderProductDTOs
+namespace FastFoodOperator.Api.DTOs.OrderProduct
 {
 	public class OrderProductDto
 	{

@@ -1,4 +1,4 @@
-﻿namespace FastFoodOperator.Api.DTOs.OrderComboDTOs
+﻿namespace FastFoodOperator.Api.DTOs.OrderCombo
 {
 	public class AddOrderComboDto
 	{

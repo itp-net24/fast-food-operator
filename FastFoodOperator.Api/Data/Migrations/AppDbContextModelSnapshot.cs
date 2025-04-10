@@ -197,7 +197,6 @@ namespace FastFoodOperator.Api.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-
                     b.Property<DateTime>("CompletedAt")
                         .HasColumnType("datetime2");
 
@@ -207,7 +206,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Property<string>("CustomerNote")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
 
                     b.Property<int>("OrderNumber")
                         .HasColumnType("int");
@@ -223,22 +221,18 @@ namespace FastFoodOperator.Api.Data.Migrations
                         new
                         {
                             Id = 1,
-
                             CompletedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedAt = new DateTime(2024, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc),
                             CustomerNote = "5kg extra onion",
-
                             OrderNumber = 1001,
                             OrderStatus = true
                         },
                         new
                         {
                             Id = 2,
-
                             CompletedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedAt = new DateTime(2024, 1, 1, 14, 30, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2024, 1, 2, 12, 0, 0, 0, DateTimeKind.Utc),
                             CustomerNote = "no peanuts",
-
                             OrderNumber = 1002,
                             OrderStatus = false
                         });
@@ -337,6 +331,11 @@ namespace FastFoodOperator.Api.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("PictureUrl")
+                        .HasMaxLength(2048)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(2048)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -350,7 +349,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                             BasePrice = 5.99m,
                             CategoryId = 1,
                             Description = "A classic cheeseburger",
-                            Name = "Cheeseburger"
+                            Name = "Cheeseburger",
+                            PictureUrl = ""
                         },
                         new
                         {
@@ -358,7 +358,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                             BasePrice = 1.99m,
                             CategoryId = 2,
                             Description = "Refreshing soda",
-                            Name = "Coke"
+                            Name = "Coke",
+                            PictureUrl = ""
                         },
                         new
                         {
@@ -366,7 +367,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                             BasePrice = 2.99m,
                             CategoryId = 3,
                             Description = "Crispy golden fries",
-                            Name = "French Fries"
+                            Name = "French Fries",
+                            PictureUrl = ""
                         });
                 });
 

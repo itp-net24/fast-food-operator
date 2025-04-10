@@ -1,4 +1,4 @@
-﻿using FastFoodOperator.Api.DTOs.OrderDTOs;
+﻿using FastFoodOperator.Api.DTOs.Orders;
 using FastFoodOperator.Api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

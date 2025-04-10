@@ -31,7 +31,7 @@ namespace FastFoodOperator.Api
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-
+            builder.Services.AddScoped<ProductService>();
 
             builder.Services.AddScoped<IOrderService, OrderService>();
 
@@ -48,6 +48,8 @@ namespace FastFoodOperator.Api
 
 
             app.UseHttpsRedirection();
+            app.MapControllers();
+
             app.MapControllers();
 
             app.Run();
