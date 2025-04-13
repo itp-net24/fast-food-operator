@@ -1,0 +1,29 @@
+/*    Globala CSS-variabler*/
+
+:root {
+  /* Färger */
+  --color-background: #f4f7fa;
+  --color-white: #ffffff;
+  --color-primary: #ff9800;
+  --color-secondary: #ffd700;
+  --color-dark: #333333;
+  --color-light: #f1f1f1;
+  --color-hover: darkred;
+
+  /* Typsnitt */
+  --font-family-base: Georgia, serif;
+
+  /* Storlekar */
+  --font-size-base: 16px;
+  --font-size-small: 14px;
+
+  /* Avstånd */
+  --spacing-xs: 5px;
+  --spacing-sm: 10px;
+  --spacing-md: 15px;
+  --spacing-lg: 20px;
+
+  /* Radius och skuggor */
+  --border-radius: 10px;
+  --box-shadow-default: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
