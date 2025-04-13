@@ -20,21 +20,38 @@
 		/// </summary>
 		public ICollection<OrderCombo> OrderCombos { get; set; } = [];
 		
-		
+
 		/// <summary>
 		/// For customer and kitchen reference
 		/// </summary>
 		public int OrderNumber { get; set; }
-		
+
+
+		/// <summary>
+		/// For the customers special request
+		/// </summary>
+		public string CustomerNote { get; set; } = string.Empty;
+
+
 		/// <summary>
 		/// Indicates wheter the order is completed or pending.
 		/// </summary>
-		public bool OrderStatus { get; set; }
-		
+		public OrderStatus OrderStatus { get; set; } = OrderStatus.Created;
+
+
 		/// <summary>
 		/// Gets the date the order was placed.
 		/// </summary>
-		public DateTime CreatedAt { get; } = DateTime.UtcNow;
+		public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+		public DateTime StartedAt { get; set; }
+		public DateTime CompletedAt { get; set; }
 
+	}
+
+	public enum OrderStatus
+	{
+		Created,
+		InProgress,
+		Completed
 	}
 }

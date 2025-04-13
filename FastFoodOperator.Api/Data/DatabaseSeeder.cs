@@ -55,10 +55,10 @@ namespace FastFoodOperator.Api.Data
 			);
 			
 			modelBuilder.Entity<Order>().HasData(
-				new Order { Id = 1, OrderNumber = 1001, OrderStatus = true},
-				new Order { Id = 2, OrderNumber = 1002, OrderStatus = false}
+				new Order { Id = 1, OrderNumber = 1001, OrderStatus = OrderStatus.Completed, CustomerNote = "5kg extra onion", CreatedAt = new DateTime(2024, 01, 01, 12, 0, 0, DateTimeKind.Utc) },
+				new Order { Id = 2, OrderNumber = 1002, OrderStatus = OrderStatus.Created, CustomerNote = "no peanuts", CreatedAt = new DateTime(2024, 01, 02, 12, 0, 0, DateTimeKind.Utc) }
 			);
-
+			
 			modelBuilder.Entity<OrderProduct>().HasData(
 				new OrderProduct { OrderId = 1, ProductId = 1, Quantity = 1 },
 				new OrderProduct { OrderId = 1, ProductId = 2, Quantity = 2 },
