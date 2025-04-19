@@ -545,14 +545,14 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 
 			if (variant.ProductId != dto.ProductId)
 			{
-				var productExists = await context.Products.AnyAsync(p => p.Id == variant.ProductId);
+				var productExists = await context.Products.AnyAsync(p => p.Id == dto.ProductId);
 				if (!productExists)
 				{
 					logger.LogWarning("Product with ID {ProductId} not found", variant.ProductId);
 					throw new Exception($"Product with ID {variant.ProductId} not found");
 				}
 		
-				variant.ProductId = variant.ProductId;
+				variant.ProductId = dto.ProductId;
 			}
 
 			await context.SaveChangesAsync();
@@ -569,11 +569,27 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 	public async Task DeleteProductVariantAsync(int id)
 	{
 		logger.LogInformation("Deleting product variant: {VariantId}", id);
-		var variant = new ProductVariant { Id = id };
 
 		// Potentially remove references from combos when variant is deleted?
 		try
 		{
+			var variant = await context.ProductVariants.FirstOrDefaultAsync(v => v.Id == id);
+			if (variant is null)
+			{
+				logger.LogWarning("Could not find variant with id {VariantId}", id);
+				return;
+			}
+			
+			// Update referencing entities
+			var comboProducts = await context.ComboProducts.Where(cp => cp.ProductVariantId == id).ToArrayAsync();
+			foreach (var comboProduct in comboProducts)
+			{
+				comboProduct.ProductVariantId = null;
+			}
+			
+			context.ComboProducts.UpdateRange(comboProducts);
+			
+			
 			context.ProductVariants.Remove(variant);
 			await context.SaveChangesAsync();
 
