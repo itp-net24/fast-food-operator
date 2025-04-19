@@ -218,7 +218,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 
 	public async Task<ProductResponseDto?> GetProductByIdAsync(int id)
 	{
-		logger.LogInformation("Fetching product with {product.Id}: ", id);
+		logger.LogInformation("Fetching product with {ProductId}: ", id);
 
 		try
 		{
@@ -238,17 +238,17 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 
 			if (product == null)
 			{
-				logger.LogError($"Product with Id {id} was not found");
+				logger.LogError("Product with Id {ProductId} was not found", id);
 				return null;
 			}
 
-			logger.LogInformation($"Successfully fetching product: {product.Name} {product.Description}");
+			logger.LogInformation("Successfully fetched product: {ProductId}", id);
             return product;
 
         }	
 		catch (Exception ex)
 		{
-			logger.LogError(ex, $"Error fetching product with product.Id: {id}");
+			logger.LogError(ex, "Error fetching product with id: {ProductId}", id);
 			throw;
 		}
 	}
@@ -364,12 +364,14 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				Name = product.Name,
 				Description = product.Description,
 				BasePrice = product.BasePrice,
-				PictureUrl = product.PictureUrl
+				PictureUrl = product.PictureUrl,
+				CategoryId = product.CategoryId
 			};
 		}
 		catch (Exception ex)
 		{
-			logger.LogError(ex, "Failed to create product: {ProductName}", dto.Name);	
+			logger.LogError(ex, "Failed to create product: {ProductName}", dto.Name);
+			await transaction.RollbackAsync();
 			throw;
 		}
 	}
@@ -431,15 +433,15 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			context.Products.Remove(product);
 			await context.SaveChangesAsync();
 			
-				logger.LogInformation("Successfully deleted product: {ProductId}", product.Id);
-			}
-			catch (Exception ex)
-			{
-				logger.LogError(ex, "Failed to delete product: {Id}", id);
-				throw;
-			}
+			logger.LogInformation("Successfully deleted product: {ProductId}", product.Id);
 		}
-		#endregion
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to delete product: {Id}", id);
+			throw;
+		}
+	}
+	#endregion
 
 	#region Variant
 
