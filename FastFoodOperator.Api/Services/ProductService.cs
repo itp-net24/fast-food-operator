@@ -12,33 +12,39 @@ namespace FastFoodOperator.Api.Services;
 public class ProductService (AppDbContext context, ILogger<ProductService> logger)
 {
 	#region Combo
-
-	public async Task<ProductResponseDto[]> GetComboByIdAsync(int id)
+	public async Task<ComboDetailedResponseDto?> GetComboByIdAsync(int id)
 	{
 		logger.LogInformation("Fetching products for combo {ComboId}", id);
 		
 		try
 		{
-			var products = await context.ComboProducts
+			var combo = await context.Combos
 				.AsNoTracking()
-				.Where(cp => cp.ComboId == id)
-				.Include(cp => cp.Product)
-				.Select(cp => new ProductResponseDto
+				.Where(c => c.Id == id)
+				.Include(c => c.ComboProducts)
+				.ThenInclude(cp => cp.Product)
+				.Select(c => new ComboDetailedResponseDto
 				{
-					Id = cp.ProductId,
-					Name = cp.Product.Name,
-					Description = cp.Product.Description,
-					BasePrice = cp.Product.BasePrice,
-					PictureUrl = cp.Product.PictureUrl
+					Id = c.Id,
+					Name = c.Name,
+					BasePrice = c.BasePrice,
+					Products = c.ComboProducts.Select(cp => new ProductResponseDto
+					{
+						Id = cp.ProductId,
+						Name = cp.Product.Name,
+						Description = cp.Product.Description,
+						BasePrice = cp.Product.BasePrice,
+						PictureUrl = cp.Product.PictureUrl
+					}).ToArray()
 				})
-				.ToArrayAsync();
+				.FirstOrDefaultAsync();
 
-			if (products.Length == 0)
-				logger.LogWarning("No products found for combo {ComboId}", id);
+			if (combo is null)
+				logger.LogWarning("No combo found with id: {ComboId}", id);
 			else
-				logger.LogInformation("Fetched {Count} products for combo {ComboId}", products.Length, id);
+				logger.LogInformation("Found combo with id: {ComboId}", id);
 			
-			return products;
+			return combo;
 		}
 		catch (Exception ex)
 		{
@@ -112,7 +118,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		}
 	}
 	
-	public async Task CreateComboAsync(ComboCreateDto dto)
+	public async Task<ComboResponseDto?> CreateComboAsync(ComboCreateDto dto)
 	{
 		logger.LogInformation("Creating a new combo: {ComboName}", dto.Name);
 		
@@ -126,6 +132,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			};
 
 			context.Combos.Add(combo);
+			await context.SaveChangesAsync();
 
 			var products = dto.Products.Select(p => new ComboProduct
 			{
@@ -140,6 +147,15 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			await transaction.CommitAsync();
 			
 			logger.LogInformation("Successfully created combo: {ComboId}", combo.Id);
+
+			var response = new ComboResponseDto
+			{
+				Id = combo.Id,
+				Name = combo.Name,
+				BasePrice = combo.BasePrice,
+			};
+			
+			return response;
 		}
 		catch (Exception ex)
 		{
@@ -175,7 +191,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				{
 					ComboId = combo.Id,
 					ProductId = p.ProductId,
-					ProductVariantId = p.VariantId
+					ProductVariantId = p.DefaultVariantId
 				}).ToHashSet();
 
 			var productsToRemove = existingProducts.Except(newProducts);
