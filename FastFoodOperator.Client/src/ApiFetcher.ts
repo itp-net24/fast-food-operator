@@ -46,29 +46,29 @@ export default class Fetcher {
     }
   }
 
-  async getOrders(): Promise<Order[] | null> {
-    try {
-      const response = await fetch(`${this.baseURL}order/GetOrders`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json() as Order[];
-    } catch (error) {
-      console.error("Failed to fetch orders:", error);
-      return null;
-    }
-  }
+  // async getOrders(): Promise<Order[] | null> {
+  //   try {
+  //     const response = await fetch(`${this.baseURL}order/GetOrders`);
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  //     return await response.json() as Order[];
+  //   } catch (error) {
+  //     console.error("Failed to fetch orders:", error);
+  //     return null;
+  //   }
+  // }
 
-  async getOrdernumbers(): Promise<number[] | null> {
-    try {
-      const response = await fetch(`${this.baseURL}order/displayOrderNumbers`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json() as number[];
-    } catch (error) {
-      console.error("Failed to fetch order numbers:", error);
-      return null;
-    }
-  }
+  // async getOrdernumbers(): Promise<number[] | null> {
+  //   try {
+  //     const response = await fetch(`${this.baseURL}order/displayOrderNumbers`);
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  //     return await response.json() as number[];
+  //   } catch (error) {
+  //     console.error("Failed to fetch order numbers:", error);
+  //     return null;
+  //   }
+  // }
 }
