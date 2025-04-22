@@ -96,7 +96,7 @@ public class ProductServiceVariantTests : ProductServiceBaseTest
 	}
 
 	[TestMethod]
-	public async Task Delete_ShouldDeleteProduct_WhenProductExists()
+	public async Task Delete_ShouldDeleteVariant_WhenVariantExists()
 	{
 		const int variantId = 1;
 		var initialVariantCount = await Context.ProductVariants.CountAsync();
@@ -105,9 +105,19 @@ public class ProductServiceVariantTests : ProductServiceBaseTest
 		
 		var finalVariantCount = await Context.ProductVariants.CountAsync();
 
-		var references = await Context.ComboProducts.Where(cp => cp.ProductVariantId == variantId).CountAsync();
-		
 		Assert.AreNotEqual(initialVariantCount, finalVariantCount);
-		Assert.AreEqual(references, 0);
+	}
+
+	[TestMethod]
+	public async Task Delete_ShouldDeleteComboReferences_WhenVariantExists()
+	{
+		const int variantId = 1;
+		var initialComboCount = await Context.ComboProducts.Where(cp => cp.ProductVariantId == variantId).CountAsync();
+		
+		await Service.DeleteProductVariantAsync(variantId);
+        
+		var finalComboCount = await Context.ComboProducts.Where(cp => cp.ProductVariantId == variantId).CountAsync();
+        		
+		Assert.AreNotEqual(initialComboCount, finalComboCount);
 	}
 }
