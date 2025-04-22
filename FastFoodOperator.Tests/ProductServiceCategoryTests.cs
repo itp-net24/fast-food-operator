@@ -65,7 +65,7 @@ public class ProductServiceCategoryTests : ProductServiceBaseTest
     }
 
     [TestMethod]
-    public async Task Create_ShouldNotAddProduct_WhenInvalid()
+    public async Task Create_ShouldNotAddCategory_WhenInvalid()
     {
         var dto = new CategoryCreateDto
         {
