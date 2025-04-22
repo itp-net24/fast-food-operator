@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -60,7 +61,11 @@ namespace FastFoodOperator.Api.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderNumber = table.Column<int>(type: "int", nullable: false),
-                    OrderStatus = table.Column<bool>(type: "bit", nullable: false)
+                    CustomerNote = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderStatus = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CompletedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,7 +81,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    BasePrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    BasePrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    PictureUrl = table.Column<string>(type: "varchar(2048)", unicode: false, maxLength: 2048, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -247,11 +253,11 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Orders",
-                columns: new[] { "Id", "OrderNumber", "OrderStatus" },
+                columns: new[] { "Id", "CompletedAt", "CreatedAt", "CustomerNote", "OrderNumber", "OrderStatus", "StartedAt" },
                 values: new object[,]
                 {
-                    { 1, 1001, true },
-                    { 2, 1002, false }
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc), "5kg extra onion", 1001, 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 2, 12, 0, 0, 0, DateTimeKind.Utc), "no peanuts", 1002, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
@@ -265,12 +271,12 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "BasePrice", "CategoryId", "Description", "Name" },
+                columns: new[] { "Id", "BasePrice", "CategoryId", "Description", "Name", "PictureUrl" },
                 values: new object[,]
                 {
-                    { 1, 5.99m, 1, "A classic cheeseburger", "Cheeseburger" },
-                    { 2, 1.99m, 2, "Refreshing soda", "Coke" },
-                    { 3, 2.99m, 3, "Crispy golden fries", "French Fries" }
+                    { 1, 5.99m, 1, "A classic cheeseburger", "Cheeseburger", "" },
+                    { 2, 1.99m, 2, "Refreshing soda", "Coke", "" },
+                    { 3, 2.99m, 3, "Crispy golden fries", "French Fries", "" }
                 });
 
             migrationBuilder.InsertData(
