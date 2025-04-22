@@ -796,7 +796,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
         		}
 	}
 
-	public async Task CreateCategoryAsync(CategoryCreateDto dto)
+	public async Task<CategoryResponseDto> CreateCategoryAsync(CategoryCreateDto dto)
 	{
 		logger.LogInformation("Creating category: {CategoryName}", dto.Name);
 		
@@ -808,6 +808,12 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			await context.SaveChangesAsync();
 
 			logger.LogInformation("Successfully created new category: {CategoryName}", dto.Name);
+
+			return new CategoryResponseDto
+			{
+				Id = category.Id,
+				Name = category.Name
+			};
 		}
 		catch (Exception ex)
 		{
