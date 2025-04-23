@@ -58,26 +58,8 @@ export default {
     }
   },
   methods: {
-    toggleCompletedOrders() {
-      this.showCompleted = !this.showCompleted;
-    },
 
-    clearDisplay() {
-      this.orders = [];
-    },
 
-    getOrderCardClass(order) {
-      switch (order.orderStatus) {
-        case 0:
-          return 'pending';     // Ej påbörjad = röd
-        case 1:
-          return 'in-progress'; // Påbörjad = gul
-        case 2:
-          return 'completed';   // Färdig = grön
-        default:
-          return '';
-      }
-    },
 
     // Hämtar ordrar från API
     async fetchOrders() {
