@@ -17,6 +17,6 @@ public class ProductResponseDto
 	
 	[Required]
 	[Range(0, int.MaxValue, ErrorMessage = "Category id must be a non-negative integer.")]
-	public int? CategoryId { get; init; }
+	public int CategoryId { get; init; }
 	public string? PictureUrl { get; init; }
 }
