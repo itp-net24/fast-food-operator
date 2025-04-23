@@ -12,33 +12,39 @@ namespace FastFoodOperator.Api.Services;
 public class ProductService (AppDbContext context, ILogger<ProductService> logger)
 {
 	#region Combo
-
-	public async Task<ProductResponseDto[]> GetComboByIdAsync(int id)
+	public async Task<ComboDetailedResponseDto?> GetComboByIdAsync(int id)
 	{
 		logger.LogInformation("Fetching products for combo {ComboId}", id);
 		
 		try
 		{
-			var products = await context.ComboProducts
+			var combo = await context.Combos
 				.AsNoTracking()
-				.Where(cp => cp.ComboId == id)
-				.Include(cp => cp.Product)
-				.Select(cp => new ProductResponseDto
+				.Where(c => c.Id == id)
+				.Include(c => c.ComboProducts)
+				.ThenInclude(cp => cp.Product)
+				.Select(c => new ComboDetailedResponseDto
 				{
-					Id = cp.ProductId,
-					Name = cp.Product.Name,
-					Description = cp.Product.Description,
-					BasePrice = cp.Product.BasePrice,
-					PictureUrl = cp.Product.PictureUrl
+					Id = c.Id,
+					Name = c.Name,
+					BasePrice = c.BasePrice,
+					Products = c.ComboProducts.Select(cp => new ProductResponseDto
+					{
+						Id = cp.ProductId,
+						Name = cp.Product.Name,
+						Description = cp.Product.Description,
+						BasePrice = cp.Product.BasePrice,
+						PictureUrl = cp.Product.PictureUrl
+					}).ToArray()
 				})
-				.ToArrayAsync();
+				.FirstOrDefaultAsync();
 
-			if (products.Length == 0)
-				logger.LogWarning("No products found for combo {ComboId}", id);
+			if (combo is null)
+				logger.LogWarning("No combo found with id: {ComboId}", id);
 			else
-				logger.LogInformation("Fetched {Count} products for combo {ComboId}", products.Length, id);
+				logger.LogInformation("Found combo with id: {ComboId}", id);
 			
-			return products;
+			return combo;
 		}
 		catch (Exception ex)
 		{
@@ -112,7 +118,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		}
 	}
 	
-	public async Task CreateComboAsync(ComboCreateDto dto)
+	public async Task<ComboResponseDto?> CreateComboAsync(ComboCreateDto dto)
 	{
 		logger.LogInformation("Creating a new combo: {ComboName}", dto.Name);
 		
@@ -126,6 +132,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			};
 
 			context.Combos.Add(combo);
+			await context.SaveChangesAsync();
 
 			var products = dto.Products.Select(p => new ComboProduct
 			{
@@ -140,6 +147,15 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			await transaction.CommitAsync();
 			
 			logger.LogInformation("Successfully created combo: {ComboId}", combo.Id);
+
+			var response = new ComboResponseDto
+			{
+				Id = combo.Id,
+				Name = combo.Name,
+				BasePrice = combo.BasePrice,
+			};
+			
+			return response;
 		}
 		catch (Exception ex)
 		{
@@ -175,7 +191,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				{
 					ComboId = combo.Id,
 					ProductId = p.ProductId,
-					ProductVariantId = p.VariantId
+					ProductVariantId = p.DefaultVariantId
 				}).ToHashSet();
 
 			var productsToRemove = existingProducts.Except(newProducts);
@@ -218,7 +234,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 
 	public async Task<ProductResponseDto?> GetProductByIdAsync(int id)
 	{
-		logger.LogInformation("Fetching product with {product.Id}: ", id);
+		logger.LogInformation("Fetching product with {ProductId}: ", id);
 
 		try
 		{
@@ -238,17 +254,17 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 
 			if (product == null)
 			{
-				logger.LogError($"Product with Id {id} was not found");
+				logger.LogError("Product with Id {ProductId} was not found", id);
 				return null;
 			}
 
-			logger.LogInformation($"Successfully fetching product: {product.Name} {product.Description}");
+			logger.LogInformation("Successfully fetched product: {ProductId}", id);
             return product;
 
         }	
 		catch (Exception ex)
 		{
-			logger.LogError(ex, $"Error fetching product with product.Id: {id}");
+			logger.LogError(ex, "Error fetching product with id: {ProductId}", id);
 			throw;
 		}
 	}
@@ -364,12 +380,14 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				Name = product.Name,
 				Description = product.Description,
 				BasePrice = product.BasePrice,
-				PictureUrl = product.PictureUrl
+				PictureUrl = product.PictureUrl,
+				CategoryId = product.CategoryId
 			};
 		}
 		catch (Exception ex)
 		{
-			logger.LogError(ex, "Failed to create product: {ProductName}", dto.Name);	
+			logger.LogError(ex, "Failed to create product: {ProductName}", dto.Name);
+			await transaction.RollbackAsync();
 			throw;
 		}
 	}
@@ -431,15 +449,15 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			context.Products.Remove(product);
 			await context.SaveChangesAsync();
 			
-				logger.LogInformation("Successfully deleted product: {ProductId}", product.Id);
-			}
-			catch (Exception ex)
-			{
-				logger.LogError(ex, "Failed to delete product: {Id}", id);
-				throw;
-			}
+			logger.LogInformation("Successfully deleted product: {ProductId}", product.Id);
 		}
-		#endregion
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to delete product: {Id}", id);
+			throw;
+		}
+	}
+	#endregion
 
 	#region Variant
 
@@ -543,14 +561,14 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 
 			if (variant.ProductId != dto.ProductId)
 			{
-				var productExists = await context.Products.AnyAsync(p => p.Id == variant.ProductId);
+				var productExists = await context.Products.AnyAsync(p => p.Id == dto.ProductId);
 				if (!productExists)
 				{
 					logger.LogWarning("Product with ID {ProductId} not found", variant.ProductId);
 					throw new Exception($"Product with ID {variant.ProductId} not found");
 				}
 		
-				variant.ProductId = variant.ProductId;
+				variant.ProductId = dto.ProductId;
 			}
 
 			await context.SaveChangesAsync();
@@ -567,11 +585,27 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 	public async Task DeleteProductVariantAsync(int id)
 	{
 		logger.LogInformation("Deleting product variant: {VariantId}", id);
-		var variant = new ProductVariant { Id = id };
 
 		// Potentially remove references from combos when variant is deleted?
 		try
 		{
+			var variant = await context.ProductVariants.FirstOrDefaultAsync(v => v.Id == id);
+			if (variant is null)
+			{
+				logger.LogWarning("Could not find variant with id {VariantId}", id);
+				return;
+			}
+			
+			// Update referencing entities
+			var comboProducts = await context.ComboProducts.Where(cp => cp.ProductVariantId == id).ToArrayAsync();
+			foreach (var comboProduct in comboProducts)
+			{
+				comboProduct.ProductVariantId = null;
+			}
+			
+			context.ComboProducts.UpdateRange(comboProducts);
+			
+			
 			context.ProductVariants.Remove(variant);
 			await context.SaveChangesAsync();
 
@@ -762,7 +796,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
         		}
 	}
 
-	public async Task CreateCategoryAsync(CategoryCreateDto dto)
+	public async Task<CategoryResponseDto> CreateCategoryAsync(CategoryCreateDto dto)
 	{
 		logger.LogInformation("Creating category: {CategoryName}", dto.Name);
 		
@@ -774,6 +808,12 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			await context.SaveChangesAsync();
 
 			logger.LogInformation("Successfully created new category: {CategoryName}", dto.Name);
+
+			return new CategoryResponseDto
+			{
+				Id = category.Id,
+				Name = category.Name
+			};
 		}
 		catch (Exception ex)
 		{
