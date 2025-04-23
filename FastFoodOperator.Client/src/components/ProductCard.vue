@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted} from 'vue'
+import {onMounted, ref} from 'vue'
 import {Product} from '@/models/product'
 import {useCartStore} from '../stores/cart'
 import {storeToRefs} from 'pinia'
