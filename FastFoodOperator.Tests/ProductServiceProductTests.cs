@@ -32,7 +32,7 @@ public class ProductServiceProductTests : ProductServiceBaseTest
     }
     
     [TestMethod]
-    public async Task? Get_PaginationShouldUseLimit()
+    public async Task Get_PaginationShouldUseLimit()
     {
         const int limit = 1;
         var products = await Service.GetProductsAsync(limit);
