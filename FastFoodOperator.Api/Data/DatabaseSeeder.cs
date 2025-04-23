@@ -26,9 +26,16 @@ namespace FastFoodOperator.Api.Data
 			);
 			
 			modelBuilder.Entity<Product>().HasData(
-				new Product { Id = 1, Name = "Cheeseburger", Description = "A classic cheeseburger", BasePrice = 5.99m, CategoryId = 1 },
-				new Product { Id = 2, Name = "Coke", Description = "Refreshing soda", BasePrice = 1.99m, CategoryId = 2 },
-				new Product { Id = 3, Name = "French Fries", Description = "Crispy golden fries", BasePrice = 2.99m, CategoryId = 3 }
+				new Product { Id = 1, Name = "Cheeseburger", Description = "A classic cheeseburger", BasePrice = 5.99m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
+				new Product { Id = 2, Name = "Coke", Description = "Refreshing soda", BasePrice = 1.99m, CategoryId = 2, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
+				new Product { Id = 3, Name = "French Fries", Description = "Crispy golden fries", BasePrice = 2.99m, CategoryId = 3, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
+				new Product { Id = 4, Name = "Classic Cheeseburger", Description = "Grilled beef patty with melted cheddar, lettuce, tomato & onion", BasePrice = 5.99m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
+				new Product { Id = 5, Name = "Bacon Double Burger", Description = "Two beef patties, smoked bacon, American cheese, pickles & secret sauce", BasePrice = 7.49m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
+				new Product { Id = 6, Name = "Mushroom Swiss Burger", Description = "Beef patty smothered in sautéed mushrooms and Swiss cheese", BasePrice = 6.99m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
+				new Product { Id = 7, Name = "Spicy Jalapeño Burger", Description = "Peppered beef patty with pepper jack cheese, jalapeños & chipotle mayo", BasePrice = 6.79m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
+				new Product { Id = 8, Name = "BBQ Onion Ring Burger", Description = "Beef patty topped with crispy onion rings, cheddar & tangy BBQ sauce", BasePrice = 7.19m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
+				new Product { Id = 9, Name = "Black Bean Veggie Burger", Description = "House-made black bean patty with avocado, lettuce & pico de gallo", BasePrice = 6.49m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s" }
+
 			);
 
 			modelBuilder.Entity<ProductVariant>().HasData(
