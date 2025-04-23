@@ -1,10 +1,26 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import {Product} from '@/models/product'
+import {useCartStore} from '../stores/cart'
+import {storeToRefs} from 'pinia'
 
-defineProps({
+const props = defineProps({
     product:Product
 })
+
+const cartStore = useCartStore()
+const {cart} = storeToRefs(cartStore)
+
+onMounted(() => {
+    cartStore.loadCartInstance()
+})
+
+function addToCart(){
+    cartStore.addToCart({id:props.product.id, qty:2})
+    console.log("cart", cart)
+}
+
+
 </script>
 
 <template>
@@ -12,6 +28,7 @@ defineProps({
         <div id="product-image" :style="{backgroundImage: `url(${product?.pictureUrl})`}">
 
         </div>
+        <button>Add to Cart</button>
 
         <h2> {{ product?.name }}</h2>
     </article>
