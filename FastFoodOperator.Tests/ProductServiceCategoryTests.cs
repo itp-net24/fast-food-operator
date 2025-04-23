@@ -31,7 +31,7 @@ public class ProductServiceCategoryTests : ProductServiceBaseTest
 	}
 
     [TestMethod]
-    public async Task? Get_PaginationShouldUseLimit()
+    public async Task Get_PaginationShouldUseLimit()
     {
         const int limit = 1;
         var categories = await Service.GetCategoriesAsync(limit);
