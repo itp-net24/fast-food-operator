@@ -2,8 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.Services;
 using FastFoodOperator.Api.Interfaces;
-using System.Text.Json.Serialization;
-
 
 namespace FastFoodOperator.Api
 {
@@ -14,18 +12,25 @@ namespace FastFoodOperator.Api
             // Add services to the container.
             var builder = WebApplication.CreateBuilder(args);
 
-
-			// Development
-			if (builder.Environment.IsDevelopment())
+            // Development
+            if (builder.Environment.IsDevelopment())
             {
                 builder.Configuration.AddUserSecrets<Program>();
             }
 
-            builder.Services.AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
+            builder.Services.AddControllers();
+
+            // Cors service
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowVue",
+                    policy =>
+                    {
+                        policy.WithOrigins("https://localhost:5173") // Port for vue app
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -35,10 +40,7 @@ namespace FastFoodOperator.Api
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            builder.Services.AddScoped<ProductService>();
-
             builder.Services.AddScoped<IOrderService, OrderService>();
-
 
             // Configure middlewares
             var app = builder.Build();
@@ -50,11 +52,10 @@ namespace FastFoodOperator.Api
                 app.UseSwaggerUI();
             }
 
-
             app.UseHttpsRedirection();
-            app.MapControllers();
-
-            app.MapControllers();
+            
+            // Activating cors service
+            app.UseCors("AllowVue");
 
             app.MapControllers();
 
