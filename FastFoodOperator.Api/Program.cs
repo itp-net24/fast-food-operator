@@ -41,6 +41,7 @@ namespace FastFoodOperator.Api
             });
 
             builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<ProductService>();
 
             // Configure middlewares
             var app = builder.Build();
