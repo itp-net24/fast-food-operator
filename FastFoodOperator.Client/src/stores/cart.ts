@@ -3,7 +3,7 @@ import {Product} from '@/models/product'
 
 interface Cart{
   //  cid: string
-    products:Array<{id: number, qty: number}>
+    products:Array<{Product:Product}>
 }
 
 // interface Product{
@@ -75,7 +75,7 @@ export const useCartStore = defineStore('cart',{
         },
 
         removeFromCart(id:number){
-            (this.cart as Cart).products = (this.cart as Cart).products.filter(ci => ci.id != id)
+            (this.cart as Cart).products = (this.cart as Cart).products.filter(ci => ci.Product.id != id)
             localStorage.setItem('cart',JSON.stringify(this.cart))
         }
     }
