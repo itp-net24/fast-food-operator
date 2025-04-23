@@ -24,7 +24,7 @@ public class ProductServiceVariantTests : ProductServiceBaseTest
 		const int productId = 0;
 		var variants = await Service.GetVariantsByProductIdAsync(productId);
 		
-		Assert.IsTrue(variants.Length <= 0);
+		Assert.IsTrue(variants.Length == 0);
 	}
 
 	[TestMethod]
