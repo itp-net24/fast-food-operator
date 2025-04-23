@@ -1,18 +1,19 @@
 <script setup lang="ts">
     import Sidebar from './Sidebar.vue'
-    import ProductCard from './ProductCard.vue';
+    import ProductCard from './ProductCard.vue'
     import {ref, onMounted} from 'vue'
     import {Product} from '@/models/product.ts'
+    import Fetcher from "@/ApiFetcher.ts"
     
-    const products = ref<Product[]>([]);
+    const fetcher = new Fetcher();
+    const products = ref<Product[] | null>([]);
 
     onMounted(async () => {
   try {
-    const response = await fetch('')
-    if (!response.ok) throw new Error('Failed to fetch')
-    products.value = await response.json()
+    products.value = await fetcher.getProducts();
+
   } catch (err) {
-    console.error('Fetch error:', err)
+    console.error('error:', err);
   }
 })
 
@@ -21,9 +22,9 @@
 <template>
     <div class="menu-container">
         
-            <aside>
+            <!-- <aside>
                 <Sidebar />
-            </aside>
+            </aside> -->
 
             <main>
                 <div v-for="product in products" :key="product.id" class="articles-container">
@@ -35,5 +36,13 @@
 </template>
 
 <style scoped>
+.menu-container {
+  padding-top: 1rem;
+}
 
+main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
 </style>
