@@ -15,8 +15,6 @@ public class ProductResponseDto
 	[Range(0, int.MaxValue, ErrorMessage = "Base price must be a non-negative value.")]	
 	public decimal BasePrice { get; init; }
 	
-	[Required]
-	[Range(0, int.MaxValue, ErrorMessage = "Category id must be a non-negative integer.")]
-	public int CategoryId { get; init; }
+	public int? CategoryId { get; init; }
 	public string? PictureUrl { get; init; }
 }
