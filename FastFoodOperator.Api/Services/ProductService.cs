@@ -215,15 +215,15 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 	#endregion
 
 	#region Product
-
 	public async Task<ProductResponseDto?> GetProductByIdAsync(int id)
 	{
-		logger.LogInformation("Fetching product with {product.Id}: ", id);
+		logger.LogInformation("Fetching product with ID: {ProductId}", id);
 
 		try
 		{
 			var product = await context.Products
 				.AsNoTracking()
+				.Where(p => p.Id == id)
 				.Select(p => new ProductResponseDto 
 				{
                     Id = p.Id,
@@ -233,22 +233,22 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
                     CategoryId = p.CategoryId,
 					PictureUrl = p.PictureUrl
                 })
-				.FirstOrDefaultAsync(p => p.Id == id);
+				.FirstOrDefaultAsync();
 
 
 			if (product == null)
 			{
-				logger.LogError($"Product with Id {id} was not found");
+				logger.LogError("Product with ID: {ProductID} was not found", id);
 				return null;
 			}
 
-			logger.LogInformation($"Successfully fetching product: {product.Name} {product.Description}");
+			logger.LogInformation("Product with ID: {ProductId} has been found", id);
             return product;
 
         }	
 		catch (Exception ex)
 		{
-			logger.LogError(ex, $"Error fetching product with product.Id: {id}");
+			logger.LogError(ex, "Error fetching product with ID: {ProductId}", id);
 			throw;
 		}
 	}
@@ -586,6 +586,40 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 	#endregion
 
 	#region Ingredient
+	public async Task<IngredientResponseDto?> GetIngredientByIdAsync(int id)
+	{
+		logger.LogInformation("Fetching ingredient with ID: {IngredientId}", id);
+
+		try
+		{
+			var product = await context.Ingredients
+				.AsNoTracking()
+				.Where(i => i.Id == id)
+				.Select(p => new IngredientResponseDto
+				{
+					Id = p.Id,
+					Name = p.Name,
+					PriceModifier = p.PriceModifier
+				})
+				.FirstOrDefaultAsync();
+
+			if (product is null)
+			{
+				logger.LogError("Ingredient with ID: {IngredientId} was not found", id);
+				return null;
+			}
+
+			logger.LogInformation("Ingredient with ID: {IngredientId} has been found", id);
+			return product;
+
+		}	
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Error fetching ingredient with ID: {IngredientId}", id);
+			throw;
+		}
+	}
+	
 	public async Task<IngredientResponseDto[]> GetIngredientsAsync(int limit = 5, int offset = 0)
 	{
 		logger.LogInformation("Fetching ingredients with limit {Limit} and offset {Offset}", limit, offset);
