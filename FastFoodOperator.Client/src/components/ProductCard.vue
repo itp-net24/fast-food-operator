@@ -15,10 +15,10 @@ onMounted(() => {
     cartStore.loadCartInstance()
 })
 
-function addToCart(){
-    cartStore.addToCart({id:props.product.id, qty:2})
-    console.log("cart", cart)
-}
+// function addToCart(){
+//     cartStore.addToCart({id:props.product.id})
+//     console.log("cart", cart)
+// }
 
 
 </script>
@@ -28,7 +28,7 @@ function addToCart(){
         <div id="product-image" :style="{backgroundImage: `url(${product?.pictureUrl})`}">
 
         </div>
-        <button>Add to Cart</button>
+        <button @click="addToCart">Add to Cart</button>
 
         <h2> {{ product?.name }}</h2>
     </article>

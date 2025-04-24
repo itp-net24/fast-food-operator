@@ -26,6 +26,15 @@
             </aside>
 
             <main>
+              
+              <button id="cartButton"> Cart </button>
+              <div id="cartModal" class="modal">
+                <div class="modal-content">
+                  <span class="close">&times;</span>
+                  <div v-for="product in cart"></div>
+                </div>
+              </div>
+
                 <div v-for="product in products" :key="product.id" class="articles-container">
                     <ProductCard :product="product" />
                 </div>
