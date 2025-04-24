@@ -1,9 +1,11 @@
 @import './base.css';
 
-/*
-   Baslayout och struktur*/
+* {
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
 
-   body {
+body {
     font-family: var(--font-family-base);
     background-color: var(--color-background);
     display: flex;

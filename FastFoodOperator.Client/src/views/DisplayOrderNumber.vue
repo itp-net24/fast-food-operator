@@ -45,7 +45,7 @@ export default {
   mounted() {
     this.getOrderNumbers(); // Direkt
     this.intervalId = setInterval(this.getOrderNumbers, 5000); // Uppdatera data
-    this.cleanupIntervalId = setInterval(this.cleanupOldOrders, 5000); // Rensa gamla entries
+    this.cleanupIntervalId = setInterval(this.cleanupOldOrders, 5000); // Rensa gamla entries, funkar ej
   },
   beforeUnmount() {
     clearInterval(this.intervalId);
@@ -87,7 +87,7 @@ export default {
 
     cleanupOldOrders() {
       const now = Date.now();
-      const timeout = 60000; // 60 sekunder
+      const timeout = 60000; // 60 sekunder, funkar inte :(
 
       this.completedOrderNumbers = this.completedOrderNumbers.filter(order => {
         return now - order.timestamp < timeout;
