@@ -1,6 +1,7 @@
 import { Product } from './models/product'
 import { Order } from './models/order'
 import type { CreateOrderDto } from './models/interfaces';
+import { OrderNumber } from './models/orderNumbers';
 
 export default class Fetcher {
   private baseURL: string = "https://localhost:8080/api/";
@@ -69,6 +70,25 @@ export default class Fetcher {
        console.error("Failed to fetch orders:", error);
        return null;
      }
+   }
+
+   async getOrderNumbers(): Promise<OrderNumber | null> {
+      try {
+        const response = await fetch(`${this.baseURL}order/displayOrderNumbers`);
+        if (!response.ok) {
+          throw new Error(`Http error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        return new OrderNumber(
+          data.orderNumber,
+          data.orderStatus
+        )
+      } catch (error) {
+        console.error("Failed to fetch ordernumbers:", error);
+        return null;
+      }
    }
 
    async createOrder(order: CreateOrderDto) : Promise<any> {
