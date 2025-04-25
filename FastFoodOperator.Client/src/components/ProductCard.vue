@@ -16,10 +16,15 @@ onMounted(() => {
     cartStore.loadCartInstance()
 })
 
-// function addToCart(){
-//     cartStore.addToCart({id = props.product?.id, name = props.product?.name, })
-//     console.log("cart", cart)
-// }
+function addToCart(){
+    cartStore.addToCart({
+        id: props.product?.id,
+        name: props.product?.name,
+        description: props.product?.description,
+        basePrice: props.product?.basePrice,
+        pictureUrl: props.product?.pictureUrl })
+        console.log("cart", cart)
+}
 
 
 </script>
@@ -31,7 +36,7 @@ onMounted(() => {
         </div>
         <h2> {{ product?.name }}</h2>
         
-        <button>Add to Cart</button>
+        <button @click="addToCart">Add to Cart</button>
     </article>
 </template>
 

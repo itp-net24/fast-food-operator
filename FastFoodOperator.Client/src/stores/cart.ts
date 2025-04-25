@@ -1,30 +1,20 @@
 import {defineStore} from "pinia";
 import {Product} from '@/models/product'
-
-interface Cart{
-  //  cid: string
-    products:Array<{Product:Product}>
-}
-
-// interface Product{
-//     id:number,
-//     qty:number
-// }
-
-
-interface State{
-    cart: Cart | {}
-}
+import type {Cart, cartProduct, State} from '@/models/interfaces'
 
 
 export const useCartStore = defineStore('cart',{
-    state: () => ({cart: {}} as State),
+    state: ():State => ({
+        cart:{
+            cartProducts:[]
+        }
+    }),
     actions:{
         loadCartInstance(){
             const cs = localStorage.getItem('cart')
             if(!cs)
             {
-                this.cart = {}
+                this.cart = {cartProducts:[]}
             }
             else
             {
@@ -40,29 +30,31 @@ export const useCartStore = defineStore('cart',{
             if(!cs)
             {
                 this.cart = {
-                    products:[
-                        product
+                    cartProducts:[
+                        {cartProduct:product,qty:1}
                     ]
                 }
             }
             else{
                 let cartLocalStorage = JSON.parse(cs)
 
-                cartLocalStorage.products = cartLocalStorage.products.map((ci: Product) => {
-                    if(ci.id == product.id)
+
+
+                cartLocalStorage.cartProducts = cartLocalStorage.cartProducts.map((ci: cartProduct) => {
+                    if(ci.cartProduct.id == product.id)
                     {
                         isAdded = true
-                        return{id: ci.id}
+                        return{cartProduct:product, qty:ci.qty + 1 }
                     }
                     else
                     {
-                    return {id: ci.id }
+                    return {cartProduct:product, qty:ci.qty}
                     }
                 })
 
                 if(!isAdded)
                 {
-                    cartLocalStorage.products.push({id: product.id})
+                    cartLocalStorage.cartProducts.push({product})
                 }
 
                 this.cart = cartLocalStorage
@@ -74,8 +66,8 @@ export const useCartStore = defineStore('cart',{
 
         },
 
-        removeFromCart(id:number){
-            (this.cart as Cart).products = (this.cart as Cart).products.filter(ci => ci.Product.id != id)
+        removeFromCart(product:Product){
+            (this.cart as Cart).cartProducts = (this.cart as Cart).cartProducts.filter(ci => ci.cartProduct.id != product.id)
             localStorage.setItem('cart',JSON.stringify(this.cart))
         }
     }
