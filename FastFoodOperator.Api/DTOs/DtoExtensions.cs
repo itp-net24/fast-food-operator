@@ -3,6 +3,7 @@ using FastFoodOperator.Api.DTOs.OrderProduct;
 using FastFoodOperator.Api.DTOs.OrderCombo;
 using FastFoodOperator.Api.DTOs.Ingredient;
 using FastFoodOperator.Api.Entities;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace FastFoodOperator.Api.DTOs
@@ -47,4 +48,22 @@ namespace FastFoodOperator.Api.DTOs
 		}
 
 	}
+	public static class OrderQueryExtensions
+	{
+		public static IQueryable<Order> IncludeFullOrder(this IQueryable<Order> query)
+		{
+			return query
+				.Include(o => o.OrderProducts)
+					.ThenInclude(op => op.Product)
+						.ThenInclude(p => p.ProductIngredients)
+							.ThenInclude(pi => pi.Ingredient)
+				.Include(o => o.OrderCombos)
+					.ThenInclude(oc => oc.Combo)
+						.ThenInclude(c => c.ComboProducts)
+							.ThenInclude(cp => cp.Product)
+								.ThenInclude(p => p.ProductIngredients)
+									.ThenInclude(pi => pi.Ingredient);
+		}
+	}
+
 }

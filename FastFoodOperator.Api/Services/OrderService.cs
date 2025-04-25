@@ -1,5 +1,7 @@
 ﻿using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.DTOs;
+using FastFoodOperator.Api.DTOs.OrderCombo;
+using FastFoodOperator.Api.DTOs.OrderProduct;
 using FastFoodOperator.Api.DTOs.Orders;
 using FastFoodOperator.Api.Entities;
 using FastFoodOperator.Api.Interfaces;
@@ -30,14 +32,16 @@ namespace FastFoodOperator.Api.Services
 
 				await _context.Orders.AddAsync(order);
 
-				order.OrderProducts = orderDto.OrderProductDtos.Select(op => new OrderProduct
+				order.OrderProducts = (orderDto.OrderProductDtos ?? new List<AddOrderProductDto>())
+					.Select(op => new OrderProduct
 				{
 					ProductId = op.ProductId,
 					Quantity = op.Quantity,
 					OrderId = order.Id
 				}).ToList();
 
-				order.OrderCombos = orderDto.OrderComboDtos.Select(oc => new OrderCombo
+				order.OrderCombos = (orderDto.OrderComboDtos ?? new List<AddOrderComboDto>())
+					.Select(oc => new OrderCombo
 				{
 					ComboId = oc.ComboId,
 					Quantity = oc.Quantity,
@@ -90,16 +94,9 @@ namespace FastFoodOperator.Api.Services
 			{
 				var orders = await _context.Orders
 					.AsNoTracking()
-					.Include(o => o.OrderProducts)
-						.ThenInclude(op => op.Product)
-							.ThenInclude(p => p.ProductIngredients)
-								.ThenInclude(pi => pi.Ingredient)
-					.Include(o => o.OrderCombos)
-						.ThenInclude(oc => oc.Combo)
-							.ThenInclude(c => c.ComboProducts)
-								.ThenInclude(cp => cp.Product)
-									.ThenInclude(p => p.ProductIngredients)
-										.ThenInclude(pi => pi.Ingredient)
+					.IncludeFullOrder()
+					.OrderByDescending(o => o.CompletedAt)
+					.Take(10)
 					.ToListAsync();
 
 				var ordersDto = orders.Select(o => o.OrderToOrderDto()).ToList();
@@ -124,7 +121,11 @@ namespace FastFoodOperator.Api.Services
 
 				var orderNumbersDto = new GetOrdernumbersDto
 				{
-					OrderNumbers = orders.Select(o => o.OrderNumber).ToList()
+					Orders = orders.Select(o => new OrderStatusDto
+					{
+						OrderNumber = o.OrderNumber,
+						OrderStatus = o.OrderStatus
+					}).ToList()
 				};
 
 				return orderNumbersDto;

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FastFoodOperator.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250408121057_InitialCreateFrontendTest")]
-    partial class InitialCreateFrontendTest
+    [Migration("20250425212613_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -213,8 +213,11 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Property<int>("OrderNumber")
                         .HasColumnType("int");
 
-                    b.Property<bool>("OrderStatus")
-                        .HasColumnType("bit");
+                    b.Property<int>("OrderStatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -228,16 +231,18 @@ namespace FastFoodOperator.Api.Data.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 12, 0, 0, 0, DateTimeKind.Utc),
                             CustomerNote = "5kg extra onion",
                             OrderNumber = 1001,
-                            OrderStatus = true
+                            OrderStatus = 2,
+                            StartedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
                             CompletedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedAt = new DateTime(2024, 1, 1, 14, 30, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2024, 1, 2, 12, 0, 0, 0, DateTimeKind.Utc),
                             CustomerNote = "no peanuts",
                             OrderNumber = 1002,
-                            OrderStatus = false
+                            OrderStatus = 0,
+                            StartedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -334,6 +339,11 @@ namespace FastFoodOperator.Api.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("PictureUrl")
+                        .HasMaxLength(2048)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(2048)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -347,7 +357,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                             BasePrice = 5.99m,
                             CategoryId = 1,
                             Description = "A classic cheeseburger",
-                            Name = "Cheeseburger"
+                            Name = "Cheeseburger",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
                         },
                         new
                         {
@@ -355,7 +366,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                             BasePrice = 1.99m,
                             CategoryId = 2,
                             Description = "Refreshing soda",
-                            Name = "Coke"
+                            Name = "Coke",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
                         },
                         new
                         {
@@ -363,7 +375,62 @@ namespace FastFoodOperator.Api.Data.Migrations
                             BasePrice = 2.99m,
                             CategoryId = 3,
                             Description = "Crispy golden fries",
-                            Name = "French Fries"
+                            Name = "French Fries",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BasePrice = 5.99m,
+                            CategoryId = 1,
+                            Description = "Grilled beef patty with melted cheddar, lettuce, tomato & onion",
+                            Name = "Classic Cheeseburger",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BasePrice = 7.49m,
+                            CategoryId = 1,
+                            Description = "Two beef patties, smoked bacon, American cheese, pickles & secret sauce",
+                            Name = "Bacon Double Burger",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            BasePrice = 6.99m,
+                            CategoryId = 1,
+                            Description = "Beef patty smothered in sautéed mushrooms and Swiss cheese",
+                            Name = "Mushroom Swiss Burger",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            BasePrice = 6.79m,
+                            CategoryId = 1,
+                            Description = "Peppered beef patty with pepper jack cheese, jalapeños & chipotle mayo",
+                            Name = "Spicy Jalapeño Burger",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            BasePrice = 7.19m,
+                            CategoryId = 1,
+                            Description = "Beef patty topped with crispy onion rings, cheddar & tangy BBQ sauce",
+                            Name = "BBQ Onion Ring Burger",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            BasePrice = 6.49m,
+                            CategoryId = 1,
+                            Description = "House-made black bean patty with avocado, lettuce & pico de gallo",
+                            Name = "Black Bean Veggie Burger",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
                         });
                 });
 

@@ -7,7 +7,7 @@
 	public class Order
 	{
 		public int Id { get; set; }
-	
+
 		/// <summary>
 		/// List of order items associated with this order
 		/// Each item represents an individual product in the order

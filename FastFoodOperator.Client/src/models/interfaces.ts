@@ -14,3 +14,20 @@ export interface cartProduct{
 export interface State{
     cart: Cart;
 }
+
+export interface OrderComboDto {
+    comboId: number;
+    quantity: number;
+  }
+  
+export interface OrderProductDto {
+    productId: number;
+    quantity: number;
+  }
+  
+export interface CreateOrderDto {
+    customerNote: string;
+    orderComboDtos?: OrderComboDto[];  
+    orderProductDtos?: OrderProductDto[];  
+  }
+  
