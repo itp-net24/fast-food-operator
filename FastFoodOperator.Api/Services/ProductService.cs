@@ -224,15 +224,22 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			var product = await context.Products
 				.AsNoTracking()
 				.Where(p => p.Id == id)
+				.Include(p => p.ProductIngredients)
+				.ThenInclude(pi => pi.Ingredient)
 				.Select(p => new ProductResponseDto 
 				{
-                    Id = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                    BasePrice = p.BasePrice,
-                    CategoryId = p.CategoryId,
-					PictureUrl = p.PictureUrl
-                })
+					Id = p.Id,
+					Name = p.Name,
+					Description = p.Description,
+					BasePrice = p.BasePrice,
+					PictureUrl = p.PictureUrl,
+					Ingredients = p.ProductIngredients.Select(pi => new IngredientResponseDto
+					{
+						Id = pi.IngredientId,
+						Name = pi.Ingredient.Name,
+						PriceModifier = pi.Ingredient.PriceModifier
+					}).ToArray()
+				})
 				.FirstOrDefaultAsync();
 
 
@@ -243,9 +250,9 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			}
 
 			logger.LogInformation("Product with ID: {ProductId} has been found", id);
-            return product;
+			return product;
 
-        }	
+		}	
 		catch (Exception ex)
 		{
 			logger.LogError(ex, "Error fetching product with ID: {ProductId}", id);
@@ -283,8 +290,8 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		}
 		catch (Exception ex)
 		{
-			 logger.LogError(ex, "Error fetching products with limit {Limit} and offset {Offset}", limit, offset);
-			 throw;
+			logger.LogError(ex, "Error fetching products with limit {Limit} and offset {Offset}", limit, offset);
+			throw;
 		}
 	}
 
@@ -319,8 +326,8 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		}
 		catch (Exception ex)
 		{
-			 logger.LogError(ex, "Error fetching products for category {CategoryId} with limit {Limit} and offset {Offset}", categoryId, limit, offset);
-			 throw;
+			logger.LogError(ex, "Error fetching products for category {CategoryId} with limit {Limit} and offset {Offset}", categoryId, limit, offset);
+			throw;
 		}
 	}
 
@@ -431,15 +438,15 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			context.Products.Remove(product);
 			await context.SaveChangesAsync();
 			
-				logger.LogInformation("Successfully deleted product: {ProductId}", product.Id);
-			}
-			catch (Exception ex)
-			{
-				logger.LogError(ex, "Failed to delete product: {Id}", id);
-				throw;
-			}
+			logger.LogInformation("Successfully deleted product: {ProductId}", product.Id);
 		}
-		#endregion
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Failed to delete product: {Id}", id);
+			throw;
+		}
+	}
+	#endregion
 
 	#region Variant
 
@@ -766,34 +773,34 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 	
 	public async Task<CategoryResponseDto[]> GetCategoriesAsync(int limit = 5, int offset = 0)
 	{
-			logger.LogInformation("Fetching categories with limit {Limit} and offset {Offset}", limit, offset);
+		logger.LogInformation("Fetching categories with limit {Limit} and offset {Offset}", limit, offset);
         
-        		try
-        		{
-        			var categories = await context.Categories
-        				.AsNoTracking()
-        				.OrderBy(c => c.Id)
-        				.Skip(offset)
-        				.Take(limit)
-        				.Select(p => new CategoryResponseDto
-        				{
-        					Id = p.Id,
-        					Name = p.Name,
-        				})
-        				.ToArrayAsync();
+		try
+		{
+			var categories = await context.Categories
+				.AsNoTracking()
+				.OrderBy(c => c.Id)
+				.Skip(offset)
+				.Take(limit)
+				.Select(p => new CategoryResponseDto
+				{
+					Id = p.Id,
+					Name = p.Name,
+				})
+				.ToArrayAsync();
 			        
-			        if (categories.Length == 0)
-				        logger.LogWarning("No categories found");
-			        else
-				        logger.LogInformation("Fetched {Count} categories", categories.Length);
+			if (categories.Length == 0)
+				logger.LogWarning("No categories found");
+			else
+				logger.LogInformation("Fetched {Count} categories", categories.Length);
         			
-        			return categories;
-        		}
-        		catch (Exception ex)
-        		{
-        			 logger.LogError(ex, "Error fetching products with limit {Limit} and offset {Offset}", limit, offset);
-        			 throw;
-        		}
+			return categories;
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Error fetching products with limit {Limit} and offset {Offset}", limit, offset);
+			throw;
+		}
 	}
 
 	public async Task CreateCategoryAsync(CategoryCreateDto dto)

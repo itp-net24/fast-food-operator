@@ -56,7 +56,7 @@ public class IngredientController(ProductService service) : ControllerBase
 
 		try
 		{
-			var ingredients = await service.GetIngredientsAsync();
+			var ingredients = await service.GetIngredientsAsync(1000);
 			return Ok(ingredients);
 		}
 		catch (Exception)

@@ -19,7 +19,16 @@ namespace FastFoodOperator.Api
             {
                 builder.Configuration.AddUserSecrets<Program>();
             }
-
+            
+            
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocalhost", config =>
+                    config.WithOrigins("http://localhost:5176")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+            
             builder.Services.AddControllers();
 
 
@@ -46,6 +55,7 @@ namespace FastFoodOperator.Api
                 app.UseSwaggerUI();
             }
 
+            app.UseCors("AllowLocalhost");
 
             app.UseHttpsRedirection();
             app.MapControllers();
