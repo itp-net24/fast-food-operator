@@ -1,7 +1,9 @@
 import { Product } from './models/product'
+import { Combo } from './models/combo'
 import { Order } from './models/order'
 import type { CreateOrderDto } from './models/interfaces';
 import { OrderNumber } from './models/orderNumbers';
+import { Category } from './models/category';
 
 export default class Fetcher {
   private baseURL: string = "https://localhost:8080/api/";
@@ -30,7 +32,7 @@ export default class Fetcher {
 
   async getProduct(id: number): Promise<Product | null> {
     try {
-      const response = await fetch(`${this.baseURL}product/${id}`);
+      const response = await fetch(`${this.baseURL}/product/${id}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -49,6 +51,44 @@ export default class Fetcher {
     }
   }
 
+  async getCombos(): Promise<Combo[] | null> {
+    try {
+      const response = await fetch(`${this.baseURL}combo`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      return data.map((o: any) => new Combo(
+        o.id,
+        o.name,
+        o.basePrice
+      ));
+
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+      return null;
+    }
+  }
+
+  async getCategories(): Promise<Category[] | null> {
+    try {
+      const response = await fetch(`${this.baseURL}category`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      return data.map((c: any) => new Category(
+        c.id,
+        c.name
+      ));
+    } catch (error) {
+      console.error("failed to fetch categories:", error);
+      return null;
+    }
+  }
+
    async getOrders(): Promise<Order[] | null> {
      try {
        const response = await fetch(`${this.baseURL}order/GetOrders`);
@@ -58,13 +98,13 @@ export default class Fetcher {
 
        const data = await response.json();
        return data.map((o: any) => new Order(
-        data.id,
-        data.orderNumber,
-        data.customerNote,
-        data.orderStatus,
-        data.createdAt,
-        data.startedAt,
-        data.completedAt
+        o.id,
+        o.orderNumber,
+        o.customerNote,
+        o.orderStatus,
+        o.createdAt,
+        o.startedAt,
+        o.completedAt
        ));
      } catch (error) {
        console.error("Failed to fetch orders:", error);
