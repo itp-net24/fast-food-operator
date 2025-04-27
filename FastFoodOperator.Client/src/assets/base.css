@@ -9,7 +9,8 @@
   --color-dark: #2c2020;
   --color-light: #f1f1f1;
   --color-hover: darkred;
-
+  --color-border-hover: gray;
+  --color-border: rgba(182, 181, 181, 0.613);
   /* Typsnitt */
   --font-family-base: Georgia, serif;
 

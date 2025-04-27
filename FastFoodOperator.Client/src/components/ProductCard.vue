@@ -54,14 +54,14 @@ article {
     align-items: center;
     gap: 4px;
 
-    border: 2px solid rgba(182, 181, 181, 0.613);
+    border: 2px solid var(--color-border);
     border-radius: 4px;
 
     transition: border-color 0.3s ease;
 }
 
 article:hover {
-    border-color: gray;
+    border-color: var(--color-border-hover);
 }
 
 h2 {
