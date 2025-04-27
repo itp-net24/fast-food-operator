@@ -61,9 +61,9 @@ const {cart} = storeToRefs(cartStore)
 <template>
     <div class="menu-container">
         
-            <!-- <aside>
+            <aside>
                 <Sidebar />
-            </aside> -->
+            </aside>
 
             <main>
               
@@ -90,6 +90,7 @@ const {cart} = storeToRefs(cartStore)
 
 <style scoped>
 .menu-container {
+  display: flex;
   padding-top: 1rem;
 }
 
