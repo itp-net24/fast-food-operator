@@ -22,6 +22,21 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ComboComboGroup", b =>
+                {
+                    b.Property<int>("ComboGroupsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CombosId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ComboGroupsId", "CombosId");
+
+                    b.HasIndex("CombosId");
+
+                    b.ToTable("ComboGroupCombo", (string)null);
+                });
+
             modelBuilder.Entity("FastFoodOperator.Api.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -66,7 +81,13 @@ namespace FastFoodOperator.Api.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("BasePrice")
-                        .HasColumnType("decimal(10, 2)");
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("MainComboProductId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -81,70 +102,122 @@ namespace FastFoodOperator.Api.Data.Migrations
                         new
                         {
                             Id = 1,
-                            BasePrice = 8.99m,
+                            BasePrice = 24.99m,
+                            MainComboProductId = 1,
                             Name = "Cheeseburger Combo"
                         },
                         new
                         {
                             Id = 2,
-                            BasePrice = 12.99m,
-                            Name = "Cheeseburger Combo Deluxe"
+                            BasePrice = 29.99m,
+                            MainComboProductId = 2,
+                            Name = "BigMac Combo"
+                        });
+                });
+
+            modelBuilder.Entity("FastFoodOperator.Api.Entities.ComboGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("DefaultComboProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DefaultComboProductId");
+
+                    b.ToTable("ComboGroup");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Drinks"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Sides"
                         });
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.ComboProduct", b =>
                 {
-                    b.Property<int>("ComboId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ComboGroupId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ComboId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DefaultVariantId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductVariantId")
-                        .HasColumnType("int");
+                    b.HasKey("Id");
 
-                    b.HasKey("ComboId", "ProductId");
+                    b.HasIndex("ComboGroupId");
+
+                    b.HasIndex("ComboId");
+
+                    b.HasIndex("DefaultVariantId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductVariantId");
 
                     b.ToTable("ComboProducts");
 
                     b.HasData(
                         new
                         {
+                            Id = 1,
                             ComboId = 1,
                             ProductId = 1
                         },
                         new
                         {
-                            ComboId = 1,
-                            ProductId = 2,
-                            ProductVariantId = 1
-                        },
-                        new
-                        {
-                            ComboId = 1,
-                            ProductId = 3,
-                            ProductVariantId = 4
-                        },
-                        new
-                        {
+                            Id = 2,
                             ComboId = 2,
-                            ProductId = 1
+                            ProductId = 2
                         },
                         new
                         {
-                            ComboId = 2,
-                            ProductId = 2,
-                            ProductVariantId = 3
+                            Id = 3,
+                            ComboGroupId = 1,
+                            ProductId = 3
                         },
                         new
                         {
-                            ComboId = 2,
-                            ProductId = 3,
-                            ProductVariantId = 6
+                            Id = 4,
+                            ComboGroupId = 1,
+                            ProductId = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ComboGroupId = 2,
+                            ProductId = 5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ComboGroupId = 2,
+                            ProductId = 6
                         });
                 });
 
@@ -322,19 +395,22 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("DefaultVariantId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(2048)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(2048)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("PictureUrl")
-                        .HasMaxLength(2048)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(2048)");
 
                     b.HasKey("Id");
 
@@ -346,29 +422,50 @@ namespace FastFoodOperator.Api.Data.Migrations
                         new
                         {
                             Id = 1,
-                            BasePrice = 5.99m,
+                            BasePrice = 14.99m,
                             CategoryId = 1,
                             Description = "A classic cheeseburger",
-                            Name = "Cheeseburger",
-                            PictureUrl = ""
+                            Name = "Cheeseburger"
                         },
                         new
                         {
                             Id = 2,
-                            BasePrice = 1.99m,
-                            CategoryId = 2,
-                            Description = "Refreshing soda",
-                            Name = "Coke",
-                            PictureUrl = ""
+                            BasePrice = 29.99m,
+                            CategoryId = 1,
+                            Description = "A classic big mac",
+                            Name = "Big Mac"
                         },
                         new
                         {
                             Id = 3,
+                            BasePrice = 1.99m,
+                            CategoryId = 2,
+                            Description = "Refreshing soda",
+                            Name = "Coke"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BasePrice = 1.99m,
+                            CategoryId = 2,
+                            Description = "Refreshing soda",
+                            Name = "Pepsi"
+                        },
+                        new
+                        {
+                            Id = 5,
                             BasePrice = 2.99m,
                             CategoryId = 3,
                             Description = "Crispy golden fries",
-                            Name = "French Fries",
-                            PictureUrl = ""
+                            Name = "French Fries"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            BasePrice = 2.99m,
+                            CategoryId = 3,
+                            Description = "Crispy nuggies",
+                            Name = "Chicken Nuggets"
                         });
                 });
 
@@ -400,11 +497,23 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             ProductId = 1,
                             IngredientId = 2,
+                            Required = false
+                        },
+                        new
+                        {
+                            ProductId = 2,
+                            IngredientId = 1,
                             Required = true
                         },
                         new
                         {
-                            ProductId = 3,
+                            ProductId = 2,
+                            IngredientId = 2,
+                            Required = false
+                        },
+                        new
+                        {
+                            ProductId = 2,
                             IngredientId = 3,
                             Required = false
                         });
@@ -445,68 +554,142 @@ namespace FastFoodOperator.Api.Data.Migrations
                             Id = 1,
                             Name = "Small",
                             PriceModifier = 0m,
-                            ProductId = 2
+                            ProductId = 3
                         },
                         new
                         {
                             Id = 2,
                             Name = "Medium",
-                            PriceModifier = 1.49m,
-                            ProductId = 2
+                            PriceModifier = 4.99m,
+                            ProductId = 3
                         },
                         new
                         {
                             Id = 3,
                             Name = "Large",
-                            PriceModifier = 2.49m,
-                            ProductId = 2
+                            PriceModifier = 9.99m,
+                            ProductId = 3
                         },
                         new
                         {
                             Id = 4,
                             Name = "Small",
                             PriceModifier = 0m,
-                            ProductId = 3
+                            ProductId = 4
                         },
                         new
                         {
                             Id = 5,
                             Name = "Medium",
-                            PriceModifier = 1.49m,
-                            ProductId = 3
+                            PriceModifier = 4.99m,
+                            ProductId = 4
                         },
                         new
                         {
                             Id = 6,
                             Name = "Large",
-                            PriceModifier = 2.49m,
-                            ProductId = 3
+                            PriceModifier = 9.99m,
+                            ProductId = 4
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Small",
+                            PriceModifier = 0m,
+                            ProductId = 5
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Medium",
+                            PriceModifier = 4.99m,
+                            ProductId = 5
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Large",
+                            PriceModifier = 9.99m,
+                            ProductId = 5
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "6",
+                            PriceModifier = 0m,
+                            ProductId = 6
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Name = "8",
+                            PriceModifier = 4.99m,
+                            ProductId = 6
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Name = "10",
+                            PriceModifier = 9.99m,
+                            ProductId = 6
                         });
+                });
+
+            modelBuilder.Entity("ComboComboGroup", b =>
+                {
+                    b.HasOne("FastFoodOperator.Api.Entities.ComboGroup", null)
+                        .WithMany()
+                        .HasForeignKey("ComboGroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FastFoodOperator.Api.Entities.Combo", null)
+                        .WithMany()
+                        .HasForeignKey("CombosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FastFoodOperator.Api.Entities.ComboGroup", b =>
+                {
+                    b.HasOne("FastFoodOperator.Api.Entities.ComboProduct", "DefaultComboProduct")
+                        .WithMany()
+                        .HasForeignKey("DefaultComboProductId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("DefaultComboProduct");
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.ComboProduct", b =>
                 {
+                    b.HasOne("FastFoodOperator.Api.Entities.ComboGroup", "ComboGroup")
+                        .WithMany("ComboProducts")
+                        .HasForeignKey("ComboGroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("FastFoodOperator.Api.Entities.Combo", "Combo")
                         .WithMany("ComboProducts")
                         .HasForeignKey("ComboId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("FastFoodOperator.Api.Entities.ProductVariant", "DefaultProductVariant")
+                        .WithMany()
+                        .HasForeignKey("DefaultVariantId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FastFoodOperator.Api.Entities.Product", "Product")
                         .WithMany("ComboProducts")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("FastFoodOperator.Api.Entities.ProductVariant", "ProductVariant")
-                        .WithMany()
-                        .HasForeignKey("ProductVariantId");
 
                     b.Navigation("Combo");
 
-                    b.Navigation("Product");
+                    b.Navigation("ComboGroup");
 
-                    b.Navigation("ProductVariant");
+                    b.Navigation("DefaultProductVariant");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.OrderCombo", b =>
@@ -580,7 +763,7 @@ namespace FastFoodOperator.Api.Data.Migrations
             modelBuilder.Entity("FastFoodOperator.Api.Entities.ProductVariant", b =>
                 {
                     b.HasOne("FastFoodOperator.Api.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("Variants")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -589,6 +772,11 @@ namespace FastFoodOperator.Api.Data.Migrations
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.Combo", b =>
+                {
+                    b.Navigation("ComboProducts");
+                });
+
+            modelBuilder.Entity("FastFoodOperator.Api.Entities.ComboGroup", b =>
                 {
                     b.Navigation("ComboProducts");
                 });
@@ -610,6 +798,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Navigation("ComboProducts");
 
                     b.Navigation("ProductIngredients");
+
+                    b.Navigation("Variants");
                 });
 #pragma warning restore 612, 618
         }

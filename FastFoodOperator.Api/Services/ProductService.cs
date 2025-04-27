@@ -11,34 +11,84 @@ namespace FastFoodOperator.Api.Services;
 
 public class ProductService (AppDbContext context, ILogger<ProductService> logger)
 {
-	#region Combo
-
-	public async Task<ProductResponseDto[]> GetComboByIdAsync(int id)
+	// #region Combo
+	//
+	public async Task<ComboResponseDto?> GetComboByIdAsync(int id)
 	{
 		logger.LogInformation("Fetching products for combo {ComboId}", id);
 		
 		try
 		{
-			var products = await context.ComboProducts
+			var combo = await context.Combos
 				.AsNoTracking()
-				.Where(cp => cp.ComboId == id)
-				.Include(cp => cp.Product)
-				.Select(cp => new ProductResponseDto
+				.Where(c => c.Id == id)
+				.Select(c => new ComboResponseDto
 				{
-					Id = cp.ProductId,
-					Name = cp.Product.Name,
-					Description = cp.Product.Description,
-					BasePrice = cp.Product.BasePrice,
-					PictureUrl = cp.Product.PictureUrl
+					Id = c.Id,
+					Name = c.Name,
+					BasePrice = c.BasePrice,
+					ImageUrl = c.ImageUrl,
+					MainComboProductId = c.MainComboProductId,
+					ComboProducts = c.ComboProducts.Select(sp => new ComboProductResponseDto
+					{
+						Id = sp.Id,
+						DefaultProductVariantId = sp.DefaultVariantId,
+						Product = new ProductResponseDto
+						{
+							Id = sp.Product.Id,
+							Name = sp.Product.Name,
+							Description = sp.Product.Description,
+							BasePrice = sp.Product.BasePrice,
+							ImageUrl = sp.Product.ImageUrl,
+							Variants = sp.Product.Variants.Select(v => new ProductVariantResponseDto
+							{
+								Id = v.Id,
+								Name = v.Name,
+								PriceModifier = v.PriceModifier,
+								ProductId = v.ProductId,
+							}).ToArray(),
+							Ingredients = sp.Product.ProductIngredients.Select(i => new IngredientResponseDto
+							{
+								Id = i.Ingredient.Id,
+								Name = i.Ingredient.Name,
+								PriceModifier = i.Ingredient.PriceModifier
+							}).ToArray()
+						}
+					}).ToArray(),
+					ComboGroups = c.ComboGroups.Select(g => new ComboGroupResponseDto
+					{
+						Id = g.Id,
+						Name = g.Name,
+						DefaultComboProductId = g.DefaultComboProductId,
+						ComboProducts = g.ComboProducts.Select(cp => new ComboProductResponseDto
+						{
+							Id = cp.Id,
+							DefaultProductVariantId = cp.DefaultVariantId,
+							Product = new ProductResponseDto
+							{
+								Id = cp.ProductId,
+								Name = cp.Product.Name,
+								Description = cp.Product.Description,
+								BasePrice = cp.Product.BasePrice,
+								ImageUrl = cp.Product.ImageUrl,
+								Variants = cp.Product.Variants.Select(v => new ProductVariantResponseDto
+								{
+									Id = v.Id,
+									Name = v.Name,
+									PriceModifier = v.PriceModifier,
+								}).ToArray()
+							}
+						}).ToArray()
+					}).ToArray()
 				})
-				.ToArrayAsync();
-
-			if (products.Length == 0)
-				logger.LogWarning("No products found for combo {ComboId}", id);
-			else
-				logger.LogInformation("Fetched {Count} products for combo {ComboId}", products.Length, id);
-			
-			return products;
+				.FirstOrDefaultAsync();
+	
+			// if (products.Length == 0)
+			// 	logger.LogWarning("No products found for combo {ComboId}", id);
+			// else
+			// 	logger.LogInformation("Fetched {Count} products for combo {ComboId}", products.Length, id);
+			//
+			return combo;
 		}
 		catch (Exception ex)
 		{
@@ -46,173 +96,173 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			throw;
 		}
 	}
-	
-	public async Task<ComboResponseDto[]> GetCombosAsync(int limit = 5, int offset = 0)
-	{
-		logger.LogInformation("Fetching combos with limit {Limit} and offset {Offset}", limit, offset);
-
-		try
-		{
-			var combos = await context.Combos
-				.AsNoTracking()
-				.OrderBy(c => c.Name)
-				.Skip(offset)
-				.Take(limit)
-				.Select(c => new ComboResponseDto
-				{
-					Id = c.Id,
-					Name = c.Name,
-					BasePrice = c.BasePrice,
-				})
-				.ToArrayAsync();
-			
-			if (combos.Length == 0)
-				logger.LogWarning("No combos found");
-			else
-				logger.LogInformation("Fetched {Count} combos", combos.Length);
-			
-			return combos;
-		}
-		catch (Exception)
-		{
-			logger.LogError("Failed fetching combos with limit {Limit} and offset {Offset}", limit, offset);
-			throw;
-		}
-	}
-
-	public async Task<ComboResponseDto[]> GetCombosByProductIdAsync(int productId)
-	{
-		logger.LogInformation("Fetching combos for product {ProductId}", productId);
-
-		try
-		{
-			var combos = await context.ComboProducts
-				.AsNoTracking()
-				.Where(c => c.ProductId == productId)
-				.Include(cp => cp.Combo)
-				.Select(cp => new ComboResponseDto
-				{
-					Id = cp.ComboId,
-					Name = cp.Combo.Name,
-					BasePrice = cp.Combo.BasePrice,
-				})
-				.ToArrayAsync();
-			
-			if (combos.Length == 0)
-				logger.LogWarning("No combos found for product {ProductId}", productId);
-			else
-				logger.LogInformation("Fetched {Count} combos for product {ProductId}", combos.Length, productId);
-
-			return combos;
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Error fetching combos for product {ProductId}", productId);
-			throw;
-		}
-	}
-	
-	public async Task CreateComboAsync(ComboCreateDto dto)
-	{
-		logger.LogInformation("Creating a new combo: {ComboName}", dto.Name);
-		
-		await using var transaction = await context.Database.BeginTransactionAsync();
-		try
-		{
-			var combo = new Combo
-			{
-				Name = dto.Name,
-				BasePrice = dto.BasePrice
-			};
-
-			context.Combos.Add(combo);
-
-			var products = dto.Products.Select(p => new ComboProduct
-			{
-				ComboId = combo.Id,
-				ProductId = p.ProductId,
-				ProductVariantId = p.DefaultVariantId
-			}).ToArray();
-
-			context.ComboProducts.AddRange(products);
-
-			await context.SaveChangesAsync();
-			await transaction.CommitAsync();
-			
-			logger.LogInformation("Successfully created combo: {ComboId}", combo.Id);
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Failed to create combo: {ComboName}", dto.Name);	
-			
-			await transaction.RollbackAsync();
-			throw;
-		}
-	}
-
-	public async Task UpdateComboAsync(ComboUpdateDto dto)
-	{
-		logger.LogInformation("Updating combo with ID: {ComboId}", dto.Id);
-
-		try
-		{
-			var combo = await context.Combos
-				.Include(c => c.ComboProducts)
-				.FirstOrDefaultAsync(c => c.Id == dto.Id);
-
-			if (combo is null)
-			{
-				logger.LogWarning("Combo with ID {ComboId} not found", dto.Id);
-				return;
-			}
-
-			combo.Name = dto.Name ?? combo.Name;
-			combo.BasePrice = dto.BasePrice ?? combo.BasePrice;
-
-			var existingProducts = combo.ComboProducts.ToHashSet();
-			var newProducts = dto.Products
-				.Select(p => new ComboProduct
-				{
-					ComboId = combo.Id,
-					ProductId = p.ProductId,
-					ProductVariantId = p.VariantId
-				}).ToHashSet();
-
-			var productsToRemove = existingProducts.Except(newProducts);
-			var productsToAdd = newProducts.Except(existingProducts);
-
-			context.ComboProducts.RemoveRange(productsToRemove);
-			context.ComboProducts.AddRange(productsToAdd);
-
-			await context.SaveChangesAsync();
-
-			logger.LogInformation("Successfully updated combo {ComboId}", dto.Id);
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Failed to update combo: {ComboId}", dto.Id);
-			throw;
-		}
-	}
-
-	public async Task DeleteComboAsync(int id)
-	{
-		logger.LogInformation("Deleting combo with ID: {ComboId}", id);
-		var combo = new Combo { Id = id };
-
-		try
-		{
-			context.Combos.Remove(combo);
-			await context.SaveChangesAsync();
-			logger.LogInformation("Successfully deleted combo: {ComboId}", id);
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Failed to delete combo: {ComboId}", id);
-			throw;
-		}
-	}
-	#endregion
+	//
+	// public async Task<ComboResponseDto[]> GetCombosAsync(int limit = 5, int offset = 0)
+	// {
+	// 	logger.LogInformation("Fetching combos with limit {Limit} and offset {Offset}", limit, offset);
+	//
+	// 	try
+	// 	{
+	// 		var combos = await context.Combos
+	// 			.AsNoTracking()
+	// 			.OrderBy(c => c.Name)
+	// 			.Skip(offset)
+	// 			.Take(limit)
+	// 			.Select(c => new ComboResponseDto
+	// 			{
+	// 				Id = c.Id,
+	// 				Name = c.Name,
+	// 				BasePrice = c.BasePrice,
+	// 			})
+	// 			.ToArrayAsync();
+	// 		
+	// 		if (combos.Length == 0)
+	// 			logger.LogWarning("No combos found");
+	// 		else
+	// 			logger.LogInformation("Fetched {Count} combos", combos.Length);
+	// 		
+	// 		return combos;
+	// 	}
+	// 	catch (Exception)
+	// 	{
+	// 		logger.LogError("Failed fetching combos with limit {Limit} and offset {Offset}", limit, offset);
+	// 		throw;
+	// 	}
+	// }
+	//
+	// public async Task<ComboResponseDto[]> GetCombosByProductIdAsync(int productId)
+	// {
+	// 	logger.LogInformation("Fetching combos for product {ProductId}", productId);
+	//
+	// 	try
+	// 	{
+	// 		var combos = await context.ComboProducts
+	// 			.AsNoTracking()
+	// 			.Where(c => c.ProductId == productId)
+	// 			.Include(cp => cp.Combo)
+	// 			.Select(cp => new ComboResponseDto
+	// 			{
+	// 				Id = cp.ComboId,
+	// 				Name = cp.Combo.Name,
+	// 				BasePrice = cp.Combo.BasePrice,
+	// 			})
+	// 			.ToArrayAsync();
+	// 		
+	// 		if (combos.Length == 0)
+	// 			logger.LogWarning("No combos found for product {ProductId}", productId);
+	// 		else
+	// 			logger.LogInformation("Fetched {Count} combos for product {ProductId}", combos.Length, productId);
+	//
+	// 		return combos;
+	// 	}
+	// 	catch (Exception ex)
+	// 	{
+	// 		logger.LogError(ex, "Error fetching combos for product {ProductId}", productId);
+	// 		throw;
+	// 	}
+	// }
+	//
+	// public async Task CreateComboAsync(ComboCreateDto dto)
+	// {
+	// 	logger.LogInformation("Creating a new combo: {ComboName}", dto.Name);
+	// 	
+	// 	await using var transaction = await context.Database.BeginTransactionAsync();
+	// 	try
+	// 	{
+	// 		var combo = new Combo
+	// 		{
+	// 			Name = dto.Name,
+	// 			BasePrice = dto.BasePrice
+	// 		};
+	//
+	// 		context.Combos.Add(combo);
+	//
+	// 		var products = dto.Products.Select(p => new ComboProduct
+	// 		{
+	// 			ComboId = combo.Id,
+	// 			ProductId = p.ProductId,
+	// 			ProductVariantId = p.DefaultVariantId
+	// 		}).ToArray();
+	//
+	// 		context.ComboProducts.AddRange(products);
+	//
+	// 		await context.SaveChangesAsync();
+	// 		await transaction.CommitAsync();
+	// 		
+	// 		logger.LogInformation("Successfully created combo: {ComboId}", combo.Id);
+	// 	}
+	// 	catch (Exception ex)
+	// 	{
+	// 		logger.LogError(ex, "Failed to create combo: {ComboName}", dto.Name);	
+	// 		
+	// 		await transaction.RollbackAsync();
+	// 		throw;
+	// 	}
+	// }
+	//
+	// public async Task UpdateComboAsync(ComboUpdateDto dto)
+	// {
+	// 	logger.LogInformation("Updating combo with ID: {ComboId}", dto.Id);
+	//
+	// 	try
+	// 	{
+	// 		var combo = await context.Combos
+	// 			.Include(c => c.ComboProducts)
+	// 			.FirstOrDefaultAsync(c => c.Id == dto.Id);
+	//
+	// 		if (combo is null)
+	// 		{
+	// 			logger.LogWarning("Combo with ID {ComboId} not found", dto.Id);
+	// 			return;
+	// 		}
+	//
+	// 		combo.Name = dto.Name ?? combo.Name;
+	// 		combo.BasePrice = dto.BasePrice ?? combo.BasePrice;
+	//
+	// 		var existingProducts = combo.ComboProducts.ToHashSet();
+	// 		var newProducts = dto.Products
+	// 			.Select(p => new ComboProduct
+	// 			{
+	// 				ComboId = combo.Id,
+	// 				ProductId = p.ProductId,
+	// 				ProductVariantId = p.VariantId
+	// 			}).ToHashSet();
+	//
+	// 		var productsToRemove = existingProducts.Except(newProducts);
+	// 		var productsToAdd = newProducts.Except(existingProducts);
+	//
+	// 		context.ComboProducts.RemoveRange(productsToRemove);
+	// 		context.ComboProducts.AddRange(productsToAdd);
+	//
+	// 		await context.SaveChangesAsync();
+	//
+	// 		logger.LogInformation("Successfully updated combo {ComboId}", dto.Id);
+	// 	}
+	// 	catch (Exception ex)
+	// 	{
+	// 		logger.LogError(ex, "Failed to update combo: {ComboId}", dto.Id);
+	// 		throw;
+	// 	}
+	// }
+	//
+	// public async Task DeleteComboAsync(int id)
+	// {
+	// 	logger.LogInformation("Deleting combo with ID: {ComboId}", id);
+	// 	var combo = new Combo { Id = id };
+	//
+	// 	try
+	// 	{
+	// 		context.Combos.Remove(combo);
+	// 		await context.SaveChangesAsync();
+	// 		logger.LogInformation("Successfully deleted combo: {ComboId}", id);
+	// 	}
+	// 	catch (Exception ex)
+	// 	{
+	// 		logger.LogError(ex, "Failed to delete combo: {ComboId}", id);
+	// 		throw;
+	// 	}
+	// }
+	// #endregion
 
 	#region Product
 	public async Task<ProductResponseDto?> GetProductByIdAsync(int id)
@@ -232,7 +282,14 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 					Name = p.Name,
 					Description = p.Description,
 					BasePrice = p.BasePrice,
-					PictureUrl = p.PictureUrl,
+					ImageUrl = p.ImageUrl,
+					Variants = p.Variants.Select(v => new ProductVariantResponseDto
+					{
+						Id = v.Id,
+						Name = v.Name,
+						PriceModifier = v.PriceModifier,
+						ProductId = v.ProductId
+					}).ToArray(),
 					Ingredients = p.ProductIngredients.Select(pi => new IngredientResponseDto
 					{
 						Id = pi.IngredientId,
@@ -277,7 +334,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 					Name = p.Name,
 					Description = p.Description,
 					BasePrice = p.BasePrice,
-					PictureUrl= p.PictureUrl
+					ImageUrl= p.ImageUrl
 				})
 				.ToArrayAsync();
 			
@@ -313,7 +370,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 					Name = p.Name,
 					Description = p.Description,
 					BasePrice = p.BasePrice,
-					PictureUrl = p.PictureUrl
+					ImageUrl = p.ImageUrl
 				})
 				.ToArrayAsync();
 
@@ -344,7 +401,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				Description = dto.Description,
 				BasePrice = dto.BasePrice,
 				CategoryId = dto.CategoryId,
-				PictureUrl = dto.PictureUrl
+				ImageUrl = dto.PictureUrl
 			};
 
 			context.Products.Add(product);
@@ -371,7 +428,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				Name = product.Name,
 				Description = product.Description,
 				BasePrice = product.BasePrice,
-				PictureUrl = product.PictureUrl
+				ImageUrl = product.ImageUrl
 			};
 		}
 		catch (Exception ex)
@@ -400,7 +457,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			product.Name = dto.Name ?? product.Name;
 			product.Description = dto.Description ?? product.Description;
 			product.BasePrice = dto.BasePrice ?? product.BasePrice;
-			product.PictureUrl = dto.PictureUrl ?? product.PictureUrl;
+			product.ImageUrl = dto.PictureUrl ?? product.ImageUrl;
 
 			var existingIngredients = product.ProductIngredients.ToHashSet();
 			var newIngredients = dto.Ingredients
@@ -463,7 +520,6 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				{
 					Id = v.Id,
 					Name = v.Name,
-					Description = v.Description,
 					ProductId = v.ProductId,
 					PriceModifier = v.PriceModifier
 				})
@@ -518,7 +574,6 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				Id = variant.Id,
 				ProductId = variant.ProductId,
 				Name = variant.Name,
-				Description = variant.Description,
 				PriceModifier = variant.PriceModifier,
 			};
 		}

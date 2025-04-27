@@ -7,5 +7,3 @@ public class ProductMinimalResponseDto
 	public string Name { get; init; } = string.Empty;
 	public decimal BasePrice { get; init; }
 }
-
-

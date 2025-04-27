@@ -33,7 +33,9 @@ namespace FastFoodOperator.Api.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    BasePrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    BasePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MainComboProductId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -77,11 +79,12 @@ namespace FastFoodOperator.Api.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     BasePrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    PictureUrl = table.Column<string>(type: "varchar(2048)", unicode: false, maxLength: 2048, nullable: true)
+                    ImageUrl = table.Column<string>(type: "varchar(2048)", unicode: false, maxLength: 2048, nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    DefaultVariantId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -192,33 +195,81 @@ namespace FastFoodOperator.Api.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ComboProducts",
+                name: "ComboGroup",
                 columns: table => new
                 {
-                    ComboId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    ProductVariantId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DefaultComboProductId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ComboProducts", x => new { x.ComboId, x.ProductId });
+                    table.PrimaryKey("PK_ComboGroup", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ComboGroupCombo",
+                columns: table => new
+                {
+                    ComboGroupsId = table.Column<int>(type: "int", nullable: false),
+                    CombosId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComboGroupCombo", x => new { x.ComboGroupsId, x.CombosId });
+                    table.ForeignKey(
+                        name: "FK_ComboGroupCombo_ComboGroup_ComboGroupsId",
+                        column: x => x.ComboGroupsId,
+                        principalTable: "ComboGroup",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ComboGroupCombo_Combos_CombosId",
+                        column: x => x.CombosId,
+                        principalTable: "Combos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ComboProducts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ComboId = table.Column<int>(type: "int", nullable: true),
+                    ComboGroupId = table.Column<int>(type: "int", nullable: true),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    DefaultVariantId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComboProducts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ComboProducts_ComboGroup_ComboGroupId",
+                        column: x => x.ComboGroupId,
+                        principalTable: "ComboGroup",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ComboProducts_Combos_ComboId",
                         column: x => x.ComboId,
                         principalTable: "Combos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ComboProducts_ProductVariants_ProductVariantId",
-                        column: x => x.ProductVariantId,
+                        name: "FK_ComboProducts_ProductVariants_DefaultVariantId",
+                        column: x => x.DefaultVariantId,
                         principalTable: "ProductVariants",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ComboProducts_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
@@ -232,12 +283,21 @@ namespace FastFoodOperator.Api.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Combos",
-                columns: new[] { "Id", "BasePrice", "Name" },
+                table: "ComboGroup",
+                columns: new[] { "Id", "DefaultComboProductId", "Name" },
                 values: new object[,]
                 {
-                    { 1, 8.99m, "Cheeseburger Combo" },
-                    { 2, 12.99m, "Cheeseburger Combo Deluxe" }
+                    { 1, null, "Drinks" },
+                    { 2, null, "Sides" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Combos",
+                columns: new[] { "Id", "BasePrice", "ImageUrl", "MainComboProductId", "Name" },
+                values: new object[,]
+                {
+                    { 1, 24.99m, null, 1, "Cheeseburger Combo" },
+                    { 2, 29.99m, null, 2, "BigMac Combo" }
                 });
 
             migrationBuilder.InsertData(
@@ -270,21 +330,28 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "BasePrice", "CategoryId", "Description", "Name", "PictureUrl" },
+                columns: new[] { "Id", "BasePrice", "CategoryId", "DefaultVariantId", "Description", "ImageUrl", "Name" },
                 values: new object[,]
                 {
-                    { 1, 5.99m, 1, "A classic cheeseburger", "Cheeseburger", "" },
-                    { 2, 1.99m, 2, "Refreshing soda", "Coke", "" },
-                    { 3, 2.99m, 3, "Crispy golden fries", "French Fries", "" }
+                    { 1, 14.99m, 1, null, "A classic cheeseburger", null, "Cheeseburger" },
+                    { 2, 29.99m, 1, null, "A classic big mac", null, "Big Mac" },
+                    { 3, 1.99m, 2, null, "Refreshing soda", null, "Coke" },
+                    { 4, 1.99m, 2, null, "Refreshing soda", null, "Pepsi" },
+                    { 5, 2.99m, 3, null, "Crispy golden fries", null, "French Fries" },
+                    { 6, 2.99m, 3, null, "Crispy nuggies", null, "Chicken Nuggets" }
                 });
 
             migrationBuilder.InsertData(
                 table: "ComboProducts",
-                columns: new[] { "ComboId", "ProductId", "ProductVariantId" },
+                columns: new[] { "Id", "ComboGroupId", "ComboId", "DefaultVariantId", "ProductId" },
                 values: new object[,]
                 {
-                    { 1, 1, null },
-                    { 2, 1, null }
+                    { 1, null, 1, null, 1 },
+                    { 2, null, 2, null, 2 },
+                    { 3, 1, null, null, 3 },
+                    { 4, 1, null, null, 4 },
+                    { 5, 2, null, null, 5 },
+                    { 6, 2, null, null, 6 }
                 });
 
             migrationBuilder.InsertData(
@@ -303,8 +370,10 @@ namespace FastFoodOperator.Api.Data.Migrations
                 values: new object[,]
                 {
                     { 1, 1, true },
-                    { 2, 1, true },
-                    { 3, 3, false }
+                    { 2, 1, false },
+                    { 1, 2, true },
+                    { 2, 2, false },
+                    { 3, 2, false }
                 });
 
             migrationBuilder.InsertData(
@@ -312,34 +381,49 @@ namespace FastFoodOperator.Api.Data.Migrations
                 columns: new[] { "Id", "Description", "Name", "PriceModifier", "ProductId" },
                 values: new object[,]
                 {
-                    { 1, null, "Small", 0m, 2 },
-                    { 2, null, "Medium", 1.49m, 2 },
-                    { 3, null, "Large", 2.49m, 2 },
-                    { 4, null, "Small", 0m, 3 },
-                    { 5, null, "Medium", 1.49m, 3 },
-                    { 6, null, "Large", 2.49m, 3 }
+                    { 1, null, "Small", 0m, 3 },
+                    { 2, null, "Medium", 4.99m, 3 },
+                    { 3, null, "Large", 9.99m, 3 },
+                    { 4, null, "Small", 0m, 4 },
+                    { 5, null, "Medium", 4.99m, 4 },
+                    { 6, null, "Large", 9.99m, 4 },
+                    { 7, null, "Small", 0m, 5 },
+                    { 8, null, "Medium", 4.99m, 5 },
+                    { 9, null, "Large", 9.99m, 5 },
+                    { 10, null, "6", 0m, 6 },
+                    { 11, null, "8", 4.99m, 6 },
+                    { 12, null, "10", 9.99m, 6 }
                 });
 
-            migrationBuilder.InsertData(
+            migrationBuilder.CreateIndex(
+                name: "IX_ComboGroup_DefaultComboProductId",
+                table: "ComboGroup",
+                column: "DefaultComboProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ComboGroupCombo_CombosId",
+                table: "ComboGroupCombo",
+                column: "CombosId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ComboProducts_ComboGroupId",
                 table: "ComboProducts",
-                columns: new[] { "ComboId", "ProductId", "ProductVariantId" },
-                values: new object[,]
-                {
-                    { 1, 2, 1 },
-                    { 1, 3, 4 },
-                    { 2, 2, 3 },
-                    { 2, 3, 6 }
-                });
+                column: "ComboGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ComboProducts_ComboId",
+                table: "ComboProducts",
+                column: "ComboId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ComboProducts_DefaultVariantId",
+                table: "ComboProducts",
+                column: "DefaultVariantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ComboProducts_ProductId",
                 table: "ComboProducts",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ComboProducts_ProductVariantId",
-                table: "ComboProducts",
-                column: "ProductVariantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderCombos_ComboId",
@@ -365,13 +449,25 @@ namespace FastFoodOperator.Api.Data.Migrations
                 name: "IX_ProductVariants_ProductId",
                 table: "ProductVariants",
                 column: "ProductId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ComboGroup_ComboProducts_DefaultComboProductId",
+                table: "ComboGroup",
+                column: "DefaultComboProductId",
+                principalTable: "ComboProducts",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_ComboGroup_ComboProducts_DefaultComboProductId",
+                table: "ComboGroup");
+
             migrationBuilder.DropTable(
-                name: "ComboProducts");
+                name: "ComboGroupCombo");
 
             migrationBuilder.DropTable(
                 name: "OrderCombos");
@@ -383,16 +479,22 @@ namespace FastFoodOperator.Api.Data.Migrations
                 name: "ProductIngredients");
 
             migrationBuilder.DropTable(
-                name: "ProductVariants");
+                name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "Ingredients");
+
+            migrationBuilder.DropTable(
+                name: "ComboProducts");
+
+            migrationBuilder.DropTable(
+                name: "ComboGroup");
 
             migrationBuilder.DropTable(
                 name: "Combos");
 
             migrationBuilder.DropTable(
-                name: "Orders");
-
-            migrationBuilder.DropTable(
-                name: "Ingredients");
+                name: "ProductVariants");
 
             migrationBuilder.DropTable(
                 name: "Products");
