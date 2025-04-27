@@ -72,38 +72,42 @@ namespace FastFoodOperator.Api.Data
            modelBuilder.Entity<Ingredient>()
                 .Property(i => i.PriceModifier)
                 .HasColumnType("decimal(10, 2)");
-           
-           
-           // Order Combo
+
+
             modelBuilder.Entity<OrderCombo>()
-                .HasKey(oc => new { oc.OrderId, oc.ComboId });
+                .HasKey(oc => oc.OrderComboId);
 
             modelBuilder.Entity<OrderCombo>()
                 .HasOne(oc => oc.Order)
                 .WithMany(o => o.OrderCombos)
                 .HasForeignKey(oc => oc.OrderId);
 
-            modelBuilder.Entity<OrderCombo>()
-                .HasOne(oc => oc.Combo)
-                .WithMany()
-                .HasForeignKey(oc => oc.ComboId);
-
-			      modelBuilder.Entity<OrderProduct>()
-                .HasKey(op => new { op.OrderId, op.ProductId });
+            modelBuilder.Entity<OrderProduct>()
+                .HasKey(op => op.OrderProductId);
 
             modelBuilder.Entity<OrderProduct>()
                 .HasOne(op => op.Order)
                 .WithMany(o => o.OrderProducts)
                 .HasForeignKey(op => op.OrderId);
 
-            modelBuilder.Entity<OrderProduct>()
-                .HasOne(op => op.Product)
-                .WithMany()
-                .HasForeignKey(op => op.ProductId);            
+			modelBuilder.Entity<OrderCombo>()
+	            .Property(oc => oc.FinalPrice)
+	            .HasColumnType("decimal(10, 2)");
 
-            
-            // Product
-            modelBuilder.Entity<Product>()
+			modelBuilder.Entity<OrderProduct>()
+				.Property(op => op.FinalPrice)
+				.HasColumnType("decimal(10, 2)");
+
+
+
+
+			//modelBuilder.Entity<OrderProduct>()
+			//.HasOne(op => op.ProductVariant)
+			//.WithMany()
+			//.HasForeignKey(op => op.ProductVariantId);
+
+			// Product
+			modelBuilder.Entity<Product>()
                 .Property(p => p.Name)
                 .HasMaxLength(100)
                 .IsRequired();

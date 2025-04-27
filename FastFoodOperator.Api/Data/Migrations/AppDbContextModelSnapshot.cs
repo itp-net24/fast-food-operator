@@ -245,71 +245,113 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.OrderCombo", b =>
                 {
-                    b.Property<int>("OrderId")
+                    b.Property<int>("OrderComboId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("ComboId")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderComboId"));
+
+                    b.Property<string>("ComboName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("FinalPrice")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderId", "ComboId");
+                    b.HasKey("OrderComboId");
 
-                    b.HasIndex("ComboId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderCombos");
 
                     b.HasData(
                         new
                         {
+                            OrderComboId = 1,
+                            ComboName = "Bajs och kiss",
+                            FinalPrice = 0m,
                             OrderId = 1,
-                            ComboId = 1,
                             Quantity = 1
                         },
                         new
                         {
+                            OrderComboId = 2,
+                            ComboName = "Ägg och bacon",
+                            FinalPrice = 0m,
                             OrderId = 2,
-                            ComboId = 2,
                             Quantity = 2
                         });
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.OrderProduct", b =>
                 {
+                    b.Property<int>("OrderProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderProductId"));
+
+                    b.Property<decimal>("FinalPrice")
+                        .HasColumnType("decimal(10, 2)");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.PrimitiveCollection<string>("ProductIngredients")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductVariant")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderId", "ProductId");
+                    b.HasKey("OrderProductId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderProducts");
 
                     b.HasData(
                         new
                         {
+                            OrderProductId = 1,
+                            FinalPrice = 0m,
                             OrderId = 1,
-                            ProductId = 1,
+                            ProductIngredients = "[]",
+                            ProductName = "Bajskorv",
+                            ProductVariant = "",
                             Quantity = 1
                         },
                         new
                         {
+                            OrderProductId = 2,
+                            FinalPrice = 0m,
                             OrderId = 1,
-                            ProductId = 2,
+                            ProductIngredients = "[]",
+                            ProductName = "Skurhinksmilkshake",
+                            ProductVariant = "",
                             Quantity = 2
                         },
                         new
                         {
+                            OrderProductId = 3,
+                            FinalPrice = 0m,
                             OrderId = 2,
-                            ProductId = 3,
-                            Quantity = 1
+                            ProductIngredients = "[]",
+                            ProductName = "Pannkakor",
+                            ProductVariant = "",
+                            Quantity = 3
                         });
                 });
 
@@ -570,19 +612,11 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.OrderCombo", b =>
                 {
-                    b.HasOne("FastFoodOperator.Api.Entities.Combo", "Combo")
-                        .WithMany()
-                        .HasForeignKey("ComboId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FastFoodOperator.Api.Entities.Order", "Order")
                         .WithMany("OrderCombos")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Combo");
 
                     b.Navigation("Order");
                 });
@@ -595,15 +629,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FastFoodOperator.Api.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Order");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.Product", b =>

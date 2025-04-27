@@ -9,7 +9,7 @@ namespace FastFoodOperator.Api.Controller;
 [Route("api/[controller]")]
 public class ProductController(ProductService service, ILogger<ProductController> logger) : ControllerBase
 {
-	[HttpGet("/{id}")]
+	[HttpGet("{id}")]
 	public async Task<IActionResult> GetProduct(int id)
 	{
 		try
@@ -76,7 +76,7 @@ public class ProductController(ProductService service, ILogger<ProductController
 		}
 	}
 	
-	[HttpDelete("/{id}")]
+	[HttpDelete("{id}")]
 	public async Task<IActionResult> DeleteProduct(int id)
 	{
 		try

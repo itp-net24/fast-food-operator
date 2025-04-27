@@ -22,7 +22,8 @@ namespace FastFoodOperator.Api.Services
 		public async Task AddOrder(AddOrderDto orderDto)
 		{
 			await using var transaction = await _context.Database.BeginTransactionAsync();
-			try {
+			try
+			{
 
 				var order = new Order
 				{
@@ -34,19 +35,22 @@ namespace FastFoodOperator.Api.Services
 
 				order.OrderProducts = (orderDto.OrderProductDtos ?? new List<AddOrderProductDto>())
 					.Select(op => new OrderProduct
-				{
-					ProductId = op.ProductId,
-					Quantity = op.Quantity,
-					OrderId = order.Id
-				}).ToList();
+					{
+						ProductName = op.ProductName,
+						Quantity = op.Quantity,
+						ProductIngredients = op.ProductIngredient,
+						ProductVariant = op.ProductVariant,
+						OrderId = order.Id
+					}).ToList();
 
 				order.OrderCombos = (orderDto.OrderComboDtos ?? new List<AddOrderComboDto>())
 					.Select(oc => new OrderCombo
-				{
-					ComboId = oc.ComboId,
-					Quantity = oc.Quantity,
-					OrderId = order.Id
-				}).ToList();
+					{
+						ComboName = oc.ComboName,
+						FinalPrice = oc.FinalPrice,
+						Quantity = oc.Quantity,
+						OrderId = order.Id
+					}).ToList();
 
 				await _context.SaveChangesAsync();
 				await transaction.CommitAsync();
@@ -64,11 +68,10 @@ namespace FastFoodOperator.Api.Services
 			try
 			{
 				var order = await _context.Orders
+					.Where(o => o.Id == orderId)
 					.Include(o => o.OrderProducts)
-						.ThenInclude(op => op.Product)
 					.Include(o => o.OrderCombos)
-						.ThenInclude(oc => oc.Combo)
-					.FirstOrDefaultAsync(o => o.Id == orderId);
+					.FirstOrDefaultAsync();
 
 				if (order == null)
 				{
@@ -92,14 +95,27 @@ namespace FastFoodOperator.Api.Services
 		{
 			try
 			{
-				var orders = await _context.Orders
+				var completedOrders = await _context.Orders
+					.Include(o => o.OrderProducts)
+					.Include(o => o.OrderCombos)
 					.AsNoTracking()
-					.IncludeFullOrder()
+					.Where(o => o.OrderStatus == OrderStatus.Completed)
 					.OrderByDescending(o => o.CompletedAt)
 					.Take(10)
 					.ToListAsync();
 
-				var ordersDto = orders.Select(o => o.OrderToOrderDto()).ToList();
+				var nonCompletedOrders = await _context.Orders
+					.Include(o => o.OrderProducts)
+					.Include(o => o.OrderCombos)
+					.AsNoTracking()
+					.Where(o => o.OrderStatus != OrderStatus.Completed)
+					.ToListAsync();
+
+				var combinedOrders = completedOrders
+					.Concat(nonCompletedOrders)
+					.ToList();
+
+				var ordersDto = combinedOrders.Select(o => o.OrderToOrderDto()).ToList();
 
 				return ordersDto;
 			}

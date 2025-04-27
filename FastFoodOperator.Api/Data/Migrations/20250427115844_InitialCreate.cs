@@ -99,19 +99,16 @@ namespace FastFoodOperator.Api.Data.Migrations
                 name: "OrderCombos",
                 columns: table => new
                 {
+                    OrderComboId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    ComboId = table.Column<int>(type: "int", nullable: false),
+                    ComboName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FinalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderCombos", x => new { x.OrderId, x.ComboId });
-                    table.ForeignKey(
-                        name: "FK_OrderCombos_Combos_ComboId",
-                        column: x => x.ComboId,
-                        principalTable: "Combos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_OrderCombos", x => x.OrderComboId);
                     table.ForeignKey(
                         name: "FK_OrderCombos_Orders_OrderId",
                         column: x => x.OrderId,
@@ -124,23 +121,22 @@ namespace FastFoodOperator.Api.Data.Migrations
                 name: "OrderProducts",
                 columns: table => new
                 {
+                    OrderProductId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductVariant = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FinalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    ProductIngredients = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderProducts", x => new { x.OrderId, x.ProductId });
+                    table.PrimaryKey("PK_OrderProducts", x => x.OrderProductId);
                     table.ForeignKey(
                         name: "FK_OrderProducts_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderProducts_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -262,11 +258,21 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "OrderCombos",
-                columns: new[] { "ComboId", "OrderId", "Quantity" },
+                columns: new[] { "OrderComboId", "ComboName", "FinalPrice", "OrderId", "Quantity" },
                 values: new object[,]
                 {
-                    { 1, 1, 1 },
-                    { 2, 2, 2 }
+                    { 1, "Bajs och kiss", 0m, 1, 1 },
+                    { 2, "Ägg och bacon", 0m, 2, 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "OrderProducts",
+                columns: new[] { "OrderProductId", "FinalPrice", "OrderId", "ProductIngredients", "ProductName", "ProductVariant", "Quantity" },
+                values: new object[,]
+                {
+                    { 1, 0m, 1, "[]", "Bajskorv", "", 1 },
+                    { 2, 0m, 1, "[]", "Skurhinksmilkshake", "", 2 },
+                    { 3, 0m, 2, "[]", "Pannkakor", "", 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -292,16 +298,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                 {
                     { 1, 1, null },
                     { 2, 1, null }
-                });
-
-            migrationBuilder.InsertData(
-                table: "OrderProducts",
-                columns: new[] { "OrderId", "ProductId", "Quantity" },
-                values: new object[,]
-                {
-                    { 1, 1, 1 },
-                    { 1, 2, 2 },
-                    { 2, 3, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -349,14 +345,14 @@ namespace FastFoodOperator.Api.Data.Migrations
                 column: "ProductVariantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderCombos_ComboId",
+                name: "IX_OrderCombos_OrderId",
                 table: "OrderCombos",
-                column: "ComboId");
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderProducts_ProductId",
+                name: "IX_OrderProducts_OrderId",
                 table: "OrderProducts",
-                column: "ProductId");
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductIngredients_IngredientId",
@@ -390,10 +386,10 @@ namespace FastFoodOperator.Api.Data.Migrations
                 name: "ProductIngredients");
 
             migrationBuilder.DropTable(
-                name: "ProductVariants");
+                name: "Combos");
 
             migrationBuilder.DropTable(
-                name: "Combos");
+                name: "ProductVariants");
 
             migrationBuilder.DropTable(
                 name: "Orders");
