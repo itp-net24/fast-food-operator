@@ -1,12 +1,13 @@
-﻿namespace FastFoodOperator.Api.DTOs.OrderCombo
+﻿using FastFoodOperator.Api.DTOs.Combo;
+
+namespace FastFoodOperator.Api.DTOs.OrderCombo
 {
 	public class AddOrderComboDto
 	{
-		public int ComboId { get; set; }
-		public required string ComboName { get; set; }
-		public decimal FinalPrice { get; set; }
-
+		public ComboMinimalResponseDto ComboMinimalResponseDto { get; set; } = null!;
 		public int Quantity { get; set; }
+		public decimal BasePrice { get; set; }
+		
 
 	}
 }

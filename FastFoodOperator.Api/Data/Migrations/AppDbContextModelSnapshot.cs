@@ -245,11 +245,11 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.OrderCombo", b =>
                 {
-                    b.Property<int>("OrderComboId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderComboId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ComboName")
                         .IsRequired()
@@ -264,7 +264,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderComboId");
+                    b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
@@ -273,7 +273,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.HasData(
                         new
                         {
-                            OrderComboId = 1,
+                            Id = 1,
                             ComboName = "Bajs och kiss",
                             FinalPrice = 0m,
                             OrderId = 1,
@@ -281,7 +281,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                         },
                         new
                         {
-                            OrderComboId = 2,
+                            Id = 2,
                             ComboName = "Ägg och bacon",
                             FinalPrice = 0m,
                             OrderId = 2,
@@ -291,11 +291,11 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.OrderProduct", b =>
                 {
-                    b.Property<int>("OrderProductId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderProductId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("FinalPrice")
                         .HasColumnType("decimal(10, 2)");
@@ -310,13 +310,10 @@ namespace FastFoodOperator.Api.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProductVariant")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderProductId");
+                    b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
@@ -325,32 +322,29 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.HasData(
                         new
                         {
-                            OrderProductId = 1,
+                            Id = 1,
                             FinalPrice = 0m,
                             OrderId = 1,
                             ProductIngredients = "[]",
                             ProductName = "Bajskorv",
-                            ProductVariant = "",
                             Quantity = 1
                         },
                         new
                         {
-                            OrderProductId = 2,
+                            Id = 2,
                             FinalPrice = 0m,
                             OrderId = 1,
                             ProductIngredients = "[]",
                             ProductName = "Skurhinksmilkshake",
-                            ProductVariant = "",
                             Quantity = 2
                         },
                         new
                         {
-                            OrderProductId = 3,
+                            Id = 3,
                             FinalPrice = 0m,
                             OrderId = 2,
                             ProductIngredients = "[]",
                             ProductName = "Pannkakor",
-                            ProductVariant = "",
                             Quantity = 3
                         });
                 });

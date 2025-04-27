@@ -67,14 +67,14 @@ namespace FastFoodOperator.Api.Data
 			);
 			
 			modelBuilder.Entity<OrderProduct>().HasData(
-				new OrderProduct { OrderProductId = 1, ProductName = "Bajskorv", OrderId = 1, Quantity = 1 },
-				new OrderProduct { OrderProductId = 2, ProductName = "Skurhinksmilkshake", OrderId = 1, Quantity = 2 },
-				new OrderProduct { OrderProductId = 3, ProductName = "Pannkakor", OrderId = 2, Quantity = 3 }
+				new OrderProduct { Id = 1, ProductName = "Bajskorv", OrderId = 1, Quantity = 1 },
+				new OrderProduct { Id = 2, ProductName = "Skurhinksmilkshake", OrderId = 1, Quantity = 2 },
+				new OrderProduct { Id = 3, ProductName = "Pannkakor", OrderId = 2, Quantity = 3 }
 			);
 
 			modelBuilder.Entity<OrderCombo>().HasData(
-				new OrderCombo { OrderComboId = 1,ComboName = "Bajs och kiss", OrderId = 1, Quantity = 1 },
-				new OrderCombo { OrderComboId = 2, ComboName = "Ägg och bacon", OrderId = 2, Quantity = 2 }
+				new OrderCombo { Id = 1,ComboName = "Bajs och kiss", OrderId = 1, Quantity = 1 },
+				new OrderCombo { Id = 2, ComboName = "Ägg och bacon", OrderId = 2, Quantity = 2 }
 			);
 		}
 	}

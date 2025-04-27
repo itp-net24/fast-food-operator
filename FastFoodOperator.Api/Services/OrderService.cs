@@ -6,6 +6,7 @@ using FastFoodOperator.Api.DTOs.Orders;
 using FastFoodOperator.Api.Entities;
 using FastFoodOperator.Api.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Validations;
 
 namespace FastFoodOperator.Api.Services
 {
@@ -24,6 +25,42 @@ namespace FastFoodOperator.Api.Services
 			await using var transaction = await _context.Database.BeginTransactionAsync();
 			try
 			{
+				var productIds = orderDto.OrderProductDtos?
+					.Select(op => op.ProductMinimalResponseDto.ProductId)
+					.ToList() ?? new List<int>();
+
+				var comboIds = orderDto.OrderComboDtos?
+					.Select(oc => oc.ComboMinimalResponseDto.ComboId)
+					.ToList() ?? new List<int>();
+
+				var existingProducts = await _context.Products
+					.Where(p => productIds.Contains(p.Id))
+					.ToListAsync();
+
+				var existingCombos = await _context.Combos
+					.Where(c => comboIds.Contains(c.Id))
+					.ToListAsync();
+
+				var missingProductIds = productIds
+					.Except(existingProducts.Select(p => p.Id))
+					.ToList();
+
+				var missingComboIds = comboIds
+					.Except(existingCombos.Select(c => c.Id))
+					.ToList();
+
+				if (missingProductIds.Any() || missingComboIds.Any())
+				{
+					var errorMessage = "";
+
+					if (missingProductIds.Any())
+						errorMessage += $"Invalid Product IDs: {string.Join(", ", missingProductIds)}. ";
+
+					if (missingComboIds.Any())
+						errorMessage += $"Invalid Combo IDs: {string.Join(", ", missingComboIds)}.";
+
+					throw new Exception(errorMessage.Trim());
+				}
 
 				var order = new Order
 				{
@@ -34,22 +71,29 @@ namespace FastFoodOperator.Api.Services
 				await _context.Orders.AddAsync(order);
 
 				order.OrderProducts = (orderDto.OrderProductDtos ?? new List<AddOrderProductDto>())
-					.Select(op => new OrderProduct
+					.Select(op =>
 					{
-						ProductName = op.ProductName,
-						Quantity = op.Quantity,
-						ProductIngredients = op.ProductIngredient,
-						ProductVariant = op.ProductVariant,
-						OrderId = order.Id
-					}).ToList();
+						var product = existingProducts.FirstOrDefault(p => p.Id == op.ProductMinimalResponseDto.ProductId);
+						if (product == null)
+							throw new Exception($"Product with ID {op.ProductMinimalResponseDto.ProductId} not found.");
+
+						return new OrderProduct
+						{
+							ProductName = $"{product.Name} - {op.ProductMinimalResponseDto.ProductVariant}",
+							Quantity = op.Quantity,
+							ProductIngredients = op.ProductIngredients,
+							OrderId = order.Id,
+							FinalPrice = product.BasePrice * op.Quantity,
+						};
+					})
+					.ToList();
 
 				order.OrderCombos = (orderDto.OrderComboDtos ?? new List<AddOrderComboDto>())
 					.Select(oc => new OrderCombo
 					{
-						ComboName = oc.ComboName,
-						FinalPrice = oc.FinalPrice,
+						ComboName = oc.ComboMinimalResponseDto.ComboName,
 						Quantity = oc.Quantity,
-						OrderId = order.Id
+						OrderId = order.Id,
 					}).ToList();
 
 				await _context.SaveChangesAsync();

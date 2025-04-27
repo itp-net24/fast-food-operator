@@ -268,6 +268,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				{
 					Id = p.Id,
 					Name = p.Name,
+					CategoryId = p.CategoryId,
 					Description = p.Description,
 					BasePrice = p.BasePrice,
 					PictureUrl= p.PictureUrl

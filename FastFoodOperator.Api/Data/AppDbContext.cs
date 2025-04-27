@@ -75,7 +75,7 @@ namespace FastFoodOperator.Api.Data
 
 
             modelBuilder.Entity<OrderCombo>()
-                .HasKey(oc => oc.OrderComboId);
+                .HasKey(oc => oc.Id);
 
             modelBuilder.Entity<OrderCombo>()
                 .HasOne(oc => oc.Order)
@@ -83,7 +83,7 @@ namespace FastFoodOperator.Api.Data
                 .HasForeignKey(oc => oc.OrderId);
 
             modelBuilder.Entity<OrderProduct>()
-                .HasKey(op => op.OrderProductId);
+                .HasKey(op => op.Id);
 
             modelBuilder.Entity<OrderProduct>()
                 .HasOne(op => op.Order)

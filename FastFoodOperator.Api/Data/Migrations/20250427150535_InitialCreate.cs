@@ -99,7 +99,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                 name: "OrderCombos",
                 columns: table => new
                 {
-                    OrderComboId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
                     ComboName = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -108,7 +108,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderCombos", x => x.OrderComboId);
+                    table.PrimaryKey("PK_OrderCombos", x => x.Id);
                     table.ForeignKey(
                         name: "FK_OrderCombos_Orders_OrderId",
                         column: x => x.OrderId,
@@ -121,18 +121,17 @@ namespace FastFoodOperator.Api.Data.Migrations
                 name: "OrderProducts",
                 columns: table => new
                 {
-                    OrderProductId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductVariant = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FinalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     ProductIngredients = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderProducts", x => x.OrderProductId);
+                    table.PrimaryKey("PK_OrderProducts", x => x.Id);
                     table.ForeignKey(
                         name: "FK_OrderProducts_Orders_OrderId",
                         column: x => x.OrderId,
@@ -258,7 +257,7 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "OrderCombos",
-                columns: new[] { "OrderComboId", "ComboName", "FinalPrice", "OrderId", "Quantity" },
+                columns: new[] { "Id", "ComboName", "FinalPrice", "OrderId", "Quantity" },
                 values: new object[,]
                 {
                     { 1, "Bajs och kiss", 0m, 1, 1 },
@@ -267,12 +266,12 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "OrderProducts",
-                columns: new[] { "OrderProductId", "FinalPrice", "OrderId", "ProductIngredients", "ProductName", "ProductVariant", "Quantity" },
+                columns: new[] { "Id", "FinalPrice", "OrderId", "ProductIngredients", "ProductName", "Quantity" },
                 values: new object[,]
                 {
-                    { 1, 0m, 1, "[]", "Bajskorv", "", 1 },
-                    { 2, 0m, 1, "[]", "Skurhinksmilkshake", "", 2 },
-                    { 3, 0m, 2, "[]", "Pannkakor", "", 3 }
+                    { 1, 0m, 1, "[]", "Bajskorv", 1 },
+                    { 2, 0m, 1, "[]", "Skurhinksmilkshake", 2 },
+                    { 3, 0m, 2, "[]", "Pannkakor", 3 }
                 });
 
             migrationBuilder.InsertData(
