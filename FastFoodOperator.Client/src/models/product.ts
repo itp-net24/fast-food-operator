@@ -12,6 +12,6 @@ export class Product {
         this.description = description;
         this.basePrice = basePrice;
         this.pictureUrl = pictureUrl;
-        this.category = category
+        this.category = category;
     }
 }

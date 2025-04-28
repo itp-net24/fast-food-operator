@@ -22,7 +22,8 @@ export default class Fetcher {
         p.description,
         p.category,
         p.basePrice,
-        p.pictureUrl
+        p.pictureUrl,
+        p.category
       ));
 
     } catch (error) {
