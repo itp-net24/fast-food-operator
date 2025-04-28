@@ -31,7 +31,7 @@ function CategoryClicked(category:Category):void {
 // })
 
 const emit = defineEmits<{
-    (e: 'categoryClicked', data: Category):void
+    (e: 'categoryClicked', category: Category):void
 }>();
 
 
@@ -41,17 +41,19 @@ const emit = defineEmits<{
     <div class="sidebar-container">
         <h2 class="title">Categories</h2>
         <ul class="category-list">
-            <li class="category" v-for="category in categories" :key="category.id" v-on:click="() => CategoryClicked">
+            <li class="category border-menu" v-for="category in categories" :key="category.id" v-on:click="() => CategoryClicked">
                 {{ category.name }}
             </li>
         </ul>
     </div>
 </template>
 
-<style>
+<style scoped>
 .sidebar-container {
     display: flex;
     flex-direction: column;
+
+    padding: 0.5rem;
 }
 
 /* .title {
@@ -65,5 +67,6 @@ const emit = defineEmits<{
 
 .category {
     padding: 1rem;
+    cursor: pointer;
 }
 </style>

@@ -3,6 +3,7 @@
     import ProductCard from './ProductCard.vue'
     import {ref, onMounted} from 'vue'
     import {Product} from '@/models/product.ts'
+    import {Category} from '@/models/category.ts'
     import Fetcher from "@/ApiFetcher.ts"
     import {useCartStore} from '../stores/cart'
     import {storeToRefs} from 'pinia'
@@ -20,6 +21,19 @@
     console.error('error:', err);
   }
 })
+
+// async function OnCategoryClicked(category: Category) {
+//   try {
+
+//     // const result = await fetcher.;
+//     if (result != null)
+//     {
+//       products.value = result;
+//     }
+//   } catch (err) {
+//     console.error('error:', err);
+//   }
+// }
 
 const cartStore = useCartStore()
 const {cart} = storeToRefs(cartStore)
