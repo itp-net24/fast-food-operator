@@ -2,9 +2,9 @@ export class Product {
     id: number;
     name: string;
     description: string;
-    category: number;
     basePrice: number;
     pictureUrl: string;
+    category: number;
 
     constructor(id:number, name:string, description:string, basePrice:number, pictureUrl:string, category:number) {
         this.id = id;
