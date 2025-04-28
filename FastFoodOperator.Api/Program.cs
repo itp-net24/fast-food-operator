@@ -18,7 +18,11 @@ namespace FastFoodOperator.Api
                 builder.Configuration.AddUserSecrets<Program>();
             }
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
+                });
 
             // Cors service
             builder.Services.AddCors(options =>

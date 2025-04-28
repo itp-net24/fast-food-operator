@@ -143,7 +143,6 @@ namespace FastFoodOperator.Api.Services
 				return new GetOrderDto();
 			}
 		}
-
 		public async Task<List<GetOrderDto>> GetOrders()
 		{
 			try
@@ -178,7 +177,6 @@ namespace FastFoodOperator.Api.Services
 				throw;
 			}
 		}
-
 		public async Task<GetOrdernumbersDto> DisplayOrderNumbers() 
 		{
 			try
