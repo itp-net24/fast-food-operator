@@ -21,7 +21,7 @@ body {
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow-default);
     width: 100%;
-    max-width: 900px;
+    margin: 1rem;
 }
 
 h1 {

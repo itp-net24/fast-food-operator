@@ -91,3 +91,12 @@ button {
 button:hover {
     background-color: var(--color-hover);
 }
+
+.border-menu {
+    border: 2px solid var(--color-border);
+    border-radius: 4px;
+}
+
+.border-menu:hover {
+    border-color: var(--color-border-hover);
+}

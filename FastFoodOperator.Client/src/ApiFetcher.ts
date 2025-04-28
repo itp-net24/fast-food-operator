@@ -165,9 +165,9 @@ export default class Fetcher {
         p.id,
         p.name,
         p.description,
-        p.category,
         p.basePrice,
-        p.pictureUrl
+        p.pictureUrl,
+        p.category
       ));
     } catch(error) {
       console.error("Failed to fetch products by categoryId");
