@@ -16,27 +16,27 @@ onMounted(() => {
     cartStore.loadCartInstance()
 })
 
-function addToCart(){
-    cartStore.addToCart({
-        id: props.product?.id,
-        name: props.product?.name,
-        description: props.product?.description,
-        basePrice: props.product?.basePrice,
-        pictureUrl: props.product?.pictureUrl })
-        console.log("cart", cart)
-}
+// function addToCart(){
+//     cartStore.addToCart({
+//         id: props.product?.id,
+//         name: props.product?.name,
+//         description: props.product?.description,
+//         basePrice: props.product?.basePrice,
+//         pictureUrl: props.product?.pictureUrl })
+//         console.log("cart", cart)
+// }
 
 
 </script>
 
 <template>
     <article>
-        <div id="product-image" :style="{ backgroundImage: 'url(' + (product && product.pictureUrl ? product.pictureUrl : '') + ')' }">
+        <div id="product-image" :style="{ backgroundImage: 'url(' + product.pictureUrl + ')' }">
 
         </div>
         <h2> {{ product?.name }}</h2>
         
-        <button @click="addToCart">Add to Cart</button>
+        <button @click="">Add to Cart</button>
     </article>
 </template>
 

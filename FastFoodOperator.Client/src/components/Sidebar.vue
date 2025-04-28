@@ -4,34 +4,27 @@ import {Category} from '@/models/category.ts'
 import Fetcher from "@/ApiFetcher.ts"
 
 const fetcher:Fetcher = new Fetcher();
-const categories = ref<Category[] | null>([
-    {id: 0, name: 'Hamburgare'},
-    {id: 0, name: 'Kyckling & fisk'},
-    {id: 0, name: 'Vegetariskt'},
-    {id: 0, name: 'Sallad'},
-    {id: 0, name: 'Tillbehör & snacks'},
-    {id: 0, name: 'Desserter'},
-]);
+const categories = ref<Category[] | null>();
 
-function CategoryClicked(category:Category):void {
-    emit('categoryClicked', category);
+function CategoryClicked(categoryId:number):void {
+    emit('categoryClicked', categoryId);
 }
 
-// onMounted( async () => {
-//     const result:Category[] | null = await fetcher.getCategories();
+onMounted( async () => {
+    const result:Category[] | null = await fetcher.getCategories();
 
-//     if (result == null)
-//     {
-//         categories.value = [];
-//     } 
-//     else 
-//     {
-//         categories.value = result;
-//     }
-// })
+    if (result == null)
+    {
+        categories.value = [];
+    } 
+    else 
+    {
+        categories.value = result;
+    }
+})
 
 const emit = defineEmits<{
-    (e: 'categoryClicked', category: Category):void
+    (e: 'categoryClicked', categoryId: number):void
 }>();
 
 
@@ -39,9 +32,9 @@ const emit = defineEmits<{
 
 <template>
     <div class="sidebar-container">
-        <h2 class="title">Categories</h2>
+        <h2 class="title">Kategorier</h2>
         <ul class="category-list">
-            <li class="category border-menu" v-for="category in categories" :key="category.id" v-on:click="() => CategoryClicked">
+            <li class="category border-menu" v-for="category in categories" :key="category.id" v-on:click="CategoryClicked(category.id)">
                 {{ category.name }}
             </li>
         </ul>

@@ -22,18 +22,18 @@
   }
 })
 
-// async function OnCategoryClicked(category: Category) {
-//   try {
+async function OnCategoryClicked(categoryId: number) {
+  try {
 
-//     // const result = await fetcher.;
-//     if (result != null)
-//     {
-//       products.value = result;
-//     }
-//   } catch (err) {
-//     console.error('error:', err);
-//   }
-// }
+    const result = await fetcher.getProductsByCategoryId(categoryId);
+    if (result != null)
+    {
+      products.value = result;
+    }
+  } catch (err) {
+    console.error('error:', err);
+  }
+}
 
 const cartStore = useCartStore()
 const {cart} = storeToRefs(cartStore)
@@ -76,7 +76,7 @@ const {cart} = storeToRefs(cartStore)
     <div class="menu-container">
         
             <aside>
-                <Sidebar />
+                <Sidebar v-on:category-clicked="OnCategoryClicked"/>
             </aside>
 
             <main>

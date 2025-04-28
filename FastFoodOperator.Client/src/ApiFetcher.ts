@@ -20,7 +20,6 @@ export default class Fetcher {
         p.id,
         p.name,
         p.description,
-        p.category,
         p.basePrice,
         p.pictureUrl,
         p.category
