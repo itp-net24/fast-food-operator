@@ -24,11 +24,12 @@
 const cartStore = useCartStore()
 const {cart} = storeToRefs(cartStore)
 
+function checkOut(){
+  cartStore.checkOut()
+        console.log('running button for checkout')
 
-// function clearCart(){
-//   cart.value = {}
-//   localStorage.setItem('cart',JSON.stringify(cart))
-// }
+}
+
 
 
 
@@ -84,7 +85,9 @@ const {cart} = storeToRefs(cartStore)
 
     <div>
       {{ cart }}
+      <button @click="checkOut">Check out cart</button>
       <!-- <button @click="clearCart">Clear Cart</button> -->
+
     </div>
 </template>
 

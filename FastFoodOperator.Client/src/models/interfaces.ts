@@ -12,5 +12,21 @@ export interface cartProduct{
 
 
 export interface State{
-    cart: Cart | {}
+    cart: Cart | {cartProducts:[]}
 }
+
+export interface OrderDTO{
+    customerNote: string,
+    orderComboDtos: [
+      {
+        comboId: number,
+        quantity: number
+      }
+    ],
+    orderProductDtos: [
+      {
+        productId: number,
+        quantity: number
+      }
+    ]
+  }
