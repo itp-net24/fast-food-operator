@@ -3,6 +3,7 @@ import {onMounted, ref} from 'vue'
 import {Product} from '@/models/product'
 import {useCartStore} from '../stores/cart'
 import {storeToRefs} from 'pinia'
+import type {cartProduct} from '@/models/interfaces'
 
 interface Props {
     product:Product
@@ -17,12 +18,7 @@ onMounted(() => {
 })
 
 function addToCart(){
-    cartStore.addToCart({
-        id: props.product?.id,
-        name: props.product?.name,
-        description: props.product?.description,
-        basePrice: props.product?.basePrice,
-        pictureUrl: props.product?.pictureUrl })
+    cartStore.addToCart(props.product)
         console.log("cart", cart)
 }
 

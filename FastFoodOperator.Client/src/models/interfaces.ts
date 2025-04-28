@@ -2,15 +2,15 @@ import {Product} from '@/models/product'
 
 export interface Cart{
     cartProducts:
-    Array<cartProduct>;
+    Array<cartProduct>
 }
 
 export interface cartProduct{
-        cartProduct:Product,
+        product:Product,
         qty:number
     }
 
 
 export interface State{
-    cart: Cart;
+    cart: Cart | {}
 }
