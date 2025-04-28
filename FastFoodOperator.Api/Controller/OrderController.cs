@@ -1,6 +1,7 @@
 ﻿using FastFoodOperator.Api.DTOs.Orders;
 using FastFoodOperator.Api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace FastFoodOperator.Api.Controller
 {
@@ -70,6 +71,21 @@ namespace FastFoodOperator.Api.Controller
 			catch (Exception ex)
 			{
 				return BadRequest(new { message = ex.Message });
+			}
+		}
+
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteOrder(int id)
+		{
+			try
+			{
+				await _orderService.DeleteOrder(id);
+				return NoContent();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Failed to delete product");
+				return BadRequest(ex.Message);
 			}
 		}
 	}

@@ -16,14 +16,18 @@ export interface State{
 }
 
 export interface OrderComboDto {
-    comboId: number;
-    quantity: number;
-  }
+  comboId: number;
+  quantity: number;
+  priceModifier: number;
+}
   
 export interface OrderProductDto {
-    productId: number;
-    quantity: number;
-  }
+  productId: number;
+  quantity: number;
+  productVariant: string; 
+  productVariantPriceModifier: number; 
+  productIngredients: string[]; 
+}
   
 export interface CreateOrderDto {
     customerNote: string;

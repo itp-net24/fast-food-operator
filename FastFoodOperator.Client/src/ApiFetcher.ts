@@ -20,6 +20,7 @@ export default class Fetcher {
         p.id,
         p.name,
         p.description,
+        p.category,
         p.basePrice,
         p.pictureUrl
       ));
@@ -42,6 +43,7 @@ export default class Fetcher {
         data.id,
         data.name,
         data.description,
+        data.category,
         data.basePrice,
         data.pictureUrl
       );
@@ -149,5 +151,27 @@ export default class Fetcher {
         console.error("Failed to create order:", error);
         throw error;
       }
+   }
+
+   async getProductsByCategoryId(id: number): Promise<Product[] | null> {
+    try {
+      const response = await fetch(`${this.baseURL}Product/GetProductsByCategory?id=${id}`);
+      if (!response.ok) {
+        throw new Error(`Http error! status: ${response.status}`);
+      }
+
+      const data = await response.json()
+      return data.map((p: any) => new Product(
+        p.id,
+        p.name,
+        p.description,
+        p.category,
+        p.basePrice,
+        p.pictureUrl
+      ));
+    } catch(error) {
+      console.error("Failed to fetch products by categoryId");
+      return null;
+    }
    }
 }

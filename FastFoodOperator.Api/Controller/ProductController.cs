@@ -9,7 +9,7 @@ namespace FastFoodOperator.Api.Controller;
 [Route("api/[controller]")]
 public class ProductController(ProductService service, ILogger<ProductController> logger) : ControllerBase
 {
-	[HttpGet("/{id}")]
+	[HttpGet("{id}")]
 	public async Task<IActionResult> GetProduct(int id)
 	{
 		try
@@ -46,6 +46,21 @@ public class ProductController(ProductService service, ILogger<ProductController
 		}
 	}
 
+	[HttpGet("GetProductsByCategory")]
+	public async Task<IActionResult> GetProductsByCategory([FromQuery] PaginationParams pagination, int id)
+	{
+		try
+		{
+			var products = await service.GetProductsByCategoryIdAsync(id, pagination.Limit, pagination.Offset);
+			return Ok(products);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, $"Failed to get products with Categroy {id}");
+			return BadRequest(ex.Message);
+		}
+	}
+
 	[HttpPost]
 	public async Task<IActionResult> AddProduct([FromBody] ProductCreateDto dto)
 	{
@@ -76,7 +91,7 @@ public class ProductController(ProductService service, ILogger<ProductController
 		}
 	}
 	
-	[HttpDelete("/{id}")]
+	[HttpDelete("{id}")]
 	public async Task<IActionResult> DeleteProduct(int id)
 	{
 		try
