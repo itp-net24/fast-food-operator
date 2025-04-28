@@ -83,19 +83,28 @@ namespace FastFoodOperator.Api.Services
 							Quantity = op.Quantity,
 							ProductIngredients = op.ProductIngredients,
 							OrderId = order.Id,
-							FinalPrice = product.BasePrice * op.Quantity,
+							FinalPrice = (product.BasePrice + op.ProductMinimalResponseDto.ProductVariantPriceModifier) * op.Quantity
 						};
 					})
 					.ToList();
 
 				order.OrderCombos = (orderDto.OrderComboDtos ?? new List<AddOrderComboDto>())
-					.Select(oc => new OrderCombo
+					.Select(oc =>
 					{
-						ComboName = oc.ComboMinimalResponseDto.ComboName,
-						Quantity = oc.Quantity,
-						OrderId = order.Id,
-					}).ToList();
-
+						var combo = existingCombos.FirstOrDefault(o => o.Id == oc.ComboMinimalResponseDto.ComboId);
+						if (combo == null)
+						{
+							throw new Exception($"Combo with Id {oc.ComboMinimalResponseDto.ComboId} not found");
+						}
+						return new OrderCombo
+						{
+							ComboName = combo.Name,
+							Quantity = oc.Quantity,
+							OrderId = order.Id,
+							FinalPrice = combo.BasePrice * oc.Quantity
+						};
+					})
+					.ToList();
 				await _context.SaveChangesAsync();
 				await transaction.CommitAsync();
 			}

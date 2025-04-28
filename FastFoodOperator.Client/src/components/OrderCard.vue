@@ -18,11 +18,11 @@
     <div>
       <strong>Produkter:</strong>
       <ul>
-        <li v-for="product in order.orderProducts" :key="product.productId">
+        <li v-for="(product, index) in order.orderProducts" :key="index">
           {{ product.productName }} x{{ product.quantity }}
           <ul v-if="product.ingredients.length">
-            <li v-for="ingredient in product.ingredients" :key="ingredient.ingredientName">
-              - {{ ingredient.ingredientName }}
+            <li v-for="(ingredient, index) in product.ingredients" :key="ingredient.ingredientName">
+              - {{ ingredient }}
             </li>
           </ul>
         </li>

@@ -1,4 +1,5 @@
 ﻿using FastFoodOperator.Api.DTOs.Combo;
+using FastFoodOperator.Api.DTOs.Product;
 
 namespace FastFoodOperator.Api.DTOs.OrderCombo
 {
@@ -6,8 +7,6 @@ namespace FastFoodOperator.Api.DTOs.OrderCombo
 	{
 		public ComboMinimalResponseDto ComboMinimalResponseDto { get; set; } = null!;
 		public int Quantity { get; set; }
-		public decimal BasePrice { get; set; }
-		
 
 	}
 }
