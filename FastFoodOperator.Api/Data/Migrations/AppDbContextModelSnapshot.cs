@@ -486,7 +486,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("decimal(10, 2)");
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<int?>("DefaultVariantId")
@@ -878,7 +878,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.HasOne("FastFoodOperator.Api.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Category");
                 });
