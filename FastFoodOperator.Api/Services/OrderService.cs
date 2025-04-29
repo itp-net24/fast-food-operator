@@ -59,62 +59,60 @@ namespace FastFoodOperator.Api.Services
 		}
 		public async Task<GetOrderDto> GetOrder(int orderId)
 		{
-			// try
-			// {
-			// 	var order = await _context.Orders
-			// 		.Include(o => o.OrderProducts)
-			// 			.ThenInclude(op => op.Product)
-			// 		.Include(o => o.OrderCombos)
-			// 			.ThenInclude(oc => oc.Combo)
-			// 		.FirstOrDefaultAsync(o => o.Id == orderId);
-			//
-			// 	if (order == null)
-			// 	{
-			// 		_logger.LogWarning($"Order with ID {orderId} not found.");
-			// 		return new GetOrderDto();
-			// 	}
-			//
-			// 	var orderDto = order.OrderToOrderDto();
-			//
-			// 	return orderDto;
-			//
-			// } 
-			// catch (Exception ex)
-			// {
-			// 	_logger.LogError(ex, "Failed to get order");
-			// 	return new GetOrderDto();
-			// }
-			return new GetOrderDto();
+			try
+			{
+				var order = await _context.Orders
+					.Include(o => o.OrderProducts)
+						.ThenInclude(op => op.Product)
+					.Include(o => o.OrderCombos)
+						.ThenInclude(oc => oc.Combo)
+					.FirstOrDefaultAsync(o => o.Id == orderId);
+
+				if (order == null)
+				{
+					_logger.LogWarning($"Order with ID {orderId} not found.");
+					return new GetOrderDto();
+				}
+
+				var orderDto = order.OrderToOrderDto();
+
+				return orderDto;
+
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Failed to get order");
+				return new GetOrderDto();
+			}
 		}
 
 		public async Task<List<GetOrderDto>> GetOrders()
 		{
-			// try
-			// {
-			// 	var orders = await _context.Orders
-			// 		.AsNoTracking()
-			// 		.Include(o => o.OrderProducts)
-			// 			.ThenInclude(op => op.Product)
-			// 				.ThenInclude(p => p.ProductIngredients)
-			// 					.ThenInclude(pi => pi.Ingredient)
-			// 		.Include(o => o.OrderCombos)
-			// 			.ThenInclude(oc => oc.Combo)
-			// 				.ThenInclude(c => c.ComboProducts)
-			// 					.ThenInclude(cp => cp.Product)
-			// 						.ThenInclude(p => p.ProductIngredients)
-			// 							.ThenInclude(pi => pi.Ingredient)
-			// 		.ToListAsync();
-			//
-			// 	var ordersDto = orders.Select(o => o.OrderToOrderDto()).ToList();
-			//
-			// 	return ordersDto;
-			// }
-			// catch (Exception ex)
-			// {
-			// 	_logger.LogError(ex, "Failed to retrieve orders");
-			// 	throw;
-			// }
-			return [];
+			try
+			{
+				var orders = await _context.Orders
+					.AsNoTracking()
+					.Include(o => o.OrderProducts)
+						.ThenInclude(op => op.Product)
+							.ThenInclude(p => p.ProductIngredients)
+								.ThenInclude(pi => pi.Ingredient)
+					.Include(o => o.OrderCombos)
+						.ThenInclude(oc => oc.Combo)
+							.ThenInclude(c => c.ComboProducts)
+								.ThenInclude(cp => cp.Product)
+									.ThenInclude(p => p.ProductIngredients)
+										.ThenInclude(pi => pi.Ingredient)
+					.ToListAsync();
+
+				var ordersDto = orders.Select(o => o.OrderToOrderDto()).ToList();
+
+				return ordersDto;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Failed to retrieve orders");
+				throw;
+			}
 		}
 
 		public async Task<GetOrdernumbersDto> DisplayOrderNumbers() 
