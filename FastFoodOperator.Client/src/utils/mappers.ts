@@ -1,5 +1,6 @@
 import type {Combo, ComboGroup, ComboProduct, Ingredient, Product, ProductVariant} from "../../../../todo/src/models/types.ts";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export function mapToProduct(data: any): Product {
     return {
         id: data.id,
