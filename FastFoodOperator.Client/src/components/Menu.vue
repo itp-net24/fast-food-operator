@@ -12,16 +12,15 @@
     const products = ref<Product[] | null>([]);
 
     onMounted(async () => {
+
   try {
     products.value = await fetcher.getProducts();
-    cartStore.loadCartInstance()
-
+    cartStore.loadCartInstance();
   } catch (err) {
     console.error('error:', err);
   }
 })
 
-<<<<<<< HEAD
 async function OnCategoryClicked(categoryId: number) {
   try {
 
@@ -35,8 +34,6 @@ async function OnCategoryClicked(categoryId: number) {
   }
 }
 
-=======
->>>>>>> develop
 const cartStore = useCartStore()
 const {cart} = storeToRefs(cartStore)
 
@@ -75,7 +72,6 @@ const {cart} = storeToRefs(cartStore)
 </script>
 
 <template>
-<<<<<<< HEAD
     <div class="company-title">
       <img src="@/assets/Claes_Burgir1.png" alt="Företagslogotyp" class="company-logo">
     </div>
@@ -85,13 +81,6 @@ const {cart} = storeToRefs(cartStore)
             <aside>
                 <Sidebar v-on:category-clicked="OnCategoryClicked"/>
             </aside>
-=======
-    <div class="menu-container">
-        
-            <!-- <aside>
-                <Sidebar />
-            </aside> -->
->>>>>>> develop
 
             <main>
               
@@ -117,7 +106,6 @@ const {cart} = storeToRefs(cartStore)
 </template>
 
 <style scoped>
-<<<<<<< HEAD
 
 .title {
   padding-top: 1rem;
@@ -125,10 +113,6 @@ const {cart} = storeToRefs(cartStore)
 
 .menu-container {
   display: flex;
-=======
-.menu-container {
-  padding-top: 1rem;
->>>>>>> develop
 }
 
 main {
@@ -137,7 +121,6 @@ main {
   gap: 0.5rem;
 }
 
-<<<<<<< HEAD
 @media (max-width: 640px)
 {
   main {
@@ -145,8 +128,6 @@ main {
   }
 }
 
-=======
->>>>>>> develop
 /* .modal{
   display: none; 
   position: fixed; 

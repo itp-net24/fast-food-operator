@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-<<<<<<< HEAD
 import {ref} from 'vue'
 
 const adminMenuOpen = ref<boolean>(false);
 
-=======
->>>>>>> develop
 </script>
 
 <template>
   <header>
-<<<<<<< HEAD
     
     <div class="wrapper">
       <img alt="Claes Burgir logo" class="logo" src="@/assets/Claes_Burgir.svg" width="125" height="125" />
@@ -29,17 +25,6 @@ const adminMenuOpen = ref<boolean>(false);
           <li><RouterLink class="admin-nav-link border-menu" to="/display-order">Display Orders</RouterLink></li>
           <li><RouterLink class="admin-nav-link border-menu" to="/kitchen-display">Kitchen Display</RouterLink></li>
         </ul>
-=======
-    <img alt="Claes Burgir logo" class="logo" src="@/assets/Claes_Burgir.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/menu">Menu</RouterLink>
-        <RouterLink to="/display-order">Display Orders</RouterLink>
-        <RouterLink to="/kitchen-display">Kitchen Display</RouterLink>
->>>>>>> develop
       </nav>
     </div>
   </header>
@@ -49,7 +34,6 @@ const adminMenuOpen = ref<boolean>(false);
 
 <style scoped>
 
-<<<<<<< HEAD
  .wrapper {
   display:flex;
   justify-content: space-between;
@@ -98,6 +82,4 @@ h1 {
     flex-direction: column;
   }
 }
-=======
->>>>>>> develop
 </style>

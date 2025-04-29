@@ -20,15 +20,9 @@ export default class Fetcher {
         p.id,
         p.name,
         p.description,
-<<<<<<< HEAD
         p.basePrice,
-        p.pictureUrl,
+        p.imageUrl,
         p.category
-=======
-        p.category,
-        p.basePrice,
-        p.pictureUrl
->>>>>>> develop
       ));
 
     } catch (error) {
@@ -171,15 +165,9 @@ export default class Fetcher {
         p.id,
         p.name,
         p.description,
-<<<<<<< HEAD
         p.basePrice,
         p.pictureUrl,
         p.category
-=======
-        p.category,
-        p.basePrice,
-        p.pictureUrl
->>>>>>> develop
       ));
     } catch(error) {
       console.error("Failed to fetch products by categoryId");
