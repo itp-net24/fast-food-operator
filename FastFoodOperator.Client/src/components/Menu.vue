@@ -121,6 +121,13 @@ main {
   gap: 0.5rem;
 }
 
+@media (max-width: 640px)
+{
+  main {
+    justify-content: center;
+  }
+}
+
 /* .modal{
   display: none; 
   position: fixed; 

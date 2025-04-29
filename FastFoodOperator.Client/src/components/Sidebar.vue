@@ -59,6 +59,7 @@ const emit = defineEmits<{
 }
 
 .sidebar-toggle {
+    display: none;
     transition: transform 1s ease;
     font-size: 40px;
     padding: 0rem 0.6rem;
