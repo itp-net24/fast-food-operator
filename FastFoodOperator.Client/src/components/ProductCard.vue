@@ -36,7 +36,7 @@ onMounted(() => {
         </div>
         <h2> {{ product?.name }}</h2>
         
-        <button @click="">Add to Cart</button>
+        <button class="button-menu" @click="">Add to Cart</button>
     </article>
 </template>
 
@@ -60,24 +60,6 @@ article {
 h2 {
     padding: var(--spacing-xs);
     min-height: 60px;
-}
-
-button {
-  padding: 0.6rem 1.2rem;
-  margin-bottom: var(--spacing-xs);
-  background-color: var(--color-primary);
-  color: white;
-  font-weight: 550;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-button:hover {
-  background-color: var(--color-hover);
-  transform: scale(1.05);
 }
 
 #product-image {

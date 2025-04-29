@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import {ref} from 'vue'
+
+const adminMenuOpen = ref<boolean>(false);
+
 </script>
 
 <template>
@@ -10,15 +14,17 @@ import { RouterLink, RouterView } from 'vue-router'
 
       <h1>Admin Tools</h1>
 
-      <nav>
-        <label>
-        Views:
-        <RouterLink class="admin-nav-link border-menu" to="/">Home</RouterLink>
-        <RouterLink class="admin-nav-link border-menu" to="/about">About</RouterLink>
-        <RouterLink class="admin-nav-link border-menu" to="/menu">Menu</RouterLink>
-        <RouterLink class="admin-nav-link border-menu" to="/display-order">Display Orders</RouterLink>
-        <RouterLink class="admin-nav-link border-menu" to="/kitchen-display">Kitchen Display</RouterLink>
-       </label>
+      
+      <nav class="drop-down-menu">
+        <button class="admin-menu-toggle button-menu" v-on:click="adminMenuOpen = !adminMenuOpen">
+        ☰ Views
+        </button>
+
+        <ul class="drop-down-list-menu" v-bind:class="{dropDownOpen: adminMenuOpen}">
+          <li><RouterLink class="admin-nav-link border-menu" to="/menu">Menu</RouterLink></li>
+          <li><RouterLink class="admin-nav-link border-menu" to="/display-order">Display Orders</RouterLink></li>
+          <li><RouterLink class="admin-nav-link border-menu" to="/kitchen-display">Kitchen Display</RouterLink></li>
+        </ul>
       </nav>
     </div>
   </header>
@@ -37,19 +43,43 @@ import { RouterLink, RouterView } from 'vue-router'
   padding-block: 0.5rem;
  }
 
-label {
-  font-weight: 600;
-}
-
 .admin-nav-link {
+  display: inline-block;
+  width: 100%;
   padding: 0.5rem;
   background-color: var(--color-primary);
   text-decoration: none;
+  white-space: nowrap;
   margin-right: 0.25rem;
   color: var(--color-hover);
 }
 
 h1 {
   color: black;
+}
+
+.admin-menu-toggle {
+  display: none;
+}
+
+@media (max-width: 640px)
+{
+  .wrapper {
+    justify-content: space-evenly;
+  }
+  .logo {
+    display: none;
+  }
+
+  .admin-menu-toggle {
+  display:block;
+  }
+
+  .drop-down-list-menu {
+    display: none;
+    position: absolute;
+    top:95%;
+    flex-direction: column;
+  }
 }
 </style>
