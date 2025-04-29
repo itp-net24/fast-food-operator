@@ -1,0 +1,15 @@
+{
+    "customerNote": "string",
+    "orderComboDtos": [
+      {
+        "comboId": 0,
+        "quantity": 0
+      }
+    ],
+    "orderProductDtos": [
+      {
+        "productId": 0,
+        "quantity": 0
+      }
+    ]
+  }

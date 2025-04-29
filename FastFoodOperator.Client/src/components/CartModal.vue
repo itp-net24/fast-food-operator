@@ -1,20 +1,18 @@
 <script setup lang="ts">
     import Sidebar from './Sidebar.vue'
-    import ProductCard from './ProductCard.vue'
+    import CartItem from './CartItem.vue'
     import {ref, onMounted} from 'vue'
     import {Product} from '@/models/product.ts'
     import Fetcher from "@/ApiFetcher.ts"
     import {useCartStore} from '../stores/cart'
     import {storeToRefs} from 'pinia'
-    import CartModal from './CartModal.vue'
     
     
     const fetcher = new Fetcher();
-    const products = ref<Product[] | null>([]);
+    
 
     onMounted(async () => {
   try {
-    products.value = await fetcher.getProducts();
     cartStore.loadCartInstance()
 
   } catch (err) {
@@ -27,8 +25,6 @@ const {cart} = storeToRefs(cartStore)
 
 function checkOut(){
   cartStore.checkOut()
-        console.log('running button for checkout')
-
 }
 
 
@@ -36,27 +32,27 @@ function checkOut(){
 
 
 
-// var modal = document.getElementById("cartModal")!;
-// var cartBtn = document.getElementById("cartButton")!;
-// var span = document.getElementsByClassName("close")[0] as HTMLElement;
+var modal = document.getElementById("cartModal")!;
+var cartBtn = document.getElementById("cartButton")!;
+var span = document.getElementsByClassName("close")[0] as HTMLElement;
 
-// console.log(cartBtn);
+console.log(cartBtn);
 
-// cartBtn.onclick = function(){
-//   console.log(modal)
-// modal.style.display = "block";
-// }
+cartBtn.onclick = function(){
+  console.log(modal)
+modal.style.display = "block";
+}
 
-// const openCart = () =>{
+const openCart = () =>{
 
-// modal.style.display = "none";
-// }
+modal.style.display = "none";
+}
 
-// window.onclick = function(event){
-//   if(event.target == modal){
-//     modal.style.display = "none";
-//   }
-// }
+window.onclick = function(event){
+  if(event.target == modal){
+    modal.style.display = "none";
+  }
+}
 
 </script>
 
@@ -69,16 +65,16 @@ function checkOut(){
 
             <main>
               
-              <!-- <button id="cartButton" @click="openCart"> Cart </button>
+              <button id="cartButton" @click="openCart"> Cart </button>
               <div id="cartModal" class="modal">
                 <div class="modal-content">
                   <span class="close">&times;</span>
              
                 </div>
-              </div> -->
+              </div>
 
-                <div v-for="product in products" :key="product.id" class="articles-container">
-                    <ProductCard :product="product" />
+                <div v-for="(cartProduct,index) in cart.cartProducts" :key="index" class="articles-container">
+                    <CartItem :cartProduct="cartProduct" />
                 </div>
             </main>
         
@@ -90,7 +86,6 @@ function checkOut(){
       <!-- <button @click="clearCart">Clear Cart</button> -->
 
     </div>
-    <CartModal/>
 </template>
 
 <style scoped>
@@ -104,7 +99,7 @@ main {
   gap: 0.5rem;
 }
 
-/* .modal{
+.modal{
   display: none; 
   position: fixed; 
   z-index: 1; 
@@ -137,6 +132,6 @@ main {
   color: black;
   text-decoration: none;
   cursor: pointer;
-} */
+}
 
 </style>

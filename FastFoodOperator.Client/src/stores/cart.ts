@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {Product} from '@/models/product'
-import type {Cart, cartProduct, State} from '@/models/interfaces'
+import type {Cart, cartProduct, State, AddOrderDTO, OrderDTO,OrderProductDtos} from '@/models/interfaces'
+import fetcher from '@/ApiFetcher'
 
 
 export const useCartStore = defineStore('cart',{
@@ -100,11 +101,44 @@ export const useCartStore = defineStore('cart',{
             // })
             // console.log('array of ordercomboDtos '+orderComboDtos)
 
+            let order:OrderDTO = {
+                customerNote: 'Gabriel intial testing to learn',
+                orderComboDtos: [
+                  {
+                    comboId: 0,
+                    quantity: 0
+                  }
+                ],
+                orderProductDtos:orderProductDtos
+              }
+
+            this.createOrder(order)
 
             // empty cart for next order
            this.clearCart()
             
-        }
+        },
+
+        async createOrder(order: OrderDTO) : Promise<any> {
+            try {
+                const baseURL = 'https://localhost:8080/api/'
+              const response = await fetch((`${baseURL}order/add`), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(order)
+            });
+              if (!response.ok) {
+                throw new Error(`Failed to add order! status: ${response.status}`);
+              }
+              const result = await response.json();
+              return result;
+            } catch (error) {
+              console.error("Failed to create order:", error);
+              throw error;
+            }
+         }
 
 
     }
