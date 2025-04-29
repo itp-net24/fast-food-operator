@@ -112,3 +112,13 @@ button:hover {
     display:flex !important;
 }
 
+@media (max-width: 640px)
+{
+    #app {
+        margin: 0;
+    }
+
+    body {
+        padding: 0;
+    }
+}
