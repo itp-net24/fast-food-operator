@@ -4,8 +4,10 @@ namespace FastFoodOperator.Api.DTOs.Combo
 {
 	public class ComboMinimalResponseDto
 	{
-		public decimal PriceModifier { get; set; }
+		public List<AddOrderProductMinimalResponseDto> Products { get; set; } = [];
 		public int ComboId { get; set; }
+		public int Quantity { get; set; }
+
 	}
 }
 

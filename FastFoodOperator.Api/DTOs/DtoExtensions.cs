@@ -22,17 +22,16 @@ namespace FastFoodOperator.Api.DTOs
 				OrderStatus = order.OrderStatus,
 				OrderProducts = order.OrderProducts.Select(op => new OrderProductDto
 				{
-					ProductName = op.ProductName, 
+					ProductName = op.ProductName,
 					Quantity = op.Quantity,
-					Ingredients = op.ProductIngredients
+					Ingredients = op.Ingredients
 				}).ToList(),
 				OrderCombos = order.OrderCombos.Select(oc => new OrderComboDto
 				{
-					ComboName = oc.ComboName,  
+					ComboName = oc.ComboName,
 					Quantity = oc.Quantity,
 				}).ToList()
 			};
-
 			return orderDto;
 		}
 

@@ -6,7 +6,7 @@ using FastFoodOperator.Api.DTOs.Orders;
 using FastFoodOperator.Api.Entities;
 using FastFoodOperator.Api.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Validations;
+
 
 namespace FastFoodOperator.Api.Services
 {
@@ -20,18 +20,27 @@ namespace FastFoodOperator.Api.Services
 			_logger = logger;
 		}
 
-		public async Task AddOrder(AddOrderDto orderDto)
+		public async Task<int> AddOrder(AddOrderDto orderDto)
 		{
 			await using var transaction = await _context.Database.BeginTransactionAsync();
 			try
 			{
 				var productIds = orderDto.OrderProductDtos?
-					.Select(op => op.ProductMinimalResponseDto.ProductId)
+					.Select(op => op.ProductMinimalResponseDto?.ProductId ?? 0)
 					.ToList() ?? new List<int>();
 
 				var comboIds = orderDto.OrderComboDtos?
 					.Select(oc => oc.ComboMinimalResponseDto.ComboId)
 					.ToList() ?? new List<int>();
+
+				var comboProductsId = orderDto.OrderComboDtos?
+					.SelectMany(oc => oc.ComboMinimalResponseDto.Products)
+					.Select(p => p.ProductId)
+					.ToList() ?? new List<int>();
+
+				var existingComboProducts = await _context.Products
+					.Where(p => comboProductsId.Contains(p.Id))
+					.ToListAsync();
 
 				var existingProducts = await _context.Products
 					.Where(p => productIds.Contains(p.Id))
@@ -62,10 +71,47 @@ namespace FastFoodOperator.Api.Services
 					throw new Exception(errorMessage.Trim());
 				}
 
+				var productVariantIds = orderDto.OrderProductDtos?
+					.Select(op => op.ProductMinimalResponseDto.ProductVariantId)
+					.OfType<int>()
+					.ToList() ?? new List<int>();
+
+				var comboProductVariantIds = orderDto.OrderComboDtos?
+					.SelectMany(oc => oc.ComboMinimalResponseDto.Products
+						.Select(p => p.ProductVariantId)
+						.OfType<int>())
+					.ToList() ?? new List<int>();
+
+				var ingredientIds = orderDto.OrderProductDtos?
+					.SelectMany(op => op.ProductMinimalResponseDto.IngredientsId) 
+					.ToList() ?? new List<int>();
+
+				var comboIngredientIds = orderDto.OrderComboDtos?
+					.SelectMany(oc => oc.ComboMinimalResponseDto.Products)
+					.SelectMany(p => p.IngredientsId)                      
+					.ToList() ?? new List<int>();
+
+				var existingProductVariant = await _context.ProductVariants
+					.Where(pv => productVariantIds.Contains(pv.Id))
+					.ToListAsync();
+
+				var comboExistingProductVariant = await _context.ProductVariants
+					.Where(pv => comboProductVariantIds.Contains(pv.Id))
+					.ToListAsync();
+
+				var existingIngredients = await _context.Ingredients
+					.Where(pi => ingredientIds.Contains(pi.Id)) 
+					.ToListAsync();
+
+				var comboExistingIngredients = await _context.Ingredients
+					.Where(pi => ingredientIds.Contains(pi.Id))
+					.ToListAsync();
+
 				var order = new Order
 				{
 					OrderNumber = await GenerateOrderNumber(),
 					CustomerNote = orderDto.CustomerNote,
+					OrderStatus = OrderStatus.Created,
 				};
 
 				await _context.Orders.AddAsync(order);
@@ -73,17 +119,23 @@ namespace FastFoodOperator.Api.Services
 				order.OrderProducts = (orderDto.OrderProductDtos ?? new List<AddOrderProductDto>())
 					.Select(op =>
 					{
+
 						var product = existingProducts.FirstOrDefault(p => p.Id == op.ProductMinimalResponseDto.ProductId);
 						if (product == null)
 							throw new Exception($"Product with ID {op.ProductMinimalResponseDto.ProductId} not found.");
 
+						var variant = existingProductVariant.FirstOrDefault(v => v.Id == op.ProductMinimalResponseDto.ProductVariantId);
+
+						var ingredients = existingIngredients.Where(i => op.ProductMinimalResponseDto.IngredientsId.Contains(i.Id)).ToList();
+						var ingredientPriceModifierSum = ingredients.Sum(i => i.PriceModifier);
+
 						return new OrderProduct
 						{
-							ProductName = $"{product.Name} - {op.ProductMinimalResponseDto.ProductVariant}",
-							Quantity = op.Quantity,
-							ProductIngredients = op.ProductIngredients,
+							ProductName = variant == null ? product.Name : $"{product.Name} - {variant.Name}",
+							Quantity = op.ProductMinimalResponseDto.Quantity,
 							OrderId = order.Id,
-							FinalPrice = (product.BasePrice + op.ProductMinimalResponseDto.ProductVariantPriceModifier) * op.Quantity
+							FinalPrice = (product.BasePrice + (variant?.PriceModifier ?? 0) + ingredientPriceModifierSum) * op.ProductMinimalResponseDto.Quantity,
+							Ingredients = ingredients.Select(i => i.Name).ToList()
 						};
 					})
 					.ToList();
@@ -96,17 +148,54 @@ namespace FastFoodOperator.Api.Services
 						{
 							throw new Exception($"Combo with Id {oc.ComboMinimalResponseDto.ComboId} not found");
 						}
+
+						var productNames = new List<string>();
+						decimal additionalPrices = 0;
+
+						foreach (var p in oc.ComboMinimalResponseDto.Products)
+				{
+							var product = existingComboProducts.FirstOrDefault(prod => prod.Id == p.ProductId);
+
+							if (product == null)
+				{
+								throw new Exception($"Product with ID {p.ProductId} not found.");
+							}
+
+							var variant = comboExistingProductVariant.FirstOrDefault(v => v.Id == p.ProductVariantId);
+
+							var ingredients = comboExistingIngredients
+								.Where(i => p.IngredientsId.Contains(i.Id))
+								.ToList();
+
+							
+							string productName = variant == null
+								? product.Name
+								: $"{product.Name} - {variant.Name}";
+
+
+							productNames.Add(productName);
+
+							additionalPrices += (variant?.PriceModifier ?? 0) + ingredients.Sum(i => i.PriceModifier);
+						}
+
+
+						var finalPrice = (combo.BasePrice + additionalPrices) * oc.ComboMinimalResponseDto.Quantity;
+
 						return new OrderCombo
 						{
 							ComboName = combo.Name,
-							Quantity = oc.Quantity,
+							Quantity = oc.ComboMinimalResponseDto.Quantity,
 							OrderId = order.Id,
-							FinalPrice = combo.BasePrice * oc.Quantity
+							Products = string.Join(", ", productNames), 
+							FinalPrice = finalPrice
 						};
 					})
 					.ToList();
+
 				await _context.SaveChangesAsync();
 				await transaction.CommitAsync();
+
+				return order.OrderNumber;
 			}
 			catch (Exception ex)
 			{
@@ -136,24 +225,25 @@ namespace FastFoodOperator.Api.Services
 
 				return orderDto;
 
-			} 
+			}
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Failed to get order");
 				return new GetOrderDto();
 			}
 		}
+
 		public async Task<List<GetOrderDto>> GetOrders()
 		{
 			try
 			{
-				var oneMinuteAgo = DateTime.UtcNow.AddMinutes(-1);
+				var threeMinutesAgo = DateTime.UtcNow.AddMinutes(-3);
 
 				var completedOrders = await _context.Orders
 					.Include(o => o.OrderProducts)
 					.Include(o => o.OrderCombos)
 					.AsNoTracking()
-					.Where(o => o.OrderStatus == OrderStatus.Completed && o.CompletedAt >= oneMinuteAgo)
+					.Where(o => o.OrderStatus == OrderStatus.Completed && o.CompletedAt >= threeMinutesAgo)
 					.OrderByDescending(o => o.CompletedAt)
 					.Take(10)
 					.ToListAsync();
@@ -179,6 +269,7 @@ namespace FastFoodOperator.Api.Services
 				throw;
 			}
 		}
+
 		public async Task<GetOrdernumbersDto> DisplayOrderNumbers() 
 		{
 			try
@@ -191,7 +282,7 @@ namespace FastFoodOperator.Api.Services
 				var orderNumbersDto = new GetOrdernumbersDto
 				{
 					Orders = orders.Select(o => new OrderStatusDto
-					{
+				{
 						OrderNumber = o.OrderNumber,
 						OrderStatus = o.OrderStatus
 					}).ToList()

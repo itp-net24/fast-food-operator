@@ -3,6 +3,7 @@ using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.Services;
 using FastFoodOperator.Api.Interfaces;
 
+
 namespace FastFoodOperator.Api
 {
     public class Program
@@ -12,8 +13,9 @@ namespace FastFoodOperator.Api
             // Add services to the container.
             var builder = WebApplication.CreateBuilder(args);
 
-            // Development
-            if (builder.Environment.IsDevelopment())
+
+			// Development
+			if (builder.Environment.IsDevelopment())
             {
                 builder.Configuration.AddUserSecrets<Program>();
             }
@@ -36,6 +38,7 @@ namespace FastFoodOperator.Api
                     });
             });
 
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -56,6 +59,8 @@ namespace FastFoodOperator.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("AllowLocalhost");
 
             app.UseHttpsRedirection();
             

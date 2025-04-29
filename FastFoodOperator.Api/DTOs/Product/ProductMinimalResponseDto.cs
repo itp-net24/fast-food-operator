@@ -1,9 +1,9 @@
-﻿namespace FastFoodOperator.Api.DTOs.Product
+namespace FastFoodOperator.Api.DTOs.Product;
+
+public class ProductMinimalResponseDto
 {
-	public class ProductMinimalResponseDto
-	{
-		public string? ProductVariant { get; set; } = null!;
-		public decimal ProductVariantPriceModifier { get; set; }
-		public int ProductId { get; set; }
-	}
+	public int Id { get; init; }
+	public string? PictureUrl { get; init; }
+	public string Name { get; init; } = string.Empty;
+	public decimal BasePrice { get; init; }
 }
