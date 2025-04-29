@@ -8,13 +8,14 @@
   --color-secondary: #ffd700;
   --color-dark: #2c2020;
   --color-light: #f1f1f1;
-  --color-hover: darkred;
-  --color-border-hover: gray;
-  --color-border: rgba(182, 181, 181, 0.613);
+  --color-hover: #8b0000;
+  --color-border-hover: rgb(74, 74, 74);
+  --color-border: rgba(155, 155, 155, 0.757);
   /* Typsnitt */
   --font-family-base: Georgia, serif;
 
   /* Storlekar */
+  --font-size-large: 18px;
   --font-size-base: 16px;
   --font-size-small: 14px;
 
@@ -27,4 +28,7 @@
   /* Radius och skuggor */
   --border-radius: 10px;
   --box-shadow-default: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  /* Brytpunkt för mobilskärmar */
+  --bp-mobile: 640px;
 }

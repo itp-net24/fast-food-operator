@@ -59,6 +59,7 @@ const emit = defineEmits<{
 }
 
 .category {
+    font-size: 17px;
     padding: 1rem;
     cursor: pointer;
 }

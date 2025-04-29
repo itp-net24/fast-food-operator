@@ -3,7 +3,6 @@
     import ProductCard from './ProductCard.vue'
     import {ref, onMounted} from 'vue'
     import {Product} from '@/models/product.ts'
-    import {Category} from '@/models/category.ts'
     import Fetcher from "@/ApiFetcher.ts"
     import {useCartStore} from '../stores/cart'
     import {storeToRefs} from 'pinia'
@@ -73,6 +72,10 @@ const {cart} = storeToRefs(cartStore)
 </script>
 
 <template>
+    <div class="company-title">
+      <img src="@/assets/Claes_Burgir1.png" alt="Företagslogotyp" class="company-logo">
+    </div>
+
     <div class="menu-container">
         
             <aside>
@@ -103,9 +106,13 @@ const {cart} = storeToRefs(cartStore)
 </template>
 
 <style scoped>
+
+.title {
+  padding-top: 1rem;
+}
+
 .menu-container {
   display: flex;
-  padding-top: 1rem;
 }
 
 main {

@@ -30,7 +30,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <article>
+    <article class="border-menu">
         <div id="product-image" :style="{ backgroundImage: 'url(' + product.pictureUrl + ')' }">
 
         </div>
@@ -54,14 +54,7 @@ article {
     align-items: center;
     gap: 4px;
 
-    border: 2px solid var(--color-border);
-    border-radius: 4px;
-
-    transition: border-color 0.3s ease;
-}
-
-article:hover {
-    border-color: var(--color-border-hover);
+    background-color: white;
 }
 
 h2 {

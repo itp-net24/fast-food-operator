@@ -16,7 +16,7 @@ body {
 }
 
 #app {
-    background-color: var(--color-white);
+    background-color: #f8efdd;
     padding: var(--spacing-lg);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow-default);
@@ -66,10 +66,24 @@ button:hover {
 }
 
 .border-menu {
-    border: 2px solid var(--color-border);
+    border: 3px ridge var(--color-border);
     border-radius: 4px;
+    box-shadow: var(--box-shadow-default);
+    transition: border-color 0.3s ease;
 }
 
 .border-menu:hover {
-    border-color: var(--color-border-hover);
+    border-color: var(--color-hover);
 }
+
+.company-title img.company-logo {
+    width: 80%;        /* Sätt bildens bredd till 80% av förälderelementet */
+    max-width: 500px;  /* Sätt en max-bredd för att inte göra bilden för stor */
+    height: unset;      /* Bevara bildens proportioner */
+  }
+
+  .company-title {
+    margin-top: 1rem;
+    width: 100%;
+    text-align: center;
+  }
