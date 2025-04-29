@@ -31,17 +31,45 @@ namespace FastFoodOperator.Api.Data
             
             
            // Combo 
-            modelBuilder.Entity<Combo>()
-                .Property(c => c.Name)
-                .HasMaxLength(100)
-                .IsRequired();
+            modelBuilder.Entity<Combo>(combo =>
+            {
+                combo.HasKey(c => c.Id);
 
-            modelBuilder.Entity<Combo>()
-                .Property(c => c.BasePrice)
-                .HasColumnType("decimal(10, 2)");
+                combo.Property(c => c.Name)
+                    .HasMaxLength(100)
+                    .IsRequired();
             
+                combo.Property(c => c.BasePrice)
+                    .HasColumnType("decimal(18,2)");
+
+                combo.HasMany(c => c.ComboGroups)
+                    .WithMany(cg => cg.Combos)
+                    .UsingEntity(c => c.ToTable("ComboGroupCombo"));
+                
+                combo.HasMany(c => c.ComboProducts)
+                    .WithOne(cp => cp.Combo)
+                    .HasForeignKey(cp => cp.ComboId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+            
+            // ComboGroup
+            modelBuilder.Entity<ComboGroup>(group =>
+            {
+                group.HasKey(g => g.Id);
+            
+                group.Property(g => g.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+                
+                group.HasOne(g => g.DefaultComboProduct)
+                    .WithMany()
+                    .HasForeignKey(g => g.DefaultComboProductId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired(false);
+            });
             
             // Combo Product
+<<<<<<< HEAD
             modelBuilder.Entity<ComboProduct>()
                 .HasKey(cp => new { cp.ComboId, cp.ProductId });
            
@@ -61,7 +89,36 @@ namespace FastFoodOperator.Api.Data
                 .HasOne(cp => cp.ProductVariant)
                 .WithMany()
                 .HasForeignKey(cp => cp.ProductVariantId);
+=======
+            modelBuilder.Entity<ComboProduct>(comboProduct =>
+            {
+                comboProduct.HasKey(cp => cp.Id);
+>>>>>>> develop
             
+                comboProduct.HasOne(cp => cp.Product)
+                    .WithMany(p => p.ComboProducts)
+                    .HasForeignKey(cp => cp.ProductId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                
+                comboProduct.HasOne(cp => cp.DefaultProductVariant)
+                    .WithMany()
+                    .HasForeignKey(cp => cp.DefaultVariantId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired(false);
+                
+                comboProduct.HasOne(cp => cp.ComboGroup)
+                    .WithMany(cg => cg.ComboProducts)
+                    .HasForeignKey(cp => cp.ComboGroupId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired(false);
+            
+                comboProduct.HasOne(cp => cp.Combo)
+                    .WithMany(c => c.ComboProducts)
+                    .HasForeignKey(cp => cp.ComboId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired(false);
+            });
+
             
             // Ingredient
             modelBuilder.Entity<Ingredient>()
@@ -116,7 +173,11 @@ namespace FastFoodOperator.Api.Data
                 .HasColumnType("decimal(10, 2)");
 
             modelBuilder.Entity<Product>()
+<<<<<<< HEAD
                 .Property(p => p.PictureUrl)
+=======
+                .Property(p => p.ImageUrl)
+>>>>>>> develop
                 .HasMaxLength(2048)
                 .IsUnicode(false);
             
@@ -124,7 +185,7 @@ namespace FastFoodOperator.Api.Data
                 .HasOne(p => p.Category)
                 .WithMany()
                 .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
             
             
             // Product Ingredient
@@ -147,7 +208,7 @@ namespace FastFoodOperator.Api.Data
             // ProductVariant
             modelBuilder.Entity<ProductVariant>()
                 .HasOne(pv => pv.Product)
-                .WithMany()
+                .WithMany(p => p.Variants)
                 .HasForeignKey(pv => pv.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
             

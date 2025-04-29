@@ -2,6 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.Services;
 using FastFoodOperator.Api.Interfaces;
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
 
 namespace FastFoodOperator.Api
 {
@@ -12,8 +16,9 @@ namespace FastFoodOperator.Api
             // Add services to the container.
             var builder = WebApplication.CreateBuilder(args);
 
-            // Development
-            if (builder.Environment.IsDevelopment())
+
+			// Development
+			if (builder.Environment.IsDevelopment())
             {
                 builder.Configuration.AddUserSecrets<Program>();
             }
@@ -35,6 +40,10 @@ namespace FastFoodOperator.Api
                             .AllowAnyMethod();
                     });
             });
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -56,6 +65,8 @@ namespace FastFoodOperator.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("AllowLocalhost");
 
             app.UseHttpsRedirection();
             

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+<<<<<<< HEAD
 import {ref, onMounted} from 'vue'
 import {Category} from '@/models/category.ts'
 import Fetcher from "@/ApiFetcher.ts"
@@ -29,10 +30,13 @@ const emit = defineEmits<{
     (e: 'categoryClicked', categoryId: number):void
 }>();
 
+=======
+>>>>>>> develop
 
 </script>
 
 <template>
+<<<<<<< HEAD
     <div class="sidebar-container" v-bind:class="{'open border-sidebar': sideMenuOpen}">
         <button class="sidebar-toggle button-menu border-menu" v-on:click="sideMenuOpen = !sideMenuOpen">
             {{ sideMenuOpen ? '◂' : '▸' }}
@@ -115,3 +119,7 @@ const emit = defineEmits<{
     }
 }
 </style>
+=======
+
+</template>
+>>>>>>> develop

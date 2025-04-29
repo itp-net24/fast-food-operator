@@ -23,12 +23,21 @@ namespace FastFoodOperator.Api.Controller
 		{
 			try
 			{
+<<<<<<< HEAD
 				await _orderService.AddOrder(orderDto);
 				return Ok(new { message = "Order added successfully" });
 			}
 			catch (Exception ex)
 			{
 				return BadRequest(new { message = ex.Message });
+=======
+				var response = await _orderService.AddOrder(orderDto);
+				return Ok(new { message = $"{response}" });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Ordernumber = ex.Message });
+>>>>>>> develop
 			}
 		}
 

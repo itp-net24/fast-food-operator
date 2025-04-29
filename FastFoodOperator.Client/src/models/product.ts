@@ -2,9 +2,15 @@ export class Product {
     id: number;
     name: string;
     description: string;
+<<<<<<< HEAD
     category: number;
     basePrice: number;
     pictureUrl: string;
+=======
+    basePrice: number;
+    pictureUrl: string;
+    category: number;
+>>>>>>> develop
 
     constructor(id:number, name:string, description:string, basePrice:number, pictureUrl:string, category:number) {
         this.id = id;
@@ -12,6 +18,10 @@ export class Product {
         this.description = description;
         this.basePrice = basePrice;
         this.pictureUrl = pictureUrl;
+<<<<<<< HEAD
         this.category = category;
+=======
+        this.category = category
+>>>>>>> develop
     }
 }

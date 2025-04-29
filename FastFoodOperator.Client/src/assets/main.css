@@ -16,12 +16,20 @@ body {
 }
 
 #app {
+<<<<<<< HEAD
     background-color: #f8efdd;
+=======
+    background-color: var(--color-white);
+>>>>>>> develop
     padding: var(--spacing-lg);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow-default);
     width: 100%;
+<<<<<<< HEAD
     margin: 1rem;
+=======
+    max-width: 900px;
+>>>>>>> develop
 }
 
 h1 {
@@ -42,6 +50,17 @@ ul {
     text-align: left;
 }
 
+<<<<<<< HEAD
+=======
+li {
+    background-color: var(--color-light);
+    margin: var(--spacing-xs) 0;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-small);
+}
+
+>>>>>>> develop
 button {
     background-color: var(--color-secondary);
     color: white;
@@ -55,6 +74,7 @@ button {
 
 button:hover {
     background-color: var(--color-hover);
+<<<<<<< HEAD
 }
 
 .border-menu {
@@ -121,4 +141,6 @@ button:hover {
     body {
         padding: 0;
     }
+=======
+>>>>>>> develop
 }

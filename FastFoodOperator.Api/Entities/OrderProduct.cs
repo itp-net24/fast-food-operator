@@ -8,6 +8,10 @@
 		public required string ProductName { get; set; }
 		public decimal FinalPrice { get; set; }
 		public int Quantity { get; set; }
+<<<<<<< HEAD
 		public List<string>? ProductIngredients { get; set; } = new List<string>();
+=======
+		public List<string> Ingredients { get; set; } = [];
+>>>>>>> develop
 	}
 }
