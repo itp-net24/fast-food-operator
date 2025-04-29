@@ -62,7 +62,7 @@ public class ProductServiceComboTests : ProductServiceBaseTest
 			Name = "Test Name",
 			BasePrice = 99.99m,
 		};
-		
+
 		await Service.UpdateComboAsync(dto);
 		var updatedCombo = await Context.Combos
 			.Where(c => c.Id == dto.Id)
@@ -73,7 +73,7 @@ public class ProductServiceComboTests : ProductServiceBaseTest
 				BasePrice = c.BasePrice,
 			})
 			.FirstOrDefaultAsync();
-		
+
 		Assert.IsNotNull(updatedCombo);
 		Assert.AreEqual(dto.Id, updatedCombo.Id);
 		Assert.AreEqual(dto.Name, updatedCombo.Name);
@@ -96,7 +96,7 @@ public class ProductServiceComboTests : ProductServiceBaseTest
 		};
 
 		await Service.UpdateComboAsync(dto);
-		
+
 		var comboProductsCount = await Context.ComboProducts.Where(cp => cp.ComboId == dto.Id).ToArrayAsync();
 		Assert.AreEqual(comboProductsCount.Length, dto.Products.Length);
 
@@ -106,14 +106,14 @@ public class ProductServiceComboTests : ProductServiceBaseTest
 			Assert.AreEqual(comboProductsCount[i].ProductVariantId, dto.Products[i].DefaultVariantId);
 		}
 	}
-	
+
 	[TestMethod]
 	public async Task Delete_ShouldDeleteComboAndReferences_WhenComboExists()
 	{
 		const int comboId = 1;
-		
+
 		await Service.DeleteComboAsync(comboId);
-		
+
 		var combo = await Service.GetComboByIdAsync(comboId);
 		Assert.IsNull(combo);
 
