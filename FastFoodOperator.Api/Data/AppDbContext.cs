@@ -159,7 +159,7 @@ namespace FastFoodOperator.Api.Data
                 .HasOne(p => p.Category)
                 .WithMany()
                 .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
             
             
             // Product Ingredient
