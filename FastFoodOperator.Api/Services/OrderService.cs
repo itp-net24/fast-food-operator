@@ -111,6 +111,7 @@ namespace FastFoodOperator.Api.Services
 				{
 					OrderNumber = await GenerateOrderNumber(),
 					CustomerNote = orderDto.CustomerNote,
+					OrderStatus = OrderStatus.Created,
 				};
 
 				await _context.Orders.AddAsync(order);
@@ -152,11 +153,11 @@ namespace FastFoodOperator.Api.Services
 						decimal additionalPrices = 0;
 
 						foreach (var p in oc.ComboMinimalResponseDto.Products)
-						{
+				{
 							var product = existingComboProducts.FirstOrDefault(prod => prod.Id == p.ProductId);
 
 							if (product == null)
-							{
+				{
 								throw new Exception($"Product with ID {p.ProductId} not found.");
 							}
 
@@ -224,13 +225,14 @@ namespace FastFoodOperator.Api.Services
 
 				return orderDto;
 
-			} 
+			}
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Failed to get order");
 				return new GetOrderDto();
 			}
 		}
+
 		public async Task<List<GetOrderDto>> GetOrders()
 		{
 			try
@@ -267,6 +269,7 @@ namespace FastFoodOperator.Api.Services
 				throw;
 			}
 		}
+
 		public async Task<GetOrdernumbersDto> DisplayOrderNumbers() 
 		{
 			try
@@ -279,7 +282,7 @@ namespace FastFoodOperator.Api.Services
 				var orderNumbersDto = new GetOrdernumbersDto
 				{
 					Orders = orders.Select(o => new OrderStatusDto
-					{
+				{
 						OrderNumber = o.OrderNumber,
 						OrderStatus = o.OrderStatus
 					}).ToList()
