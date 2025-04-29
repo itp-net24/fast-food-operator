@@ -1,6 +1,6 @@
 ﻿namespace FastFoodOperator.Api.DTOs.Product
 {
-	public class ProductMinimalResponseDto
+	public class AddOrderProductMinimalResponseDto
 	{
 		public int? ProductVariantId { get; set; }
 		public int ProductId { get; set; }
