@@ -11,19 +11,19 @@ public class ProductServiceBaseTest
 {
     protected AppDbContext Context;
     protected ProductService Service;
-    
+
     private readonly SqliteConnection _connection;
     private readonly ILogger<ProductService> _logger;
-    
+
     public ProductServiceBaseTest()
     {
         _logger = LoggerFactory.Create(builder =>
         {
             builder.AddDebug();
         }).CreateLogger<ProductService>();
-        
+
         _connection = new SqliteConnection("DataSource=:memory:");
-        
+
         Context = null!;
         Service = null!;
     }
@@ -40,7 +40,7 @@ public class ProductServiceBaseTest
 
         Context = new AppDbContext(options);
         Context.Database.EnsureCreated();
-        
+
         Service = new ProductService(Context, _logger);
     }
 
