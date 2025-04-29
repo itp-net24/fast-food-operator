@@ -24,7 +24,9 @@ const cartStore = useCartStore()
 const {cart} = storeToRefs(cartStore)
 
 function checkOut(){
-  cartStore.checkOut()
+  console.log(textBox.value)
+  cartStore.checkOut(textBox.value)
+  textBox.value = '';
 }
 
 function clearCart(){
@@ -60,13 +62,13 @@ const textBox = ref('')
 
 
   const CartTotal = computed(()=>{
-    return cartStore.cart.cartProducts.reduce((sum, tempProduct) =>{
+    return Math.round(cartStore.cart.cartProducts.reduce((sum, tempProduct) =>{
       return sum + tempProduct.qty * tempProduct.product.basePrice;
     }, 0)
-  });
+  *100) / 100});
 
   const TaxTotal = computed(()=> {
-    return 1.12 * CartTotal.value;
+    return Math.round(1.12 * CartTotal.value *100)/100;
   })
 
 </script>

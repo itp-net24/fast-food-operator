@@ -126,24 +126,43 @@ export const useCartStore = defineStore('cart',{
         localStorage.setItem('cart',JSON.stringify(this.cart))
         },
 
-        checkOut()
+        checkOut(comment:string='')
         {
+          console.log('in the checkout action'+comment)
 
-          let order:OrderDTO = {
-          customerNote: 'Gabriels testing to learn',
-          orderComboDtos: [
-            // {
-            //   comboId: 0,
-            //   quantity: 0
-            // }
-          ],
-          orderProductDtos: [
-            {
-              productId: 0,
-              quantity: 0
-            }
-          ]
-        }
+          let order:AddOrderDTO = {
+            customerNote: comment,
+            orderComboDtos: [
+              {
+                comboMinimalResponseDto: {
+                  products: [
+                    {
+                      productVariantId: number,
+                      productId: number,
+                      ingredientsId: [
+                        number
+                      ],
+                      quantity: number
+                    }
+                  ],
+                  comboId: number,
+                  quantity: number
+                }
+              }
+            ],
+            orderProductDtos: [
+              {
+                productMinimalResponseDto: {
+                  productVariantId: number,
+                  productId: number,
+                  ingredientsId: [
+                    number
+                  ],
+                  quantity: number
+                }
+              }
+            ]
+          }
           console.log(order.orderProductDtos)
 
           console.log(JSON.stringify(order))

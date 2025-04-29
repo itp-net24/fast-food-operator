@@ -1,33 +1,33 @@
 {
-    "customerNote": "string",
-    "orderComboDtos": [
-      {
-        "comboMinimalResponseDto": {
-          "products": [
-            {
-              "productVariantId": 0,
-              "productId": 0,
-              "ingredientsId": [
-                0
-              ],
-              "quantity": 0
-            }
-          ],
-          "comboId": 0,
-          "quantity": 0
-        }
+  "customerNote": "string",
+  "orderComboDtos": [
+    {
+      "comboMinimalResponseDto": {
+        "products": [
+          {
+            "productVariantId": 0,
+            "productId": 0,
+            "ingredientsId": [
+              0
+            ],
+            "quantity": 0
+          }
+        ],
+        "comboId": 0,
+        "quantity": 0
       }
-    ],
-    "orderProductDtos": [
-      {
-        "productMinimalResponseDto": {
-          "productVariantId": 0,
-          "productId": 0,
-          "ingredientsId": [
-            0
-          ],
-          "quantity": 0
-        }
+    }
+  ],
+  "orderProductDtos": [
+    {
+      "productMinimalResponseDto": {
+        "productVariantId": 0,
+        "productId": 0,
+        "ingredientsId": [
+          0
+        ],
+        "quantity": 0
       }
-    ]
-  }
+    }
+  ]
+}
