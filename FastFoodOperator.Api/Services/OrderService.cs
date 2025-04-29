@@ -147,11 +147,13 @@ namespace FastFoodOperator.Api.Services
 		{
 			try
 			{
+				var oneMinuteAgo = DateTime.UtcNow.AddMinutes(-1);
+
 				var completedOrders = await _context.Orders
 					.Include(o => o.OrderProducts)
 					.Include(o => o.OrderCombos)
 					.AsNoTracking()
-					.Where(o => o.OrderStatus == OrderStatus.Completed)
+					.Where(o => o.OrderStatus == OrderStatus.Completed && o.CompletedAt >= oneMinuteAgo)
 					.OrderByDescending(o => o.CompletedAt)
 					.Take(10)
 					.ToListAsync();
