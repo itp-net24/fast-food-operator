@@ -1,6 +1,7 @@
 ﻿using FastFoodOperator.Api.DTOs.Orders;
 using FastFoodOperator.Api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace FastFoodOperator.Api.Controller
 {
@@ -22,17 +23,17 @@ namespace FastFoodOperator.Api.Controller
 		{
 			try
 			{
-				await _orderService.AddOrder(orderDto);
-				return Ok(new { message = "Order added successfully" });
+				var response = await _orderService.AddOrder(orderDto);
+				return Ok(new { message = $"{response}" });
 			}
 			catch (Exception ex)
 			{
-				return BadRequest(new { message = ex.Message });
+				return BadRequest(new { Ordernumber = ex.Message });
 			}
 		}
 
 		[HttpPut("completeOrder")]
-		public async Task<IActionResult> CompleteOrder([FromBody] CompleteOrderDto order)
+		public async Task<IActionResult> CompleteOrder([FromBody] UpdateOrderDto order)
 		{
 			try
 			{
@@ -57,6 +58,35 @@ namespace FastFoodOperator.Api.Controller
 		{
 			var result = await _orderService.GetOrders();
 			return Ok(result);
+		}
+
+		[HttpPut("startOrder")]
+		public async Task<IActionResult> StartOrder([FromBody] UpdateOrderDto order)
+		{
+			try
+			{
+				await _orderService.StartOrder(order);
+				return Ok(new { message = "Order updated successfully" });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex.Message });
+			}
+		}
+
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteOrder(int id)
+		{
+			try
+			{
+				await _orderService.DeleteOrder(id);
+				return NoContent();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Failed to delete product");
+				return BadRequest(ex.Message);
+			}
 		}
 	}
 }

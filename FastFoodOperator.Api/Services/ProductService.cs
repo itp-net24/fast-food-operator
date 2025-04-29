@@ -5,14 +5,17 @@ using FastFoodOperator.Api.DTOs.Ingredient;
 using FastFoodOperator.Api.DTOs.Product;
 using FastFoodOperator.Api.DTOs.ProductVariant;
 using FastFoodOperator.Api.Entities;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace FastFoodOperator.Api.Services;
 
 public class ProductService (AppDbContext context, ILogger<ProductService> logger)
 {
-	#region Combo
-	public async Task<ComboDetailedResponseDto?> GetComboByIdAsync(int id)
+
+	// #region Combo
+	//
+	public async Task<ComboResponseDto?> GetComboByIdAsync(int id)
 	{
 		logger.LogInformation("Fetching products for combo {ComboId}", id);
 		
@@ -21,29 +24,73 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			var combo = await context.Combos
 				.AsNoTracking()
 				.Where(c => c.Id == id)
-				.Include(c => c.ComboProducts)
-				.ThenInclude(cp => cp.Product)
-				.Select(c => new ComboDetailedResponseDto
+				.Select(c => new ComboResponseDto
 				{
 					Id = c.Id,
 					Name = c.Name,
 					BasePrice = c.BasePrice,
-					Products = c.ComboProducts.Select(cp => new ProductResponseDto
+
+					ImageUrl = c.ImageUrl,
+					MainComboProductId = c.MainComboProductId,
+					ComboProducts = c.ComboProducts.Select(sp => new ComboProductResponseDto
 					{
-						Id = cp.ProductId,
-						Name = cp.Product.Name,
-						Description = cp.Product.Description,
-						BasePrice = cp.Product.BasePrice,
-						PictureUrl = cp.Product.PictureUrl
+						Id = sp.Id,
+						DefaultProductVariantId = sp.DefaultVariantId,
+						Product = new ProductResponseDto
+						{
+							Id = sp.Product.Id,
+							Name = sp.Product.Name,
+							Description = sp.Product.Description,
+							BasePrice = sp.Product.BasePrice,
+							ImageUrl = sp.Product.ImageUrl,
+							Variants = sp.Product.Variants.Select(v => new ProductVariantResponseDto
+							{
+								Id = v.Id,
+								Name = v.Name,
+								PriceModifier = v.PriceModifier,
+								ProductId = v.ProductId,
+							}).ToArray(),
+							Ingredients = sp.Product.ProductIngredients.Select(i => new IngredientResponseDto
+							{
+								Id = i.Ingredient.Id,
+								Name = i.Ingredient.Name,
+								PriceModifier = i.Ingredient.PriceModifier
+							}).ToArray()
+						}
+					}).ToArray(),
+					ComboGroups = c.ComboGroups.Select(g => new ComboGroupResponseDto
+					{
+						Id = g.Id,
+						Name = g.Name,
+						DefaultComboProductId = g.DefaultComboProductId,
+						ComboProducts = g.ComboProducts.Select(cp => new ComboProductResponseDto
+						{
+							Id = cp.Id,
+							DefaultProductVariantId = cp.DefaultVariantId,
+							Product = new ProductResponseDto
+							{
+								Id = cp.ProductId,
+								Name = cp.Product.Name,
+								Description = cp.Product.Description,
+								BasePrice = cp.Product.BasePrice,
+								ImageUrl = cp.Product.ImageUrl,
+								Variants = cp.Product.Variants.Select(v => new ProductVariantResponseDto
+								{
+									Id = v.Id,
+									Name = v.Name,
+									PriceModifier = v.PriceModifier,
+								}).ToArray()
+							}
+						}).ToArray()
 					}).ToArray()
 				})
 				.FirstOrDefaultAsync();
-
-			if (combo is null)
-				logger.LogWarning("No combo found with id: {ComboId}", id);
-			else
-				logger.LogInformation("Found combo with id: {ComboId}", id);
-			
+	
+			// if (products.Length == 0)
+			// 	logger.LogWarning("No products found for combo {ComboId}", id);
+			// else
+			// 	logger.LogInformation("Fetched {Count} products for combo {ComboId}", products.Length, id);
+			//
 			return combo;
 		}
 		catch (Exception ex)
@@ -52,7 +99,52 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			throw;
 		}
 	}
-	
+
+	//public async Task UpdateComboAsync(ComboUpdateDto dto)
+	//{
+	//	logger.LogInformation("Updating combo with ID: {ComboId}", dto.Id);
+
+	//	try
+	//	{
+	//		var combo = await context.Combos
+	//			.Include(c => c.ComboProducts)
+	//			.FirstOrDefaultAsync(c => c.Id == dto.Id);
+
+	//		if (combo is null)
+	//		{
+	//			logger.LogWarning("Combo with ID {ComboId} not found", dto.Id);
+	//			return;
+	//		}
+
+	//		combo.Name = dto.Name ?? combo.Name;
+	//		combo.BasePrice = dto.BasePrice ?? combo.BasePrice;
+
+	//		var existingProducts = combo.ComboProducts.ToHashSet();
+	//		var newProducts = dto.Products
+	//			.Select(p => new ComboProduct
+	//			{
+	//				ComboId = combo.Id,
+	//				ProductId = p.ProductId,
+	//				ProductVariantId = p.VariantId
+	//			}).ToHashSet();
+
+	//		var productsToRemove = existingProducts.Except(newProducts);
+	//		var productsToAdd = newProducts.Except(existingProducts);
+
+	//		context.ComboProducts.RemoveRange(productsToRemove);
+	//		context.ComboProducts.AddRange(productsToAdd);
+
+	//		await context.SaveChangesAsync();
+
+	//		logger.LogInformation("Successfully updated combo {ComboId}", dto.Id);
+	//	}
+	//	catch (Exception ex)
+	//	{
+	//		logger.LogError(ex, "Error fetching products for combo {ComboId}", id);
+	//		throw;
+	//	}
+	//}
+
 	public async Task<ComboResponseDto[]> GetCombosAsync(int limit = 5, int offset = 0)
 	{
 		logger.LogInformation("Fetching combos with limit {Limit} and offset {Offset}", limit, offset);
@@ -71,12 +163,12 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 					BasePrice = c.BasePrice,
 				})
 				.ToArrayAsync();
-			
+
 			if (combos.Length == 0)
 				logger.LogWarning("No combos found");
 			else
 				logger.LogInformation("Fetched {Count} combos", combos.Length);
-			
+
 			return combos;
 		}
 		catch (Exception)
@@ -85,186 +177,194 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			throw;
 		}
 	}
+	// public async Task<ComboResponseDto[]> GetCombosByProductIdAsync(int productId)
+	// {
+	// 	logger.LogInformation("Fetching combos for product {ProductId}", productId);
+	//
+	// 	try
+	// 	{
+	// 		var combos = await context.ComboProducts
+	// 			.AsNoTracking()
+	// 			.Where(c => c.ProductId == productId)
+	// 			.Include(cp => cp.Combo)
+	// 			.Select(cp => new ComboResponseDto
+	// 			{
+	// 				Id = cp.ComboId,
+	// 				Name = cp.Combo.Name,
+	// 				BasePrice = cp.Combo.BasePrice,
+	// 			})
+	// 			.ToArrayAsync();
+	// 		
+	// 		if (combos.Length == 0)
+	// 			logger.LogWarning("No combos found for product {ProductId}", productId);
+	// 		else
+	// 			logger.LogInformation("Fetched {Count} combos for product {ProductId}", combos.Length, productId);
+	//
+	// 		return combos;
+	// 	}
+	// 	catch (Exception ex)
+	// 	{
+	// 		logger.LogError(ex, "Error fetching combos for product {ProductId}", productId);
+	// 		throw;
+	// 	}
+	// }
+	//
+	// public async Task CreateComboAsync(ComboCreateDto dto)
+	// {
+	// 	logger.LogInformation("Creating a new combo: {ComboName}", dto.Name);
+	// 	
+	// 	await using var transaction = await context.Database.BeginTransactionAsync();
+	// 	try
+	// 	{
+	// 		var combo = new Combo
+	// 		{
+	// 			Name = dto.Name,
+	// 			BasePrice = dto.BasePrice
+	// 		};
+	//
+	// 		context.Combos.Add(combo);
+	//
+	// 		var products = dto.Products.Select(p => new ComboProduct
+	// 		{
+	// 			ComboId = combo.Id,
+	// 			ProductId = p.ProductId,
+	// 			ProductVariantId = p.DefaultVariantId
+	// 		}).ToArray();
+	//
+	// 		context.ComboProducts.AddRange(products);
+	//
+	// 		await context.SaveChangesAsync();
+	// 		await transaction.CommitAsync();
+	// 		
+	// 		logger.LogInformation("Successfully created combo: {ComboId}", combo.Id);
+	// 	}
+	// 	catch (Exception ex)
+	// 	{
+	// 		logger.LogError(ex, "Failed to create combo: {ComboName}", dto.Name);	
+	// 		
+	// 		await transaction.RollbackAsync();
+	// 		throw;
+	// 	}
+	// }
+	//
+	// public async Task UpdateComboAsync(ComboUpdateDto dto)
+	// {
+	// 	logger.LogInformation("Updating combo with ID: {ComboId}", dto.Id);
+	//
+	// 	try
+	// 	{
+	// 		var combo = await context.Combos
+	// 			.Include(c => c.ComboProducts)
+	// 			.FirstOrDefaultAsync(c => c.Id == dto.Id);
+	//
+	// 		if (combo is null)
+	// 		{
+	// 			logger.LogWarning("Combo with ID {ComboId} not found", dto.Id);
+	// 			return;
+	// 		}
+	//
+	// 		combo.Name = dto.Name ?? combo.Name;
+	// 		combo.BasePrice = dto.BasePrice ?? combo.BasePrice;
+	//
+	// 		var existingProducts = combo.ComboProducts.ToHashSet();
+	// 		var newProducts = dto.Products
+	// 			.Select(p => new ComboProduct
+	// 			{
+	// 				ComboId = combo.Id,
+	// 				ProductId = p.ProductId,
+	// 				ProductVariantId = p.VariantId
+	// 			}).ToHashSet();
+	//
+	// 		var productsToRemove = existingProducts.Except(newProducts);
+	// 		var productsToAdd = newProducts.Except(existingProducts);
+	//
+	// 		context.ComboProducts.RemoveRange(productsToRemove);
+	// 		context.ComboProducts.AddRange(productsToAdd);
+	//
+	// 		await context.SaveChangesAsync();
+	//
+	// 		logger.LogInformation("Successfully updated combo {ComboId}", dto.Id);
+	// 	}
+	// 	catch (Exception ex)
+	// 	{
+	// 		logger.LogError(ex, "Failed to update combo: {ComboId}", dto.Id);
+	// 		throw;
+	// 	}
+	// }
+	//
+	// public async Task DeleteComboAsync(int id)
+	// {
+	// 	logger.LogInformation("Deleting combo with ID: {ComboId}", id);
+	// 	var combo = new Combo { Id = id };
+	//
+	// 	try
+	// 	{
+	// 		context.Combos.Remove(combo);
+	// 		await context.SaveChangesAsync();
+	// 		logger.LogInformation("Successfully deleted combo: {ComboId}", id);
+	// 	}
+	// 	catch (Exception ex)
+	// 	{
+	// 		logger.LogError(ex, "Failed to delete combo: {ComboId}", id);
+	// 		throw;
+	// 	}
+	// }
+	// #endregion
 
-	public async Task<ComboResponseDto[]> GetCombosByProductIdAsync(int productId)
-	{
-		logger.LogInformation("Fetching combos for product {ProductId}", productId);
-
-		try
-		{
-			var combos = await context.ComboProducts
-				.AsNoTracking()
-				.Where(c => c.ProductId == productId)
-				.Include(cp => cp.Combo)
-				.Select(cp => new ComboResponseDto
-				{
-					Id = cp.ComboId,
-					Name = cp.Combo.Name,
-					BasePrice = cp.Combo.BasePrice,
-				})
-				.ToArrayAsync();
-			
-			if (combos.Length == 0)
-				logger.LogWarning("No combos found for product {ProductId}", productId);
-			else
-				logger.LogInformation("Fetched {Count} combos for product {ProductId}", combos.Length, productId);
-
-			return combos;
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Error fetching combos for product {ProductId}", productId);
-			throw;
-		}
-	}
-	
-	public async Task<ComboResponseDto?> CreateComboAsync(ComboCreateDto dto)
-	{
-		logger.LogInformation("Creating a new combo: {ComboName}", dto.Name);
-		
-		await using var transaction = await context.Database.BeginTransactionAsync();
-		try
-		{
-			var combo = new Combo
-			{
-				Name = dto.Name,
-				BasePrice = dto.BasePrice
-			};
-
-			context.Combos.Add(combo);
-			await context.SaveChangesAsync();
-
-			var products = dto.Products.Select(p => new ComboProduct
-			{
-				ComboId = combo.Id,
-				ProductId = p.ProductId,
-				ProductVariantId = p.DefaultVariantId
-			}).ToArray();
-
-			context.ComboProducts.AddRange(products);
-
-			await context.SaveChangesAsync();
-			await transaction.CommitAsync();
-			
-			logger.LogInformation("Successfully created combo: {ComboId}", combo.Id);
-
-			var response = new ComboResponseDto
-			{
-				Id = combo.Id,
-				Name = combo.Name,
-				BasePrice = combo.BasePrice,
-			};
-			
-			return response;
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Failed to create combo: {ComboName}", dto.Name);	
-			
-			await transaction.RollbackAsync();
-			throw;
-		}
-	}
-
-	public async Task UpdateComboAsync(ComboUpdateDto dto)
-	{
-		logger.LogInformation("Updating combo with ID: {ComboId}", dto.Id);
-
-		try
-		{
-			var combo = await context.Combos
-				.Include(c => c.ComboProducts)
-				.FirstOrDefaultAsync(c => c.Id == dto.Id);
-
-			if (combo is null)
-			{
-				logger.LogWarning("Combo with ID {ComboId} not found", dto.Id);
-				return;
-			}
-
-			combo.Name = dto.Name ?? combo.Name;
-			combo.BasePrice = dto.BasePrice ?? combo.BasePrice;
-
-			var existingProducts = combo.ComboProducts.ToHashSet();
-			var newProducts = dto.Products
-				.Select(p => new ComboProduct
-				{
-					ComboId = combo.Id,
-					ProductId = p.ProductId,
-					ProductVariantId = p.DefaultVariantId
-				}).ToHashSet();
-
-			var productsToRemove = existingProducts.Except(newProducts);
-			var productsToAdd = newProducts.Except(existingProducts);
-
-			context.ComboProducts.RemoveRange(productsToRemove);
-			context.ComboProducts.AddRange(productsToAdd);
-
-			await context.SaveChangesAsync();
-
-			logger.LogInformation("Successfully updated combo {ComboId}", dto.Id);
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Failed to update combo: {ComboId}", dto.Id);
-			throw;
-		}
-	}
-
-	public async Task DeleteComboAsync(int id)
-	{
-		logger.LogInformation("Deleting combo with ID: {ComboId}", id);
-		var combo = new Combo { Id = id };
-
-		try
-		{
-			context.Combos.Remove(combo);
-			await context.SaveChangesAsync();
-			logger.LogInformation("Successfully deleted combo: {ComboId}", id);
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Failed to delete combo: {ComboId}", id);
-			throw;
-		}
-	}
-	#endregion
 
 	#region Product
 
 	public async Task<ProductResponseDto?> GetProductByIdAsync(int id)
 	{
-		logger.LogInformation("Fetching product with {ProductId}: ", id);
+		logger.LogInformation("Fetching product with ID: {ProductId}", id);
 
 		try
 		{
 			var product = await context.Products
 				.AsNoTracking()
+				.Where(p => p.Id == id)
+				.Include(p => p.ProductIngredients)
+				.ThenInclude(pi => pi.Ingredient)
 				.Select(p => new ProductResponseDto 
 				{
-                    Id = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                    BasePrice = p.BasePrice,
-                    CategoryId = p.CategoryId,
-					PictureUrl = p.PictureUrl
-                })
-				.FirstOrDefaultAsync(p => p.Id == id);
+					Id = p.Id,
+					Name = p.Name,
+					Description = p.Description,
+					BasePrice = p.BasePrice,
+					ImageUrl = p.ImageUrl,
+					Variants = p.Variants.Select(v => new ProductVariantResponseDto
+					{
+						Id = v.Id,
+						Name = v.Name,
+						PriceModifier = v.PriceModifier,
+						ProductId = v.ProductId
+					}).ToArray(),
+					Ingredients = p.ProductIngredients.Select(pi => new IngredientResponseDto
+					{
+						Id = pi.IngredientId,
+						Name = pi.Ingredient.Name,
+						PriceModifier = pi.Ingredient.PriceModifier
+					}).ToArray()
+				})
+				.FirstOrDefaultAsync();
 
 
 			if (product == null)
 			{
-				logger.LogError("Product with Id {ProductId} was not found", id);
+				logger.LogError("Product with ID: {ProductID} was not found", id);
 				return null;
 			}
 
-			logger.LogInformation("Successfully fetched product: {ProductId}", id);
-            return product;
+			logger.LogInformation("Product with ID: {ProductId} has been found", id);
+			return product;
 
-        }	
+
+		}	
 		catch (Exception ex)
 		{
-			logger.LogError(ex, "Error fetching product with id: {ProductId}", id);
+
+			logger.LogError(ex, "Error fetching product with ID: {ProductId}", id);
+
 			throw;
 		}
 	}
@@ -286,7 +386,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 					Name = p.Name,
 					Description = p.Description,
 					BasePrice = p.BasePrice,
-					PictureUrl= p.PictureUrl
+					ImageUrl= p.ImageUrl
 				})
 				.ToArrayAsync();
 			
@@ -299,8 +399,8 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		}
 		catch (Exception ex)
 		{
-			 logger.LogError(ex, "Error fetching products with limit {Limit} and offset {Offset}", limit, offset);
-			 throw;
+			logger.LogError(ex, "Error fetching products with limit {Limit} and offset {Offset}", limit, offset);
+			throw;
 		}
 	}
 
@@ -322,7 +422,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 					Name = p.Name,
 					Description = p.Description,
 					BasePrice = p.BasePrice,
-					PictureUrl = p.PictureUrl
+					ImageUrl = p.ImageUrl
 				})
 				.ToArrayAsync();
 
@@ -335,8 +435,8 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		}
 		catch (Exception ex)
 		{
-			 logger.LogError(ex, "Error fetching products for category {CategoryId} with limit {Limit} and offset {Offset}", categoryId, limit, offset);
-			 throw;
+			logger.LogError(ex, "Error fetching products for category {CategoryId} with limit {Limit} and offset {Offset}", categoryId, limit, offset);
+			throw;
 		}
 	}
 
@@ -353,7 +453,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				Description = dto.Description,
 				BasePrice = dto.BasePrice,
 				CategoryId = dto.CategoryId,
-				PictureUrl = dto.PictureUrl
+				ImageUrl = dto.PictureUrl
 			};
 
 			context.Products.Add(product);
@@ -380,8 +480,8 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				Name = product.Name,
 				Description = product.Description,
 				BasePrice = product.BasePrice,
-				PictureUrl = product.PictureUrl,
-				CategoryId = product.CategoryId
+				ImageUrl = product.ImageUrl
+
 			};
 		}
 		catch (Exception ex)
@@ -411,7 +511,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 			product.Name = dto.Name ?? product.Name;
 			product.Description = dto.Description ?? product.Description;
 			product.BasePrice = dto.BasePrice ?? product.BasePrice;
-			product.PictureUrl = dto.PictureUrl ?? product.PictureUrl;
+			product.ImageUrl = dto.PictureUrl ?? product.ImageUrl;
 
 			var existingIngredients = product.ProductIngredients.ToHashSet();
 			var newIngredients = dto.Ingredients
@@ -474,7 +574,6 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				{
 					Id = v.Id,
 					Name = v.Name,
-					Description = v.Description,
 					ProductId = v.ProductId,
 					PriceModifier = v.PriceModifier
 				})
@@ -529,7 +628,6 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				Id = variant.Id,
 				ProductId = variant.ProductId,
 				Name = variant.Name,
-				Description = variant.Description,
 				PriceModifier = variant.PriceModifier,
 			};
 		}
@@ -620,6 +718,40 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 	#endregion
 
 	#region Ingredient
+	public async Task<IngredientResponseDto?> GetIngredientByIdAsync(int id)
+	{
+		logger.LogInformation("Fetching ingredient with ID: {IngredientId}", id);
+
+		try
+		{
+			var product = await context.Ingredients
+				.AsNoTracking()
+				.Where(i => i.Id == id)
+				.Select(p => new IngredientResponseDto
+				{
+					Id = p.Id,
+					Name = p.Name,
+					PriceModifier = p.PriceModifier
+				})
+				.FirstOrDefaultAsync();
+
+			if (product is null)
+			{
+				logger.LogError("Ingredient with ID: {IngredientId} was not found", id);
+				return null;
+			}
+
+			logger.LogInformation("Ingredient with ID: {IngredientId} has been found", id);
+			return product;
+
+		}	
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Error fetching ingredient with ID: {IngredientId}", id);
+			throw;
+		}
+	}
+	
 	public async Task<IngredientResponseDto[]> GetIngredientsAsync(int limit = 5, int offset = 0)
 	{
 		logger.LogInformation("Fetching ingredients with limit {Limit} and offset {Offset}", limit, offset);
@@ -766,34 +898,34 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 	
 	public async Task<CategoryResponseDto[]> GetCategoriesAsync(int limit = 5, int offset = 0)
 	{
-			logger.LogInformation("Fetching categories with limit {Limit} and offset {Offset}", limit, offset);
+		logger.LogInformation("Fetching categories with limit {Limit} and offset {Offset}", limit, offset);
         
-        		try
-        		{
-        			var categories = await context.Categories
-        				.AsNoTracking()
-        				.OrderBy(c => c.Id)
-        				.Skip(offset)
-        				.Take(limit)
-        				.Select(p => new CategoryResponseDto
-        				{
-        					Id = p.Id,
-        					Name = p.Name,
-        				})
-        				.ToArrayAsync();
+		try
+		{
+			var categories = await context.Categories
+				.AsNoTracking()
+				.OrderBy(c => c.Id)
+				.Skip(offset)
+				.Take(limit)
+				.Select(p => new CategoryResponseDto
+				{
+					Id = p.Id,
+					Name = p.Name,
+				})
+				.ToArrayAsync();
 			        
-			        if (categories.Length == 0)
-				        logger.LogWarning("No categories found");
-			        else
-				        logger.LogInformation("Fetched {Count} categories", categories.Length);
+			if (categories.Length == 0)
+				logger.LogWarning("No categories found");
+			else
+				logger.LogInformation("Fetched {Count} categories", categories.Length);
         			
-        			return categories;
-        		}
-        		catch (Exception ex)
-        		{
-        			 logger.LogError(ex, "Error fetching products with limit {Limit} and offset {Offset}", limit, offset);
-        			 throw;
-        		}
+			return categories;
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Error fetching products with limit {Limit} and offset {Offset}", limit, offset);
+			throw;
+		}
 	}
 
 	public async Task<CategoryResponseDto> CreateCategoryAsync(CategoryCreateDto dto)

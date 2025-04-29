@@ -20,7 +20,23 @@ namespace FastFoodOperator.Api
                 builder.Configuration.AddUserSecrets<Program>();
             }
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
+                });
+
+            // Cors service
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowVue",
+                    policy =>
+                    {
+                        policy.WithOrigins("https://localhost:5173") // Port for vue app
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
 
 
             builder.Services.AddEndpointsApiExplorer();
@@ -31,10 +47,8 @@ namespace FastFoodOperator.Api
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            builder.Services.AddScoped<ProductService>();
-
             builder.Services.AddScoped<IOrderService, OrderService>();
-
+            builder.Services.AddScoped<ProductService>();
 
             // Configure middlewares
             var app = builder.Build();
@@ -46,9 +60,12 @@ namespace FastFoodOperator.Api
                 app.UseSwaggerUI();
             }
 
+            app.UseCors("AllowLocalhost");
 
             app.UseHttpsRedirection();
-            app.MapControllers();
+            
+            // Activating cors service
+            app.UseCors("AllowVue");
 
             app.MapControllers();
 

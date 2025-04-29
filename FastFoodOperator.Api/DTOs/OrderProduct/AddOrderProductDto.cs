@@ -1,8 +1,9 @@
-﻿namespace FastFoodOperator.Api.DTOs.OrderProduct
+﻿using FastFoodOperator.Api.DTOs.Product;
+
+namespace FastFoodOperator.Api.DTOs.OrderProduct
 {
 	public class AddOrderProductDto
 	{
-		public int ProductId { get; set; }
-		public int Quantity { get; set; }
+		public AddOrderProductMinimalResponseDto ProductMinimalResponseDto { get; set; } = null!;
 	}
 }
