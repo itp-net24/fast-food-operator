@@ -7,35 +7,6 @@ namespace FastFoodOperator.Api.Controller;
 
 [ApiController]
 [Route("api/[controller]")]
-<<<<<<< HEAD
-public class ProductController(ProductService service, ILogger<ProductController> logger) : ControllerBase
-{
-	[HttpGet("{id}")]
-	public async Task<IActionResult> GetProduct(int id)
-	{
-		try
-		{
-			var product = await service.GetProductByIdAsync(id);
-			if (product is null)
-			{
-				logger.LogError($"Could not find a product with this id: {id} product is null");
-				return NotFound();
-			}
-
-			return Ok(product);
-			
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Could not find a product with this id");
-			return BadRequest(ex.Message);
-		}
-	}
-
-    [HttpGet]
-	public async Task<IActionResult> GetProducts([FromQuery] PaginationParams pagination)
-	{
-=======
 public class ProductController(ProductService service) : ControllerBase
 {
 	/// <summary>
@@ -81,54 +52,11 @@ public class ProductController(ProductService service) : ControllerBase
 		if (!ModelState.IsValid)
 			return BadRequest(ModelState);
 		
->>>>>>> develop
 		try
 		{
 			var products = await service.GetProductsAsync(pagination.Limit, pagination.Offset);
 			return Ok(products);
 		}
-<<<<<<< HEAD
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Failed to get products");
-			return BadRequest(ex.Message);
-		}
-	}
-
-	[HttpGet("GetProductsByCategory")]
-	public async Task<IActionResult> GetProductsByCategory([FromQuery] PaginationParams pagination, int id)
-	{
-		try
-		{
-			var products = await service.GetProductsByCategoryIdAsync(id, pagination.Limit, pagination.Offset);
-			return Ok(products);
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, $"Failed to get products with Categroy {id}");
-			return BadRequest(ex.Message);
-		}
-	}
-
-	[HttpPost]
-	public async Task<IActionResult> AddProduct([FromBody] ProductCreateDto dto)
-	{
-		try
-		{
-			var createdProduct = await service.CreateProductAsync(dto);
-			return CreatedAtAction(nameof(AddProduct), new { id = createdProduct.Id });
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Failed to create product, {ProductName}", dto.Name);
-			return BadRequest(ex.Message);
-		}
-	}
-
-	[HttpPut]
-	public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateDto dto)
-	{
-=======
 		catch (Exception)
 		{
 			return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occured");
@@ -180,24 +108,11 @@ public class ProductController(ProductService service) : ControllerBase
 		if (!ModelState.IsValid)
 			return BadRequest(ModelState);
 		
->>>>>>> develop
 		try
 		{
 			await service.UpdateProductAsync(dto);
 			return NoContent();
 		}
-<<<<<<< HEAD
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Failed to update product, {ProductName}", dto.Name);
-			return BadRequest(ex.Message);
-		}
-	}
-	
-	[HttpDelete("{id}")]
-	public async Task<IActionResult> DeleteProduct(int id)
-	{
-=======
 		catch (Exception)
 		{
 			return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occured");
@@ -221,25 +136,14 @@ public class ProductController(ProductService service) : ControllerBase
 		if (!ModelState.IsValid)
 			return BadRequest(ModelState);
 		
->>>>>>> develop
 		try
 		{
 			await service.DeleteProductAsync(id);
 			return NoContent();
 		}
-<<<<<<< HEAD
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Failed to delete product");
-			return BadRequest(ex.Message);
-		}
-	}
-}
-=======
 		catch (Exception)
 		{
 			return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occured");
 		}
 	}
 }
->>>>>>> develop

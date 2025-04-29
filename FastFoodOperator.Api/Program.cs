@@ -2,10 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.Services;
 using FastFoodOperator.Api.Interfaces;
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
 
 namespace FastFoodOperator.Api
 {
@@ -40,10 +36,6 @@ namespace FastFoodOperator.Api
                             .AllowAnyMethod();
                     });
             });
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -83,13 +83,9 @@ namespace FastFoodOperator.Api.Data.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     BasePrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.cs
-                    PictureUrl = table.Column<string>(type: "varchar(2048)", unicode: false, maxLength: 2048, nullable: true)
-========
                     ImageUrl = table.Column<string>(type: "varchar(2048)", unicode: false, maxLength: 2048, nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     DefaultVariantId = table.Column<int>(type: "int", nullable: true)
->>>>>>>> develop:FastFoodOperator.Api/Data/Migrations/20250429192017_InitialCreate.cs
                 },
                 constraints: table =>
                 {
@@ -110,10 +106,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
                     ComboName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.cs
-========
                     Products = table.Column<string>(type: "nvarchar(max)", nullable: false),
->>>>>>>> develop:FastFoodOperator.Api/Data/Migrations/20250429192017_InitialCreate.cs
                     FinalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
@@ -138,11 +131,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FinalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.cs
-                    ProductIngredients = table.Column<string>(type: "nvarchar(max)", nullable: true)
-========
                     Ingredients = table.Column<string>(type: "nvarchar(max)", nullable: false)
->>>>>>>> develop:FastFoodOperator.Api/Data/Migrations/20250429192017_InitialCreate.cs
                 },
                 constraints: table =>
                 {
@@ -329,51 +318,6 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "OrderCombos",
-<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.cs
-                columns: new[] { "Id", "ComboName", "FinalPrice", "OrderId", "Quantity" },
-                values: new object[,]
-                {
-                    { 1, "Bajs och kiss", 0m, 1, 1 },
-                    { 2, "Ägg och bacon", 0m, 2, 2 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "OrderProducts",
-                columns: new[] { "Id", "FinalPrice", "OrderId", "ProductIngredients", "ProductName", "Quantity" },
-                values: new object[,]
-                {
-                    { 1, 0m, 1, "[]", "Bajskorv", 1 },
-                    { 2, 0m, 1, "[]", "Skurhinksmilkshake", 2 },
-                    { 3, 0m, 2, "[]", "Pannkakor", 3 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Products",
-                columns: new[] { "Id", "BasePrice", "CategoryId", "Description", "Name", "PictureUrl" },
-                values: new object[,]
-                {
-                    { 1, 5.99m, 1, "A classic cheeseburger", "Cheeseburger", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s" },
-                    { 2, 1.99m, 2, "Refreshing soda", "Coke", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s" },
-                    { 3, 2.99m, 3, "Crispy golden fries", "French Fries", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s" },
-                    { 4, 5.99m, 1, "Grilled beef patty with melted cheddar, lettuce, tomato & onion", "Classic Cheeseburger", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s" },
-                    { 5, 7.49m, 1, "Two beef patties, smoked bacon, American cheese, pickles & secret sauce", "Bacon Double Burger", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s" },
-                    { 6, 6.99m, 1, "Beef patty smothered in sautéed mushrooms and Swiss cheese", "Mushroom Swiss Burger", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s" },
-                    { 7, 6.79m, 1, "Peppered beef patty with pepper jack cheese, jalapeños & chipotle mayo", "Spicy Jalapeño Burger", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s" },
-                    { 8, 7.19m, 1, "Beef patty topped with crispy onion rings, cheddar & tangy BBQ sauce", "BBQ Onion Ring Burger", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s" },
-                    { 9, 6.49m, 1, "House-made black bean patty with avocado, lettuce & pico de gallo", "Black Bean Veggie Burger", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "ComboProducts",
-                columns: new[] { "ComboId", "ProductId", "ProductVariantId" },
-                values: new object[,]
-                {
-                    { 1, 1, null },
-                    { 2, 1, null }
-                });
-
-            migrationBuilder.InsertData(
-========
                 columns: new[] { "Id", "ComboName", "FinalPrice", "OrderId", "Products", "Quantity" },
                 values: new object[,]
                 {
@@ -418,7 +362,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
->>>>>>>> develop:FastFoodOperator.Api/Data/Migrations/20250429192017_InitialCreate.cs
                 table: "ProductIngredients",
                 columns: new[] { "IngredientId", "ProductId", "Required" },
                 values: new object[,]
@@ -480,14 +423,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.cs
-                name: "IX_ComboProducts_ProductVariantId",
-                table: "ComboProducts",
-                column: "ProductVariantId");
-
-            migrationBuilder.CreateIndex(
-========
->>>>>>>> develop:FastFoodOperator.Api/Data/Migrations/20250429192017_InitialCreate.cs
                 name: "IX_OrderCombos_OrderId",
                 table: "OrderCombos",
                 column: "OrderId");
@@ -541,9 +476,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                 name: "ProductIngredients");
 
             migrationBuilder.DropTable(
-<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.cs
-                name: "Combos");
-========
                 name: "Orders");
 
             migrationBuilder.DropTable(
@@ -554,10 +486,9 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "ComboGroup");
->>>>>>>> develop:FastFoodOperator.Api/Data/Migrations/20250429192017_InitialCreate.cs
 
             migrationBuilder.DropTable(
-                name: "ProductVariants");
+                name: "Combos");
 
             migrationBuilder.DropTable(
                 name: "ProductVariants");

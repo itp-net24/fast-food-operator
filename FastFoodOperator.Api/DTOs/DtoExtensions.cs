@@ -22,19 +22,6 @@ namespace FastFoodOperator.Api.DTOs
 				OrderStatus = order.OrderStatus,
 				OrderProducts = order.OrderProducts.Select(op => new OrderProductDto
 				{
-<<<<<<< HEAD
-					ProductName = op.ProductName, 
-					Quantity = op.Quantity,
-					Ingredients = op.ProductIngredients
-				}).ToList(),
-				OrderCombos = order.OrderCombos.Select(oc => new OrderComboDto
-				{
-					ComboName = oc.ComboName,  
-					Quantity = oc.Quantity,
-				}).ToList()
-			};
-
-=======
 					ProductName = op.ProductName,
 					Quantity = op.Quantity,
 					Ingredients = op.Ingredients
@@ -45,15 +32,10 @@ namespace FastFoodOperator.Api.DTOs
 					Quantity = oc.Quantity,
 				}).ToList()
 			};
->>>>>>> develop
 			return orderDto;
 		}
 
 	}
 
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> develop

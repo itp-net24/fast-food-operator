@@ -20,24 +20,41 @@ namespace FastFoodOperator.Api.Data
 			);
 			
 			modelBuilder.Entity<Product>().HasData(
-<<<<<<< HEAD
-				new Product { Id = 1, Name = "Cheeseburger", Description = "A classic cheeseburger", BasePrice = 5.99m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
-				new Product { Id = 2, Name = "Coke", Description = "Refreshing soda", BasePrice = 1.99m, CategoryId = 2, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
-				new Product { Id = 3, Name = "French Fries", Description = "Crispy golden fries", BasePrice = 2.99m, CategoryId = 3, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
-				new Product { Id = 4, Name = "Classic Cheeseburger", Description = "Grilled beef patty with melted cheddar, lettuce, tomato & onion", BasePrice = 5.99m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
-				new Product { Id = 5, Name = "Bacon Double Burger", Description = "Two beef patties, smoked bacon, American cheese, pickles & secret sauce", BasePrice = 7.49m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
-				new Product { Id = 6, Name = "Mushroom Swiss Burger", Description = "Beef patty smothered in sautéed mushrooms and Swiss cheese", BasePrice = 6.99m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
-				new Product { Id = 7, Name = "Spicy Jalapeño Burger", Description = "Peppered beef patty with pepper jack cheese, jalapeños & chipotle mayo", BasePrice = 6.79m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
-				new Product { Id = 8, Name = "BBQ Onion Ring Burger", Description = "Beef patty topped with crispy onion rings, cheddar & tangy BBQ sauce", BasePrice = 7.19m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"  },
-				new Product { Id = 9, Name = "Black Bean Veggie Burger", Description = "House-made black bean patty with avocado, lettuce & pico de gallo", BasePrice = 6.49m, CategoryId = 1, PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s" }
+				new Product { Id = 1, Name = "Cheeseburger", Description = "A classic cheeseburger", BasePrice = 14.99m, CategoryId = 1, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-cheeseburger-NEW:nutrition-calculator-tile" },
+				new Product { Id = 2, Name = "Big Mac", Description = "A classic big mac", BasePrice = 64.99m, CategoryId = 1, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-bigmac-NY2:nutrition-calculator-tile"},
+				new Product { Id = 3, Name = "Coca-Cola", Description = "Refreshing soda", BasePrice = 9.99m, CategoryId = 2, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-cocacola-original-medium:nutrition-calculator-tile" },
+				new Product { Id = 4, Name = "Coca-Cola Zero", Description = "Refreshing soda", BasePrice = 9.99m, CategoryId = 2, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-cocacola-original-medium:nutrition-calculator-tile" },
+				new Product { Id = 5, Name = "French Fries", Description = "Crispy golden fries", BasePrice = 19.99m, CategoryId = 3, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-accessories-french-fries-mellan2:nutrition-calculator-tile" },
+				new Product { Id = 6, Name = "Chicken Nuggets", Description = "Crispy nuggies", BasePrice = 39.99m, CategoryId = 3, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-chicken-mcnuggets-4p-NEW:nutrition-calculator-tile" },
+new Product { Id = 7,  Name = "Double Cheeseburger",     Description = "Two beef patties with cheese",                BasePrice = 35.00m,  CategoryId = 1, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-doublecheeseburger:nutrition-calculator-tile" },
+new Product { Id = 8,  Name = "Triple Cheeseburger",     Description = "Triple-stacked cheesy classic",              BasePrice = 51.00m,  CategoryId = 1, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-triplecheeseburger:nutrition-calculator-tile" },
+new Product { Id = 9,  Name = "Quarter Pounder Cheese",  Description = "¼-lb beef, cheese & onions",                 BasePrice = 80.00m,  CategoryId = 1, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-qpcheese:nutrition-calculator-tile" },
+new Product { Id = 10, Name = "McFeast",                 Description = "Swedish McD classic with fresh veggies",     BasePrice = 77.00m,  CategoryId = 1, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-mcfeast:nutrition-calculator-tile" },
+new Product { Id = 11, Name = "Chili Bearnaise",         Description = "Beef, bacon & chili béarnaise sauce",        BasePrice = 67.00m,  CategoryId = 1, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-chilibearnaise:nutrition-calculator-tile" },
+new Product { Id = 12, Name = "Tasty Burger",            Description = "Emmentaler, red onion & Tasty sauce",        BasePrice = 79.00m,  CategoryId = 1, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-tasty:nutrition-calculator-tile" },
+new Product { Id = 13, Name = "Tasty Bacon",             Description = "Tasty with crispy bacon",                    BasePrice = 105.00m, CategoryId = 1, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-tasty-bacon:nutrition-calculator-tile" },
+new Product { Id = 14, Name = "McCrispy",                Description = "Crispy chicken fillet sandwich",             BasePrice = 83.00m,  CategoryId = 1, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-mccrispy:nutrition-calculator-tile" },
+new Product { Id = 15, Name = "McCrispy Spicy",          Description = "McCrispy with spicy sambal sauce",           BasePrice = 95.00m,  CategoryId = 1, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-mccrispy-spicy:nutrition-calculator-tile" },
+new Product { Id = 16, Name = "McChicken",               Description = "Classic mayo & lettuce chicken burger",      BasePrice = 63.00m,  CategoryId = 1, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-mcchicken:nutrition-calculator-tile" },
 
-=======
-				new Product { Id = 1, Name = "Cheeseburger", Description = "A classic cheeseburger", BasePrice = 14.99m, CategoryId = 1 },
-				new Product { Id = 2, Name = "Big Mac", Description = "A classic big mac", BasePrice = 29.99m, CategoryId = 1 },
-				new Product { Id = 3, Name = "Coke", Description = "Refreshing soda", BasePrice = 1.99m, CategoryId = 2 },
-				new Product { Id = 4, Name = "Pepsi", Description = "Refreshing soda", BasePrice = 1.99m, CategoryId = 2 },
-				new Product { Id = 5, Name = "French Fries", Description = "Crispy golden fries", BasePrice = 2.99m, CategoryId = 3 },
-				new Product { Id = 6, Name = "Chicken Nuggets", Description = "Crispy nuggies", BasePrice = 2.99m, CategoryId = 3 }
+new Product { Id = 17, Name = "Fanta",                   Description = "Orange soda",                                BasePrice = 24.00m,  CategoryId = 2, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-fanta-medium:nutrition-calculator-tile" },
+new Product { Id = 18, Name = "Fanta Exotic",            Description = "Tropical fruit soda",                         BasePrice = 24.00m,  CategoryId = 2, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-fanta-exotic-medium:nutrition-calculator-tile" },
+new Product { Id = 19, Name = "Sprite Zero Sugar",       Description = "Sugar-free lemon-lime soda",                 BasePrice = 24.00m,  CategoryId = 2, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-sprite-zero-medium:nutrition-calculator-tile" },
+new Product { Id = 20, Name = "Latte",                   Description = "McCafé organic latte",                       BasePrice = 41.00m,  CategoryId = 2, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-latte:nutrition-calculator-tile" },
+new Product { Id = 21, Name = "Cappuccino",              Description = "Foamy espresso-based coffee",                BasePrice = 41.00m,  CategoryId = 2, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-cappuccino:nutrition-calculator-tile" },
+new Product { Id = 22, Name = "Espresso",                Description = "Single espresso shot",                       BasePrice = 32.00m,  CategoryId = 2, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-espresso:nutrition-calculator-tile" },
+new Product { Id = 23, Name = "Hot Chocolate",           Description = "Creamy O’Boy hot chocolate",                 BasePrice = 25.00m,  CategoryId = 2, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-hotchocolate:nutrition-calculator-tile" },
+new Product { Id = 24, Name = "God Morgon Äppeljuice",   Description = "Cloudy apple juice",                          BasePrice = 34.00m,  CategoryId = 2, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-applejuice:nutrition-calculator-tile" },
+
+new Product { Id = 25, Name = "Apple Pie",               Description = "Crispy pastry with apple filling",           BasePrice = 18.00m,  CategoryId = 3, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-desserts-applepie:nutrition-calculator-tile" },
+new Product { Id = 26, Name = "Sundae Chocolate",        Description = "Soft-serve with hot fudge",                  BasePrice = 24.00m,  CategoryId = 3, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-desserts-sundae-chocolate:nutrition-calculator-tile" },
+new Product { Id = 27, Name = "McFlurry Oreo",           Description = "Soft-serve blended with Oreo pieces",        BasePrice = 35.00m,  CategoryId = 3, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-desserts-mcflurry-oreo:nutrition-calculator-tile" },
+new Product { Id = 28, Name = "Triple Chocolate Cookie", Description = "Rich three-chocolate cookie",                BasePrice = 32.00m,  CategoryId = 3, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-desserts-cookie-triplechoc:nutrition-calculator-tile" },
+new Product { Id = 29, Name = "Cinnamon Bun",           Description = "Classic Swedish kanelbulle",                 BasePrice = 40.00m,  CategoryId = 3, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-desserts-kanelbulle:nutrition-calculator-tile" },
+new Product { Id = 30, Name = "Chocolate Muffin",        Description = "Moist chocolate muffin",                     BasePrice = 32.00m,  CategoryId = 3, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-desserts-muffin-chocolate:nutrition-calculator-tile" },
+new Product { Id = 31, Name = "MiniDonut Choklad",       Description = "Chocolate-glazed mini donut",                BasePrice = 32.00m,  CategoryId = 3, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-desserts-minidonut-chocolate:nutrition-calculator-tile" },
+new Product { Id = 32, Name = "Apple Slices",            Description = "Fresh apple snack pack",                     BasePrice = 18.00m,  CategoryId = 3, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-sides-apples:nutrition-calculator-tile" }
+
 			);
 
 			modelBuilder.Entity<ProductIngredient>().HasData(
@@ -49,7 +66,6 @@ namespace FastFoodOperator.Api.Data
 				new ProductIngredient { ProductId = 2, IngredientId = 1, Required = true },
 				new ProductIngredient { ProductId = 2, IngredientId = 2, Required = false },
 				new ProductIngredient { ProductId = 2, IngredientId = 3, Required = false }
->>>>>>> develop
 			);
 
 			modelBuilder.Entity<ProductVariant>().HasData(

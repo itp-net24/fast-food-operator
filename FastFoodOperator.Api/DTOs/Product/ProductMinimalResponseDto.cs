@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-﻿namespace FastFoodOperator.Api.DTOs.Product
-{
-	public class ProductMinimalResponseDto
-	{
-		public string? ProductVariant { get; set; } = null!;
-		public decimal ProductVariantPriceModifier { get; set; }
-		public int ProductId { get; set; }
-	}
-}
-=======
 namespace FastFoodOperator.Api.DTOs.Product;
 
 public class ProductMinimalResponseDto
@@ -18,4 +7,3 @@ public class ProductMinimalResponseDto
 	public string Name { get; init; } = string.Empty;
 	public decimal BasePrice { get; init; }
 }
->>>>>>> develop
