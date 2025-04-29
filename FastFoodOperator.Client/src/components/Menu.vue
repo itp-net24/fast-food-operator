@@ -85,15 +85,16 @@ function checkOut(){
     </div>
 
     <div>
-      {{ cart }}
-      <button @click="checkOut">Check out cart</button>
-      <!-- <button @click="clearCart">Clear Cart</button> -->
 
     </div>
     <CartModal/>
 </template>
 
 <style scoped>
+.showCart{
+  display:none;
+}
+
 .menu-container {
   padding-top: 1rem;
 }

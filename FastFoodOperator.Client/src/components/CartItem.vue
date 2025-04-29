@@ -21,6 +21,14 @@ function addToCart(){
     cartStore.addToCart(props.cartProduct.product)
         console.log("cart", cart.value)
 }
+function decrementFromCart(){
+    cartStore.decrementFromCart(props.cartProduct.product)
+    console.log("cart", cart.value)
+}
+function removeFromCart(){
+    cartStore.removeFromCart(props.cartProduct.product)
+    console.log('removing from cart')
+}
 
 
 </script>
@@ -29,13 +37,18 @@ function addToCart(){
     <article>
         <div id="product-image" :style="{ backgroundImage: 'url(' + (cartProduct && cartProduct.product.pictureUrl ? cartProduct.product.pictureUrl : '') + ')' }">
             <span>
-                {{ cartProduct.qty }}
-                <button @click="addToCart">Add Product</button>
+               Quantity: {{ cartProduct.qty }}
+               Price each : {{ cartProduct.product.basePrice }}
+               Price Total : {{ cartProduct.product.basePrice * cartProduct.qty }}
             </span>
         </div>
         <h2> {{ cartProduct.product?.name }}</h2>
         
-        <button @click="">Add to Cart</button>
+        <span>
+        <button @click="decrementFromCart">- 1</button>
+        <button @click="addToCart">+ 1</button>
+        </span>
+        <button @click="removeFromCart">Remove</button>
     </article>
 </template>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import Sidebar from './Sidebar.vue'
     import CartItem from './CartItem.vue'
-    import {ref, onMounted} from 'vue'
+    import {ref, onMounted, computed} from 'vue'
     import {Product} from '@/models/product.ts'
     import Fetcher from "@/ApiFetcher.ts"
     import {useCartStore} from '../stores/cart'
@@ -27,32 +27,47 @@ function checkOut(){
   cartStore.checkOut()
 }
 
-
-
-
-
-
-var modal = document.getElementById("cartModal")!;
-var cartBtn = document.getElementById("cartButton")!;
-var span = document.getElementsByClassName("close")[0] as HTMLElement;
-
-console.log(cartBtn);
-
-cartBtn.onclick = function(){
-  console.log(modal)
-modal.style.display = "block";
+function clearCart(){
+  cartStore.clearCart()
 }
 
-const openCart = () =>{
+const textBox = ref('')
 
-modal.style.display = "none";
-}
 
-window.onclick = function(event){
-  if(event.target == modal){
-    modal.style.display = "none";
-  }
-}
+
+
+// var modal = document.getElementById("cartModal")!;
+// var cartBtn = document.getElementById("cartButton")!;
+// var span = document.getElementsByClassName("close")[0] as HTMLElement;
+
+
+// cartBtn.onclick = function(){
+//   console.log(modal)
+// modal.style.display = "block";
+// }
+
+// const openCart = () =>{
+
+// modal.style.display = "none";
+// }
+
+// window.onclick = function(event){
+//   if(event.target == modal){
+//     modal.style.display = "none";
+//   }
+// }
+
+
+
+  const CartTotal = computed(()=>{
+    return cartStore.cart.cartProducts.reduce((sum, tempProduct) =>{
+      return sum + tempProduct.qty * tempProduct.product.basePrice;
+    }, 0)
+  });
+
+  const TaxTotal = computed(()=> {
+    return 1.12 * CartTotal.value;
+  })
 
 </script>
 
@@ -65,7 +80,7 @@ window.onclick = function(event){
 
             <main>
               
-              <button id="cartButton" @click="openCart"> Cart </button>
+              <button id="cartButton" @click="openCart">Open Cart </button>
               <div id="cartModal" class="modal">
                 <div class="modal-content">
                   <span class="close">&times;</span>
@@ -73,17 +88,25 @@ window.onclick = function(event){
                 </div>
               </div>
 
-                <div v-for="(cartProduct,index) in cart.cartProducts" :key="index" class="articles-container">
+                <div v-for="(cartProduct,index) in cart.cartProducts" :key="index" class="menu-container">
                     <CartItem :cartProduct="cartProduct" />
+                </div>
+                <div class="menu-container">
+                 Total price without tax: {{ CartTotal }}
+                </div>
+                <div class="menu-container">
+                  Total price with tax: {{ TaxTotal }}
                 </div>
             </main>
         
     </div>
 
     <div>
-      {{ cart }}
-      <button @click="checkOut">Check out cart</button>
-      <!-- <button @click="clearCart">Clear Cart</button> -->
+      <textarea v-model="textBox" placeholder="leave a comment with your order here"></textarea>
+
+      <button @click="checkOut"> Checkout </button>
+
+      <button @click="clearCart">Clear Cart</button>
 
     </div>
 </template>

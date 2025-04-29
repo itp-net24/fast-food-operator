@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {Product} from '@/models/product'
-import type {Cart, cartProduct, State, AddOrderDTO, OrderDTO,OrderProductDtos} from '@/models/interfaces'
+import type {Cart, cartProduct, State, AddOrderDTO, OrderDTO,OrderProductDto} from '@/models/interfaces'
 import fetcher from '@/ApiFetcher'
 
 
@@ -8,6 +8,7 @@ export const useCartStore = defineStore('cart',{
     state: ():State => ({
         cart:{cartProducts:[]}
     }),
+    
     actions:{
         loadCartInstance(){
             const cs = localStorage.getItem('cart')
@@ -62,6 +63,56 @@ export const useCartStore = defineStore('cart',{
 
         },
 
+        decrementFromCart(pro:Product){
+          console.log('start of decrementFromCart')
+          const cs = localStorage.getItem('cart')
+
+          let remove = false
+
+          console.log(!cs)
+          if(!cs)
+          {
+              this.cart = {
+                  cartProducts:[
+                      
+                  ]
+              }
+          }
+          else{
+
+              console.log(localStorage.getItem('cart'))
+
+              let cartLocalStorage = JSON.parse(cs)
+              console.log(cartLocalStorage)
+              cartLocalStorage.cartProducts = cartLocalStorage.cartProducts.map((ci: cartProduct) => {
+                  if(ci.product.id === pro.id)
+                  {
+                    if(ci.qty <= 1)
+                    {
+                      remove = true
+                    }
+                    else{
+                      return{product:pro, qty:ci.qty - 1 }
+                    }
+                  }    
+                  return {product:ci.product, qty:ci.qty}  
+              })
+              console.log('before remove check'+remove)
+              if(remove)
+              {
+                cartLocalStorage.cartProducts = cartLocalStorage.cartProducts.filter((ci:cartProduct) => ci.product.id != pro.id)
+              }
+
+              this.cart = cartLocalStorage
+
+          }
+
+          
+          localStorage.setItem('cart',JSON.stringify(this.cart))
+
+
+      },
+
         removeFromCart(pro:Product){
             (this.cart as Cart).cartProducts = (this.cart as Cart).cartProducts.filter(ci => ci.product.id != pro.id)
             localStorage.setItem('cart',JSON.stringify(this.cart))
@@ -78,19 +129,39 @@ export const useCartStore = defineStore('cart',{
         checkOut()
         {
 
+          let order:OrderDTO = {
+          customerNote: 'Gabriels testing to learn',
+          orderComboDtos: [
+            // {
+            //   comboId: 0,
+            //   quantity: 0
+            // }
+          ],
+          orderProductDtos: [
+            {
+              productId: 0,
+              quantity: 0
+            }
+          ]
+        }
+          console.log(order.orderProductDtos)
+
+          console.log(JSON.stringify(order))
+
             //set up array for orderProductDtos
-            let orderProductDtos = []
+            let orderProductDtosArray = []
             //map all products in cart to orderProductDtos
-            orderProductDtos = (this.cart as Cart).cartProducts.map((ci: cartProduct) =>{
-                return{
+            order.orderProductDtos = (this.cart as Cart).cartProducts.map((ci: cartProduct) =>{      
+              return{
                     productId: ci.product.id,
                     quantity: ci.qty
                   }
             })
+            //order.orderProductDtos.push(orderProductDtosArray)
 
             //verify that orderProductDtos were mapped correctly
-            console.log(orderProductDtos)
-
+            console.log(order.orderProductDtos)
+            console.log(JSON.stringify(order))
             //set up array for orderComboDtos
             // let orderComboDtos = []
             // orderComboDtos = (this.cart as Cart).cartOrders.map((co:cartOrder) =>{
@@ -101,16 +172,7 @@ export const useCartStore = defineStore('cart',{
             // })
             // console.log('array of ordercomboDtos '+orderComboDtos)
 
-            let order:OrderDTO = {
-                customerNote: 'Gabriel intial testing to learn',
-                orderComboDtos: [
-                  {
-                    comboId: 0,
-                    quantity: 0
-                  }
-                ],
-                orderProductDtos:orderProductDtos
-              }
+
 
             this.createOrder(order)
 

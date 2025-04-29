@@ -11,9 +11,14 @@ export interface cartProduct{
     }
 
 
+
 export interface State{
     cart: Cart | {cartProducts:[]}
 }
+export interface OrderProductDto{
+      productId: number,
+      quantity: number
+    }
 
 export interface OrderDTO{
     customerNote: string,
@@ -24,9 +29,41 @@ export interface OrderDTO{
       }
     ],
     orderProductDtos: [
-      {
-        productId: number,
-        quantity: number
-      }
+     OrderProductDto
     ]
   }
+
+export interface AddOrderDTO
+    {
+        customerNote: string,
+        orderComboDtos: [
+          {
+            comboMinimalResponseDto: {
+              products: [
+                {
+                  productVariantId: number,
+                  productId: number,
+                  ingredientsId: [
+                    number
+                  ],
+                  quantity: number
+                }
+              ],
+              comboId: number,
+              quantity: number
+            }
+          }
+        ],
+        orderProductDtos: [
+          {
+            productMinimalResponseDto: {
+              productVariantId: number,
+              productId: number,
+              ingredientsId: [
+                number
+              ],
+              quantity: number
+            }
+          }
+        ]
+      }
