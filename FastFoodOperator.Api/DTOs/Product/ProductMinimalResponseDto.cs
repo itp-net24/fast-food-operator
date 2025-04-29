@@ -2,8 +2,9 @@
 {
 	public class ProductMinimalResponseDto
 	{
-		public string? ProductVariant { get; set; } = null!;
-		public decimal ProductVariantPriceModifier { get; set; }
+		public int? ProductVariantId { get; set; }
 		public int ProductId { get; set; }
+		public int[] IngredientsId { get; set; } = [];
+		public int Quantity { get; set; }
 	}
 }

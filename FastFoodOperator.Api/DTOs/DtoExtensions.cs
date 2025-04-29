@@ -24,7 +24,7 @@ namespace FastFoodOperator.Api.DTOs
 				{
 					ProductName = op.ProductName, 
 					Quantity = op.Quantity,
-					Ingredients = op.ProductIngredients
+					Ingredients = op.Ingredients
 				}).ToList(),
 				OrderCombos = order.OrderCombos.Select(oc => new OrderComboDto
 				{

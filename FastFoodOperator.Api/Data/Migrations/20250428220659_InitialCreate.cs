@@ -103,6 +103,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
                     ComboName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Products = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FinalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
@@ -127,7 +128,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FinalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    ProductIngredients = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Ingredients = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -257,21 +258,21 @@ namespace FastFoodOperator.Api.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "OrderCombos",
-                columns: new[] { "Id", "ComboName", "FinalPrice", "OrderId", "Quantity" },
+                columns: new[] { "Id", "ComboName", "FinalPrice", "OrderId", "Products", "Quantity" },
                 values: new object[,]
                 {
-                    { 1, "Bajs och kiss", 0m, 1, 1 },
-                    { 2, "Ägg och bacon", 0m, 2, 2 }
+                    { 1, "Bajs och kiss", 0m, 1, "", 1 },
+                    { 2, "Ägg och bacon", 0m, 2, "", 2 }
                 });
 
             migrationBuilder.InsertData(
                 table: "OrderProducts",
-                columns: new[] { "Id", "FinalPrice", "OrderId", "ProductIngredients", "ProductName", "Quantity" },
+                columns: new[] { "Id", "FinalPrice", "Ingredients", "OrderId", "ProductName", "Quantity" },
                 values: new object[,]
                 {
-                    { 1, 0m, 1, "[]", "Bajskorv", 1 },
-                    { 2, 0m, 1, "[]", "Skurhinksmilkshake", 2 },
-                    { 3, 0m, 2, "[]", "Pannkakor", 3 }
+                    { 1, 0m, "[]", 1, "Bajskorv", 1 },
+                    { 2, 0m, "[]", 1, "Skurhinksmilkshake", 2 },
+                    { 3, 0m, "[]", 2, "Pannkakor", 3 }
                 });
 
             migrationBuilder.InsertData(

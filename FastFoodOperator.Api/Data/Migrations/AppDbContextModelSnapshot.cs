@@ -261,6 +261,10 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Products")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -277,6 +281,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                             ComboName = "Bajs och kiss",
                             FinalPrice = 0m,
                             OrderId = 1,
+                            Products = "",
                             Quantity = 1
                         },
                         new
@@ -285,6 +290,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                             ComboName = "Ägg och bacon",
                             FinalPrice = 0m,
                             OrderId = 2,
+                            Products = "",
                             Quantity = 2
                         });
                 });
@@ -300,11 +306,12 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Property<decimal>("FinalPrice")
                         .HasColumnType("decimal(10, 2)");
 
+                    b.PrimitiveCollection<string>("Ingredients")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
-
-                    b.PrimitiveCollection<string>("ProductIngredients")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
@@ -324,8 +331,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 1,
                             FinalPrice = 0m,
+                            Ingredients = "[]",
                             OrderId = 1,
-                            ProductIngredients = "[]",
                             ProductName = "Bajskorv",
                             Quantity = 1
                         },
@@ -333,8 +340,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 2,
                             FinalPrice = 0m,
+                            Ingredients = "[]",
                             OrderId = 1,
-                            ProductIngredients = "[]",
                             ProductName = "Skurhinksmilkshake",
                             Quantity = 2
                         },
@@ -342,8 +349,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 3,
                             FinalPrice = 0m,
+                            Ingredients = "[]",
                             OrderId = 2,
-                            ProductIngredients = "[]",
                             ProductName = "Pannkakor",
                             Quantity = 3
                         });

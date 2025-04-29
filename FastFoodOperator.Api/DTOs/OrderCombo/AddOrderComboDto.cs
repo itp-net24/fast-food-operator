@@ -6,7 +6,6 @@ namespace FastFoodOperator.Api.DTOs.OrderCombo
 	public class AddOrderComboDto
 	{
 		public ComboMinimalResponseDto ComboMinimalResponseDto { get; set; } = null!;
-		public int Quantity { get; set; }
 
 	}
 }
