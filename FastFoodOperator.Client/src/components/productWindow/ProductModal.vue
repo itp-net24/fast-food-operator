@@ -7,7 +7,7 @@ import type {
   Product,
   ProductToCart,
   ProductVariant,
-  ComboToCart,
+  CartItem,
   Ingredient,
   BaseProduct
 } from '@/models/types.ts'
@@ -139,36 +139,47 @@ const getSelectedVariant = (cp: ComboProduct): ProductVariant | null => {
 
 
   // Cart Controls
-  const handleConfirm = () => {
-    console.log("Variant Selections", selectedVariantIds.value);
-    console.log("Group Selections", selectedProductIds.value);
-
-    const combo = product.value as Combo;
-    console.log(buildComboToCart(combo));
+  const handleConfirm = (quantity: number) => {
+    const item = buildCartItem(quantity);
+    console.log(item);
   }
 
+  const buildCartItem = (quantity: number): CartItem | null => {
+    const products: ProductToCart[] = [];
 
+    if (props.type === ProductType.product) {
+      const p = product.value as Product;
+      products.push(mapProductToCart(p));
+    }
+    else if (props.type === ProductType.combo) {
+      const c = product.value as Combo;
+      products.push(
+        ...c.comboProducts.map(cp => mapComboProductToCart(cp, getSelectedVariant(cp), getMainProduct())),
 
-  const buildComboToCart = (combo: Combo): ComboToCart => {
-    const products: ProductToCart[] = [
-      ...combo.comboProducts.map(cp => mapComboProductToCart(cp, getSelectedVariant(cp), getMainProduct())),
-
-      ...combo.comboGroups.flatMap(group => {
-        const cp = getSelectedProduct(group);
-        return cp ? mapComboProductToCart(cp, getSelectedVariant(cp), getMainProduct()) : [];
-      })
-    ];
-
-    const cart: ComboToCart = {
-      id: combo.id,
-      name: combo.name,
-      price: totalPrice.value!,
-      product: products,
+        ...c.comboGroups.flatMap(group => {
+          const cp = getSelectedProduct(group);
+          return cp ? mapComboProductToCart(cp, getSelectedVariant(cp), getMainProduct()) : []
+        }));
+    }
+    else {
+      console.log("Could not determine product type!");
+      return null;
     }
 
-    return cart;
-  }
+    const mainProduct = getMainProduct();
+    if (!mainProduct) return null;
 
+    const item: CartItem = {
+      id: mainProduct.id,
+      type: props.type,
+      name: mainProduct.name,
+      price: totalPrice.value!,
+      quantity: quantity,
+      products: products,
+    }
+
+    return item;
+  }
 
 
 

@@ -48,11 +48,13 @@ export interface ProductVariant {
 
 
 // ToCart interfaces
-export interface ComboToCart {
+export interface CartItem {
   id: number;
+  type: string;
   name: string;
   price: number;
-  product: ProductToCart[];
+  quantity: number;
+  products: ProductToCart[];
 }
 
 export interface ProductToCart {

@@ -2,14 +2,14 @@ import {defineStore} from "pinia";
 import {Product} from '@/models/product'
 import type {Cart, cartProduct, State, AddOrderDTO, OrderDTO,OrderProductDto} from '@/models/interfaces'
 import fetcher from '@/ApiFetcher'
-import type {ProductToCart,ComboToCart} from '@/models/types'
+import type {ProductToCart,CartItem} from '@/models/types'
 
 
 export const useCartStore = defineStore('cart',{
     state: ():State => ({
         cart:{cartProducts:[]}
     }),
-    
+
     actions:{
         loadCartInstance(){
             const cs = localStorage.getItem('cart')
@@ -19,7 +19,7 @@ export const useCartStore = defineStore('cart',{
             this.cart = JSON.parse(cs)
         },
 
-        addToCart(pro:ProductToCart | ComboToCart){
+        addToCart(pro:ProductToCart | CartItem){
             console.log('start of addToCart')
             console.log(pro)
             const cs = localStorage.getItem('cart')
@@ -46,8 +46,8 @@ export const useCartStore = defineStore('cart',{
                     {
                         isAdded = true
                         return{product:pro, qty:ci.qty + 1 }
-                    }    
-                    return {product:ci.product, qty:ci.qty}  
+                    }
+                    return {product:ci.product, qty:ci.qty}
                 })
 
                 if(!isAdded)
@@ -59,7 +59,7 @@ export const useCartStore = defineStore('cart',{
 
             }
 
-            
+
             localStorage.setItem('cart',JSON.stringify(this.cart))
 
 
@@ -76,7 +76,7 @@ export const useCartStore = defineStore('cart',{
           {
               this.cart = {
                   cartProducts:[
-                      
+
                   ]
               }
           }
@@ -96,8 +96,8 @@ export const useCartStore = defineStore('cart',{
                     else{
                       return{product:pro, qty:ci.qty - 1 }
                     }
-                  }    
-                  return {product:ci.product, qty:ci.qty}  
+                  }
+                  return {product:ci.product, qty:ci.qty}
               })
               console.log('before remove check'+remove)
               if(remove)
@@ -109,7 +109,7 @@ export const useCartStore = defineStore('cart',{
 
           }
 
-          
+
           localStorage.setItem('cart',JSON.stringify(this.cart))
 
 
@@ -172,7 +172,7 @@ export const useCartStore = defineStore('cart',{
             //set up array for orderProductDtos
             let orderProductDtosArray = []
             //map all products in cart to orderProductDtos
-            order.orderProductDtos = (this.cart as Cart).cartProducts.map((ci: cartProduct) =>{      
+            order.orderProductDtos = (this.cart as Cart).cartProducts.map((ci: cartProduct) =>{
               return{
                     productId: ci.product.id,
                     quantity: ci.qty
@@ -199,7 +199,7 @@ export const useCartStore = defineStore('cart',{
 
             // empty cart for next order
            this.clearCart()
-            
+
         },
 
         async createOrder(order: OrderDTO) : Promise<any> {
