@@ -5,7 +5,7 @@ namespace FastFoodOperator.Api.DTOs.Product;
 public class ProductCreateDto
 {
 	[Required]
-	[MinLength(3, ErrorMessage = "Combo name must be at least 3 characters long.")]	
+	[MinLength(3, ErrorMessage = "Name must be at least 3 characters long.")]	
 	public required string Name { get; init; }
 	
 	public string? Description { get; init; }

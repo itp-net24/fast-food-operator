@@ -2,6 +2,6 @@
 {
 	public class GetOrdernumbersDto
 	{
-		public List<int> OrderNumbers { get; set; } = [];
+		public List<OrderStatusDto> Orders { get; set; } = [];
 	}
 }

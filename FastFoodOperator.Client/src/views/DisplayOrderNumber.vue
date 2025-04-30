@@ -5,17 +5,17 @@
     </div>
 
     <div class="display-box">
-      <h2>Tillagas</h2>
+      <h2>Preparing</h2>
       <div class="number-display">
         <p v-if="activeOrderNumbers.length > 0" v-for="(num, index) in activeOrderNumbers" :key="index">
           #{{ num }}
         </p>
-        <p v-else>Inga aktiva ordrar</p>
+        <p v-else>No Active Orders</p>
       </div>
     </div>
 
     <div class="completed-orders-box">
-      <h2>Redo att hämtas</h2>
+      <h2>Ready For Pickup</h2>
       <div class="number-display">
         <p
           v-for="(order, index) in completedOrderNumbers"
@@ -43,9 +43,11 @@ export default {
     };
   },
   mounted() {
-    this.getOrderNumbers(); // Direkt
-    this.intervalId = setInterval(this.getOrderNumbers, 5000); // Uppdatera data
-    this.cleanupIntervalId = setInterval(this.cleanupOldOrders, 5000); // Rensa gamla entries, funkar ej
+    this.getOrderNumbers(); // Kör direkt
+    this.intervalId = setInterval(() => {
+      this.getOrderNumbers();
+      this.cleanupOldOrders();
+    }, 5000);
   },
   beforeUnmount() {
     clearInterval(this.intervalId);
@@ -60,7 +62,7 @@ export default {
 
         const orders = await response.json();
 
-        // Aktiva
+        // oförberedad och preparing
         this.activeOrderNumbers = orders
           .filter(order => order.orderStatus === 0 || order.orderStatus === 1)
           .map(order => order.orderNumber);
@@ -87,7 +89,7 @@ export default {
 
     cleanupOldOrders() {
       const now = Date.now();
-      const timeout = 60000; // 60 sekunder, funkar inte :(
+      const timeout = 60000;
 
       this.completedOrderNumbers = this.completedOrderNumbers.filter(order => {
         return now - order.timestamp < timeout;

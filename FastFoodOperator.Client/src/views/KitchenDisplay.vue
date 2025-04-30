@@ -1,22 +1,24 @@
 ﻿<template>
   <div class="kitchen-container">
-    <h1>Köksdisplay</h1>
+    <h1>Kitchen Display</h1>
 
     <div class="orders-wrapper">
       <!-- Ej påbörjade ordrar -->
       <OrderSection
         :orders="pendingOrders"
         :status="0"
-        title="Ej Påbörjade Ordrar"
+        title="Not started orders"
         @start="markOrderAsInProgress"
+        @delete="deleteOrder"
       />
 
       <!-- Pågående ordrar -->
       <OrderSection
         :orders="activeOrders"
         :status="1"
-        title="Pågående Ordrar"
+        title="In progress orders"
         @complete="markOrderAsComplete"
+        @delete="deleteOrder"
       />
 
       <!-- Färdiga ordrar -->
@@ -24,7 +26,8 @@
         v-if="showCompleted"
         :orders="completedOrders"
         :status="2"
-        title="Färdiga Ordrar"
+        title="Finished orders"
+        @delete="deleteOrder"
       />
     </div>
   </div>
@@ -92,6 +95,25 @@ export default {
         await this.fetchOrders(); // Uppdatera listan efter att ha markerat som påbörjad
       } catch (error) {
         console.error('Fel vid uppdatering av order:', error);
+      }
+    },
+    //Radera Order
+
+    async deleteOrder(order) {
+      if (!confirm(`Are you sure you want to delete #${order.orderNumber}?`)) return;
+
+      try {
+        const response = await fetch(`https://localhost:8080/api/order/${order.orderId}`, {
+          method: 'DELETE'
+        });
+
+        if (!response.ok) throw new Error('Kunde inte radera ordern');
+
+        // Uppdatera listan efter borttagning
+        await this.fetchOrders();
+
+      } catch (error) {
+        console.error('Fel vid radering av order:', error);
       }
     },
 

@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.Services;
 using FastFoodOperator.Api.Interfaces;
+using FastFoodOperator.Api.Services;
+using FastFoodOperator.Api.Interfaces;
+
 
 namespace FastFoodOperator.Api
 {
@@ -12,13 +15,31 @@ namespace FastFoodOperator.Api
             // Add services to the container.
             var builder = WebApplication.CreateBuilder(args);
 
-            // Development
-            if (builder.Environment.IsDevelopment())
+
+			// Development
+			if (builder.Environment.IsDevelopment())
             {
                 builder.Configuration.AddUserSecrets<Program>();
             }
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
+                });
+
+            // Cors service
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowVue",
+                    policy =>
+                    {
+                        policy.WithOrigins("https://localhost:5173") // Port for vue app
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
+
 
             // Cors service
             builder.Services.AddCors(options =>
@@ -52,6 +73,8 @@ namespace FastFoodOperator.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("AllowLocalhost");
 
             app.UseHttpsRedirection();
             

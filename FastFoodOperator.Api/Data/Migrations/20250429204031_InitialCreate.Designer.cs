@@ -4,6 +4,7 @@ using FastFoodOperator.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FastFoodOperator.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.Designer.cs
+    [Migration("20250428170720_InitialCreate")]
+========
+    [Migration("20250429204031_InitialCreate")]
+>>>>>>>> ff61e672e2f9f1f3f9bb06148611edaa4e704566:FastFoodOperator.Api/Data/Migrations/20250429204031_InitialCreate.Designer.cs
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -320,6 +327,21 @@ namespace FastFoodOperator.Api.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.Designer.cs
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ComboName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("FinalPrice")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+========
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
@@ -337,6 +359,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Property<string>("Products")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+>>>>>>>> ff61e672e2f9f1f3f9bb06148611edaa4e704566:FastFoodOperator.Api/Data/Migrations/20250429204031_InitialCreate.Designer.cs
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -354,7 +377,10 @@ namespace FastFoodOperator.Api.Data.Migrations
                             ComboName = "Bajs och kiss",
                             FinalPrice = 0m,
                             OrderId = 1,
+<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.Designer.cs
+========
                             Products = "",
+>>>>>>>> ff61e672e2f9f1f3f9bb06148611edaa4e704566:FastFoodOperator.Api/Data/Migrations/20250429204031_InitialCreate.Designer.cs
                             Quantity = 1
                         },
                         new
@@ -363,7 +389,10 @@ namespace FastFoodOperator.Api.Data.Migrations
                             ComboName = "Ägg och bacon",
                             FinalPrice = 0m,
                             OrderId = 2,
+<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.Designer.cs
+========
                             Products = "",
+>>>>>>>> ff61e672e2f9f1f3f9bb06148611edaa4e704566:FastFoodOperator.Api/Data/Migrations/20250429204031_InitialCreate.Designer.cs
                             Quantity = 2
                         });
                 });
@@ -379,6 +408,14 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Property<decimal>("FinalPrice")
                         .HasColumnType("decimal(10, 2)");
 
+<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.Designer.cs
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.PrimitiveCollection<string>("ProductIngredients")
+                        .HasColumnType("nvarchar(max)");
+
+========
                     b.PrimitiveCollection<string>("Ingredients")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -386,6 +423,7 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
+>>>>>>>> ff61e672e2f9f1f3f9bb06148611edaa4e704566:FastFoodOperator.Api/Data/Migrations/20250429204031_InitialCreate.Designer.cs
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -404,8 +442,13 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 1,
                             FinalPrice = 0m,
+<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.Designer.cs
+                            OrderId = 1,
+                            ProductIngredients = "[]",
+========
                             Ingredients = "[]",
                             OrderId = 1,
+>>>>>>>> ff61e672e2f9f1f3f9bb06148611edaa4e704566:FastFoodOperator.Api/Data/Migrations/20250429204031_InitialCreate.Designer.cs
                             ProductName = "Bajskorv",
                             Quantity = 1
                         },
@@ -413,8 +456,13 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 2,
                             FinalPrice = 0m,
+<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.Designer.cs
+                            OrderId = 1,
+                            ProductIngredients = "[]",
+========
                             Ingredients = "[]",
                             OrderId = 1,
+>>>>>>>> ff61e672e2f9f1f3f9bb06148611edaa4e704566:FastFoodOperator.Api/Data/Migrations/20250429204031_InitialCreate.Designer.cs
                             ProductName = "Skurhinksmilkshake",
                             Quantity = 2
                         },
@@ -422,8 +470,13 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 3,
                             FinalPrice = 0m,
+<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.Designer.cs
+                            OrderId = 2,
+                            ProductIngredients = "[]",
+========
                             Ingredients = "[]",
                             OrderId = 2,
+>>>>>>>> ff61e672e2f9f1f3f9bb06148611edaa4e704566:FastFoodOperator.Api/Data/Migrations/20250429204031_InitialCreate.Designer.cs
                             ProductName = "Pannkakor",
                             Quantity = 3
                         });
@@ -495,7 +548,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                             BasePrice = 1.99m,
                             CategoryId = 2,
                             Description = "Refreshing soda",
-                            Name = "Coke"
+                            Name = "Coke",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
                         },
                         new
                         {
@@ -511,15 +565,73 @@ namespace FastFoodOperator.Api.Data.Migrations
                             BasePrice = 2.99m,
                             CategoryId = 3,
                             Description = "Crispy golden fries",
+<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.Designer.cs
+                            Name = "French Fries",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BasePrice = 5.99m,
+                            CategoryId = 1,
+                            Description = "Grilled beef patty with melted cheddar, lettuce, tomato & onion",
+                            Name = "Classic Cheeseburger",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BasePrice = 7.49m,
+                            CategoryId = 1,
+                            Description = "Two beef patties, smoked bacon, American cheese, pickles & secret sauce",
+                            Name = "Bacon Double Burger",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
+========
                             Name = "French Fries"
+>>>>>>>> ff61e672e2f9f1f3f9bb06148611edaa4e704566:FastFoodOperator.Api/Data/Migrations/20250429204031_InitialCreate.Designer.cs
                         },
                         new
                         {
                             Id = 6,
+<<<<<<<< HEAD:FastFoodOperator.Api/Data/Migrations/20250428170720_InitialCreate.Designer.cs
+                            BasePrice = 6.99m,
+                            CategoryId = 1,
+                            Description = "Beef patty smothered in sautéed mushrooms and Swiss cheese",
+                            Name = "Mushroom Swiss Burger",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            BasePrice = 6.79m,
+                            CategoryId = 1,
+                            Description = "Peppered beef patty with pepper jack cheese, jalapeños & chipotle mayo",
+                            Name = "Spicy Jalapeño Burger",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            BasePrice = 7.19m,
+                            CategoryId = 1,
+                            Description = "Beef patty topped with crispy onion rings, cheddar & tangy BBQ sauce",
+                            Name = "BBQ Onion Ring Burger",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            BasePrice = 6.49m,
+                            CategoryId = 1,
+                            Description = "House-made black bean patty with avocado, lettuce & pico de gallo",
+                            Name = "Black Bean Veggie Burger",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
+========
                             BasePrice = 2.99m,
                             CategoryId = 3,
                             Description = "Crispy nuggies",
                             Name = "Chicken Nuggets"
+>>>>>>>> ff61e672e2f9f1f3f9bb06148611edaa4e704566:FastFoodOperator.Api/Data/Migrations/20250429204031_InitialCreate.Designer.cs
                         });
                 });
 
