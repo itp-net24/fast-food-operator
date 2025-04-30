@@ -11,27 +11,10 @@ export interface cartProduct{
     }
 
 
-
 export interface State{
     cart: Cart | {cartProducts:[]}
 }
-export interface OrderProductDto{
-      productId: number,
-      quantity: number
-    }
 
-export interface OrderDTO{
-    customerNote: string,
-    orderComboDtos: [
-      {
-        comboId: number,
-        quantity: number
-      }
-    ],
-    orderProductDtos: [
-     OrderProductDto
-    ]
-  }
 
 export interface AddOrderDTO
     {
@@ -67,9 +50,7 @@ export interface AddOrderDTO
           }
         ]
       }
-export interface State{
-    cart: Cart;
-}
+
 
 export interface OrderComboDto {
   comboId: number;
