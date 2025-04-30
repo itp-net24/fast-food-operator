@@ -2,6 +2,7 @@ import {defineStore} from "pinia";
 import {Product} from '@/models/product'
 import type {Cart, cartProduct, State, AddOrderDTO, OrderDTO,OrderProductDto} from '@/models/interfaces'
 import fetcher from '@/ApiFetcher'
+import type {ProductToCart,ComboToCart} from '@/models/types'
 
 
 export const useCartStore = defineStore('cart',{
@@ -18,8 +19,9 @@ export const useCartStore = defineStore('cart',{
             this.cart = JSON.parse(cs)
         },
 
-        addToCart(pro:Product){
+        addToCart(pro:ProductToCart | ComboToCart){
             console.log('start of addToCart')
+            console.log(pro)
             const cs = localStorage.getItem('cart')
 
             let isAdded = false

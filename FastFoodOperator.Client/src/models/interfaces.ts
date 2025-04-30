@@ -1,8 +1,9 @@
 import {Product} from '@/models/product'
+import type{ProductToCart,ComboToCart} from '@/models/types'
 
 export interface Cart{
     cartProducts:
-    Array<cartProduct>
+    Array<ProductToCart>
 }
 
 export interface cartProduct{
