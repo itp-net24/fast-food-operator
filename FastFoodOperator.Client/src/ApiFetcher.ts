@@ -8,14 +8,14 @@ import { Category } from './models/category';
 export default class Fetcher {
   private baseURL: string = "https://localhost:8080/api/";
 
-  async getProducts(): Promise<Product[] | null> {
+  async getProducts(limit: number, offset: number): Promise<Product[] | null> {
     try {
-      const response = await fetch(`${this.baseURL}product`);
+      const response = await fetch(`${this.baseURL}product?limit=${limit}&offset=${offset}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-
+  
       return data.map((p: any) => new Product(
         p.id,
         p.name,
@@ -24,7 +24,7 @@ export default class Fetcher {
         p.imageUrl,
         p.category
       ));
-
+  
     } catch (error) {
       console.error("Failed to fetch products:", error);
       return null;
@@ -52,6 +52,7 @@ export default class Fetcher {
       return null;
     }
   }
+  
 
   async getCombos(): Promise<Combo[] | null> {
     try {
@@ -153,25 +154,25 @@ export default class Fetcher {
       }
    }
 
-   async getProductsByCategoryId(id: number): Promise<Product[] | null> {
+   async getProductsByCategoryId(id: number, limit: number, offset: number): Promise<Product[] | null> {
     try {
-      const response = await fetch(`${this.baseURL}Product/GetProductsByCategory?id=${id}`);
+      const response = await fetch(`${this.baseURL}Product/GetProductsByCategory?id=${id}&limit=${limit}&offset=${offset}`);
       if (!response.ok) {
         throw new Error(`Http error! status: ${response.status}`);
       }
 
-      const data = await response.json()
+      const data = await response.json();
       return data.map((p: any) => new Product(
         p.id,
         p.name,
         p.description,
         p.basePrice,
-        p.pictureUrl,
+        p.imageUrl,
         p.category
       ));
     } catch(error) {
       console.error("Failed to fetch products by categoryId");
       return null;
     }
-   }
+  }
 }

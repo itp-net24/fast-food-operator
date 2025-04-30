@@ -36,7 +36,7 @@ onMounted(() => {
         </div>
         <h2> {{ product?.name }}</h2>
         
-        <button @click="">Add to Cart</button>
+        <button class="button-menu" @click="">Add to Cart</button>
     </article>
 </template>
 

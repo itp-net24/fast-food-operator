@@ -12,9 +12,9 @@
     const products = ref<Product[] | null>([]);
 
     onMounted(async () => {
-
   try {
-    products.value = await fetcher.getProducts();
+    products.value = await fetcher.getProducts(32, 0);
+    console.log(products.value);
     cartStore.loadCartInstance();
   } catch (err) {
     console.error('error:', err);
@@ -24,7 +24,7 @@
 async function OnCategoryClicked(categoryId: number) {
   try {
 
-    const result = await fetcher.getProductsByCategoryId(categoryId);
+    const result = await fetcher.getProductsByCategoryId(categoryId, 100, 0);
     if (result != null)
     {
       products.value = result;
