@@ -2,9 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.Services;
 using FastFoodOperator.Api.Interfaces;
-using FastFoodOperator.Api.Services;
-using FastFoodOperator.Api.Interfaces;
-
 
 namespace FastFoodOperator.Api
 {
@@ -27,19 +24,6 @@ namespace FastFoodOperator.Api
                 {
                     options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
                 });
-
-            // Cors service
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowVue",
-                    policy =>
-                    {
-                        policy.WithOrigins("https://localhost:5173") // Port for vue app
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
-                    });
-            });
-
 
             // Cors service
             builder.Services.AddCors(options =>

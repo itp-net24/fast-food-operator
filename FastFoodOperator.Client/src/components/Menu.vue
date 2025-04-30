@@ -14,13 +14,26 @@
 
     onMounted(async () => {
   try {
-    products.value = await fetcher.getProducts();
-    cartStore.loadCartInstance()
-
+    products.value = await fetcher.getProducts(32, 0);
+    console.log(products.value);
+    cartStore.loadCartInstance();
   } catch (err) {
     console.error('error:', err);
   }
 })
+
+async function OnCategoryClicked(categoryId: number) {
+  try {
+
+    const result = await fetcher.getProductsByCategoryId(categoryId, 100, 0);
+    if (result != null)
+    {
+      products.value = result;
+    }
+  } catch (err) {
+    console.error('error:', err);
+  }
+}
 
 const cartStore = useCartStore()
 const {cart} = storeToRefs(cartStore)
@@ -61,11 +74,15 @@ function checkOut(){
 </script>
 
 <template>
+    <div class="company-title">
+      <img src="@/assets/Claes_Burgir1.png" alt="Företagslogotyp" class="company-logo">
+    </div>
+
     <div class="menu-container">
         
-            <!-- <aside>
-                <Sidebar />
-            </aside> -->
+            <aside>
+                <Sidebar v-on:category-clicked="OnCategoryClicked"/>
+            </aside>
 
             <main>
               
@@ -91,18 +108,25 @@ function checkOut(){
 </template>
 
 <style scoped>
-.showCart{
-  display:none;
+.menu-container {
+  padding-top: 1rem;
 }
 
 .menu-container {
-  padding-top: 1rem;
+  display: flex;
 }
 
 main {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+@media (max-width: 640px)
+{
+  main {
+    justify-content: center;
+  }
 }
 
 /* .modal{

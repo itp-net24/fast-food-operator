@@ -62,6 +62,20 @@ public class ProductController(ProductService service) : ControllerBase
 			return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occured");
 		}
 	}
+
+	[HttpGet("GetProductsByCategory")]
+    public async Task<IActionResult> GetProductsByCategory(int id)
+    {
+        try
+        {
+            var products = await service.GetProductsByCategoryIdAsync(id);
+            return Ok(products);
+        } 
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 	
 	/// <summary>
 	/// Creates a new product.

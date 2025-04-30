@@ -1,6 +1,6 @@
 ﻿namespace FastFoodOperator.Api.Entities
 {
-    public class ComboProduct : IEquatable<ComboProduct>
+    public class ComboProduct
     {
 	    public int Id { get; set; }
 	    
