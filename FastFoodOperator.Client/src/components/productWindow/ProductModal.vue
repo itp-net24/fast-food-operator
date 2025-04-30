@@ -26,39 +26,40 @@ import {
   mapProductToCart,
   mapComboProductToCart,
 } from '@/utils/cartMapper.ts'
+import { getComboPrice, getProductPrice } from '@/utils/productHelpers.ts'
 
 const props = defineProps<Props>();
 
-  interface Props {
-    id: number;
-    type: ProductType;
-  }
+interface Props {
+  id: number;
+  type: ProductType;
+}
 
-  const product = ref<Product | Combo | null>(null);
-
-
-  // Group Product Selection
-  const selectedProductIds = ref<Record<number, number>>({});
-
-  const initializeSelectedProductIds = (combo: Combo) => {
-    combo.comboGroups.forEach(g => {
-      selectedProductIds.value[g.id] = g.defaultComboProductId ?? 0;
-    })
-  }
-
-  const handleComboGroupSelection = (groupId: number, productId: number): void => {
-    selectedProductIds[groupId] = productId;
-  }
+const product = ref<Product | Combo | null>(null);
 
 
+// Group Product Selection
+const selectedProductIds = ref<Record<number, number>>({});
+
+const initializeSelectedProductIds = (combo: Combo) => {
+  combo.comboGroups.forEach(g => {
+    selectedProductIds.value[g.id] = g.defaultComboProductId ?? 0;
+  })
+}
+
+const handleComboGroupSelection = (groupId: number, productId: number): void => {
+  selectedProductIds[groupId] = productId;
+}
 
 
-  // Variant Selection
-  const selectedVariantIds = ref<Record<number, number>>({});
 
-  const getSelectedProduct = (group: ComboGroup): ComboProduct | null => {
-    return group.comboProducts.find(cp => cp.id === selectedProductIds.value[group.id]) ?? null;
-  }
+
+// Variant Selection
+const selectedVariantIds = ref<Record<number, number>>({});
+
+const getSelectedProduct = (group: ComboGroup): ComboProduct | null => {
+  return group.comboProducts.find(cp => cp.id === selectedProductIds.value[group.id]) ?? null;
+}
 
 const getMainProduct = (): Product | null => {
   if(props.type === ProductType.product) {
@@ -78,218 +79,190 @@ const getMainProduct = (): Product | null => {
 
 
 const initializeSelectedVariantIds = (product: Product | Combo) => {
-    if (props.type === ProductType.product) {
-      if (product.variants.length <= 0) return;
-      selectedVariantIds.value[product.id] = product.variants[0];
-    }
-    else if (props.type === ProductType.combo) {
-      product.comboProducts.forEach(cp => {
+  if (props.type === ProductType.product) {
+    if (product.variants.length <= 0) return;
+    selectedVariantIds.value[product.id] = product.variants[0];
+  }
+  else if (props.type === ProductType.combo) {
+    product.comboProducts.forEach(cp => {
+      selectedVariantIds.value[cp.product.id] = cp.defaultProductVariantId;
+    })
+
+    product.comboGroups.forEach(gp => {
+      gp.comboProducts.forEach(cp => {
         selectedVariantIds.value[cp.product.id] = cp.defaultProductVariantId;
       })
-
-      product.comboGroups.forEach(gp => {
-        gp.comboProducts.forEach(cp => {
-          selectedVariantIds.value[cp.product.id] = cp.defaultProductVariantId;
-        })
-      })
-    }
-    else {
-      console.log("Could not determine product type!")
-    }
-
-    console.log(selectedVariantIds.value);
+    })
+  }
+  else {
+    console.log("Could not determine product type!")
   }
 
-const getSelectedVariant = (cp: ComboProduct): ProductVariant | null => {
+  console.log(selectedVariantIds.value);
+}
+
+const getSelectedVariant = (cp: ComboProduct | null): ProductVariant | null => {
+  if (!cp) return null;
+
   const selectVariantId: number = selectedVariantIds.value[cp.product.id];
   return cp.product.variants.find(v => v.id === selectVariantId) ?? null;
 }
 
 
 
-  // Ingredient Selection
-  const updateSelectedIngredientIds = (ingredient: Ingredient) => {
-    if (props.type === ProductType.product) {
-      const p = product.value as Product;
+// Ingredient Selection
+const updateSelectedIngredientIds = (ingredient: Ingredient) => {
+  if (props.type === ProductType.product) {
+    const p = product.value as Product;
 
-      const exists = p.ingredients.some(i => i.id == ingredient.id);
-      if (exists) {
-        p.ingredients = p.ingredients.filter(i => i.id != ingredient.id);
-      } else {
-        p.ingredients.push(ingredient);
-      }
-    }
-    else if (props.type === ProductType.combo) {
-      const c = product.value as Combo;
-      const p: Product = c.mainComboProduct?.product ?? c.comboProducts[0].product;
-
-      const exists: boolean = p.ingredients.some(i => i.id == ingredient.id);
-      if (exists) {
-        p.ingredients = p.ingredients.filter(i => i.id != ingredient.id);
-      } else {
-        p.ingredients.push(ingredient);
-      }
-    }
-    else {
-      console.log("Could not determine product type!")
+    const exists = p.ingredients.some(i => i.id == ingredient.id);
+    if (exists) {
+      p.ingredients = p.ingredients.filter(i => i.id != ingredient.id);
+    } else {
+      p.ingredients.push(ingredient);
     }
   }
+  else if (props.type === ProductType.combo) {
+    const c = product.value as Combo;
+    const p: Product = c.mainComboProduct?.product ?? c.comboProducts[0].product;
+
+    const exists: boolean = p.ingredients.some(i => i.id == ingredient.id);
+    if (exists) {
+      p.ingredients = p.ingredients.filter(i => i.id != ingredient.id);
+    } else {
+      p.ingredients.push(ingredient);
+    }
+  }
+  else {
+    console.log("Could not determine product type!")
+  }
+}
 
 
 
 
-  // Cart Controls
-  const handleConfirm = (quantity: number) => {
-    const item = buildCartItem(quantity);
-    console.log(item);
+// Cart Controls
+const handleConfirm = (quantity: number) => {
+  const item = buildCartItem(quantity);
+  console.log(item);
+}
+
+const buildCartItem = (quantity: number): CartItem | null => {
+  const products: ProductToCart[] = [];
+
+  if (props.type === ProductType.product) {
+    const p = product.value as Product;
+    products.push(mapProductToCart(p));
+  }
+  else if (props.type === ProductType.combo) {
+    const c = product.value as Combo;
+    products.push(
+      ...c.comboProducts.map(cp => mapComboProductToCart(cp, getSelectedVariant(cp), getMainProduct())),
+
+      ...c.comboGroups.flatMap(group => {
+        const cp = getSelectedProduct(group);
+        return cp ? mapComboProductToCart(cp, getSelectedVariant(cp), getMainProduct()) : []
+      }));
+  }
+  else {
+    console.log("Could not determine product type!");
+    return null;
   }
 
-  const buildCartItem = (quantity: number): CartItem | null => {
-    const products: ProductToCart[] = [];
+  const mainProduct = getMainProduct();
+  if (!mainProduct) return null;
 
-    if (props.type === ProductType.product) {
-      const p = product.value as Product;
-      products.push(mapProductToCart(p));
-    }
-    else if (props.type === ProductType.combo) {
-      const c = product.value as Combo;
-      products.push(
-        ...c.comboProducts.map(cp => mapComboProductToCart(cp, getSelectedVariant(cp), getMainProduct())),
-
-        ...c.comboGroups.flatMap(group => {
-          const cp = getSelectedProduct(group);
-          return cp ? mapComboProductToCart(cp, getSelectedVariant(cp), getMainProduct()) : []
-        }));
-    }
-    else {
-      console.log("Could not determine product type!");
-      return null;
-    }
-
-    const mainProduct = getMainProduct();
-    if (!mainProduct) return null;
-
-    const item: CartItem = {
-      id: mainProduct.id,
-      type: props.type,
-      name: mainProduct.name,
-      price: totalPrice.value!,
-      quantity: quantity,
-      products: products,
-    }
-
-    return item;
+  const item: CartItem = {
+    id: mainProduct.id,
+    type: props.type,
+    name: mainProduct.name,
+    price: totalPrice.value!,
+    quantity: quantity,
+    products: products,
   }
 
-
-
-  // Popup
-  const popup = ref<boolean>(true);
-
-
-
-  onMounted(async () => {
-    if (props.type === ProductType.product) {
-      const p = await GetProductAsync(props.id);
-      product.value = p as Product;
-    }
-    else if (props.type === ProductType.combo) {
-      const c = await GetComboAsync(props.id);
-      product.value = c as Combo;
-      initializeSelectedProductIds(product.value);
-    }
-    else {
-      console.log("Could not determine product type!");
-    }
-
-    initializeSelectedVariantIds(product.value);
-  });
+  return item;
+}
 
 
 
-
-  const totalPrice = computed(() => {
-    if (props.type === ProductType.product) {
-      const p = product.value as Product;
-      return p.basePrice + p.variants[selectedVariantIds.value[p.id]].priceModifier;
-    }
-    else if (props.type === ProductType.combo) {
-      const c = product.value as Combo;
+// Popup
+const popup = ref<boolean>(true);
 
 
-      const comboTotal = c.comboProducts.reduce((acc, cp) => {
-        const selectedId = selectedVariantIds.value[cp.product.id];
-        const selectedModifier = cp.product.variants[selectedId]?.priceModifier ?? 0;
-        const defaultModifier = cp.defaultProductVariant?.priceModifier ?? 0;
 
-        return acc + selectedModifier - defaultModifier;
-      }, 0);
+onMounted(async () => {
+  if (props.type === ProductType.product) {
+    const p = await GetProductAsync(props.id);
+    product.value = p as Product;
+  }
+  else if (props.type === ProductType.combo) {
+    const c = await GetComboAsync(props.id);
+    product.value = c as Combo;
+    initializeSelectedProductIds(product.value);
+  }
+  else {
+    console.log("Could not determine product type!");
+  }
 
-      const groupTotal = c.comboGroups.reduce((acc, cg) => {
-        const cp = getSelectedProduct(cg);
-        // console.log("Selected CP:", cp);
+  initializeSelectedVariantIds(product.value);
+});
 
-        const selectVariantId = selectedVariantIds.value[cp.product.id];
-        const selectVariant= cp.product.variants.find(v => v.id === selectVariantId);
-        // console.log("Selected Variant:", selectVariant);
 
-        const selectedModifier = selectVariant.priceModifier ?? 0;
-        const defaultModifier = cp.defaultProductVariant?.priceModifier ?? 0;
 
-        return acc + Math.max(selectedModifier - defaultModifier, 0);
-      }, 0);
-
-      const mp = c.mainComboProduct?.product ?? c.comboProducts[0].product
-      const ingredientsTotal = mp.ingredients.reduce((acc, i) => {
-        return acc + i.priceModifier;
-      }, 0);
-
-      return Math.round((c.basePrice + comboTotal + groupTotal + ingredientsTotal) * 100) / 100;
-    }
-  })
+const totalPrice = computed(() => {
+  if (props.type === ProductType.product) {
+    const p = product.value as Product;
+    return getProductPrice(p);
+  }
+  else if (props.type === ProductType.combo) {
+    const c = product.value as Combo;
+    return getComboPrice(c, (cg: ComboGroup) => getSelectedProduct(cg), (cp: ComboProduct | null) => getSelectedVariant(cp));
+  }
+})
 </script>
 
 <template>
   <PopupModal
-      v-if="popup && product"
-      :enable-close-button="true"
-      :enable-blur="true"
-      :close-on-outside-click="true"
-      @close="popup=false">
+    v-if="popup && product"
+    :enable-close-button="true"
+    :enable-blur="true"
+    :close-on-outside-click="true"
+    @close="popup=false">
 
     <div class="container">
       <div class="wrapper">
         <BaseProductDetails
-            :base-product="product as BaseProduct"
-            :total-price="totalPrice"
+          :base-product="product as BaseProduct"
+          :total-price="totalPrice"
         />
 
         <!-- Single Product -->
         <ComboProductList
-            v-if="type === ProductType.combo"
-            :combo-products="product.comboProducts">
+          v-if="type === ProductType.combo"
+          :combo-products="product.comboProducts">
 
           <template #combo-product="{comboProduct}">
             <VariantSelector
-                :key="comboProduct.id"
-                v-model:variant-id="selectedVariantIds[comboProduct.product.id]"
-                :combo-product="comboProduct"
+              :key="comboProduct.id"
+              v-model:variant-id="selectedVariantIds[comboProduct.product.id]"
+              :combo-product="comboProduct"
             />
           </template>
         </ComboProductList>
 
         <!-- Group Products -->
         <ProductGroupSelector
-            v-if="type === ProductType.combo"
-            :selected-product-ids="selectedProductIds"
-            :groups="product.comboGroups"
-            @update-selection="handleComboGroupSelection">
+          v-if="type === ProductType.combo"
+          :selected-product-ids="selectedProductIds"
+          :groups="product.comboGroups"
+          @update-selection="handleComboGroupSelection">
 
           <template #group-selected-product="{comboProduct}">
             <VariantSelector
-                :key="comboProduct.id"
-                v-model:variant-id="selectedVariantIds[comboProduct.product.id]"
-                :combo-product="comboProduct"
+              :key="comboProduct.id"
+              v-model:variant-id="selectedVariantIds[comboProduct.product.id]"
+              :combo-product="comboProduct"
             />
           </template>
         </ProductGroupSelector>
@@ -298,64 +271,64 @@ const getSelectedVariant = (cp: ComboProduct): ProductVariant | null => {
         <h2>Ingredients</h2>
 
         <IngredientsList
-            v-if="product"
-            v-model:selected-ingredients="getMainProduct().ingredients"
-            @update-ingredients="updateSelectedIngredientIds"
+          v-if="product"
+          v-model:selected-ingredients="getMainProduct().ingredients"
+          @update-ingredients="updateSelectedIngredientIds"
         />
       </div>
 
       <ProductCartControls
-          class="controls"
-          @confirm="handleConfirm"
+        class="controls"
+        @confirm="handleConfirm"
       />
     </div>
   </PopupModal>
 </template>
 
 <style scoped>
-  .container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
-    width: clamp(360px, 30vw, 500px);
-    height: 80vh;
+  width: clamp(360px, 30vw, 500px);
+  height: 80vh;
 
-    border-radius: 1rem;
+  border-radius: 1rem;
 
-    color: black;
-    background-color: white;
+  color: black;
+  background-color: white;
 
-    overflow: hidden;
-  }
+  overflow: hidden;
+}
 
-  .wrapper {
-    overflow-y: auto;
-    margin-bottom: 5rem;
-    padding: 2rem 2rem 0 2rem;
-  }
+.wrapper {
+  overflow-y: auto;
+  margin-bottom: 5rem;
+  padding: 2rem 2rem 0 2rem;
+}
 
-  .wrapper::-webkit-scrollbar {
-    width: .5rem; /* Width of the scrollbar */
-  }
+.wrapper::-webkit-scrollbar {
+  width: .5rem; /* Width of the scrollbar */
+}
 
-  .wrapper::-webkit-scrollbar-track {
-    background: transparent; /* Make the track transparent */
-  }
+.wrapper::-webkit-scrollbar-track {
+  background: transparent; /* Make the track transparent */
+}
 
-  .wrapper::-webkit-scrollbar-thumb {
-    background: rgba(255, 69, 0, 0.75); /* Light grey color for the thumb */
-    border-radius: 1rem; /* Rounded corners */
-  }
+.wrapper::-webkit-scrollbar-thumb {
+  background: rgba(255, 69, 0, 0.75); /* Light grey color for the thumb */
+  border-radius: 1rem; /* Rounded corners */
+}
 
-  .wrapper::-webkit-scrollbar-thumb:hover {
-    background: #ff4500; /* Darker grey on hover */
-  }
+.wrapper::-webkit-scrollbar-thumb:hover {
+  background: #ff4500; /* Darker grey on hover */
+}
 
-  .controls{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-  }
+.controls{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
 </style>
