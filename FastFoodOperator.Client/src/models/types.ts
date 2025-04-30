@@ -7,6 +7,7 @@ export interface BaseProduct {
 }
 
 export interface Product extends BaseProduct{
+  defaultVariant?: ProductVariant | null;
   variants: ProductVariant[];
   ingredients: Ingredient[];
 }
