@@ -31,7 +31,7 @@ function addToCart(){
         </div>
         <h2> {{ product?.name }}</h2>
         
-        <button class="button-menu" @click="">Add to Cart</button>
+        <button class="button-menu" @click="addToCart">Add to Cart</button>
     </article>
 </template>
 
