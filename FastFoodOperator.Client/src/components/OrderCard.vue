@@ -1,4 +1,4 @@
-﻿<!-- För Visning -->
+<!-- För Visning -->
 <template>
   <div :class="['order-card', statusClass]">
     <p>

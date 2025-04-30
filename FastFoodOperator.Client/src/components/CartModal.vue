@@ -1,50 +1,39 @@
 <script setup lang="ts">
     import Sidebar from './Sidebar.vue'
-    import ProductCard from './ProductCard.vue'
-    import {ref, onMounted} from 'vue'
+    import CartItem from './CartItem.vue'
+    import {ref, onMounted, computed} from 'vue'
     import {Product} from '@/models/product.ts'
     import Fetcher from "@/ApiFetcher.ts"
     import {useCartStore} from '../stores/cart'
     import {storeToRefs} from 'pinia'
-    import CartModal from './CartModal.vue'
     
     
     const fetcher = new Fetcher();
-    const products = ref<Product[] | null>([]);
+    
 
     onMounted(async () => {
   try {
-    products.value = await fetcher.getProducts(32, 0);
-    console.log(products.value);
-    cartStore.loadCartInstance();
+    cartStore.loadCartInstance()
+
   } catch (err) {
     console.error('error:', err);
   }
 })
 
-async function OnCategoryClicked(categoryId: number) {
-  try {
-
-    const result = await fetcher.getProductsByCategoryId(categoryId, 100, 0);
-    if (result != null)
-    {
-      products.value = result;
-    }
-  } catch (err) {
-    console.error('error:', err);
-  }
-}
-
 const cartStore = useCartStore()
 const {cart} = storeToRefs(cartStore)
 
 function checkOut(){
-  cartStore.checkOut()
-        console.log('running button for checkout')
-
+  console.log(textBox.value)
+  cartStore.checkOut(textBox.value)
+  textBox.value = '';
 }
 
+function clearCart(){
+  cartStore.clearCart()
+}
 
+const textBox = ref('')
 
 
 
@@ -53,7 +42,6 @@ function checkOut(){
 // var cartBtn = document.getElementById("cartButton")!;
 // var span = document.getElementsByClassName("close")[0] as HTMLElement;
 
-// console.log(cartBtn);
 
 // cartBtn.onclick = function(){
 //   console.log(modal)
@@ -71,49 +59,63 @@ function checkOut(){
 //   }
 // }
 
+
+
+  const CartTotal = computed(()=>{
+    return Math.round(cartStore.cart.cartProducts.reduce((sum, tempProduct) =>{
+      return sum + tempProduct.qty * tempProduct.product.basePrice;
+    }, 0)
+  *100) / 100});
+
+  const TaxTotal = computed(()=> {
+    return Math.round(1.12 * CartTotal.value *100)/100;
+  })
+
 </script>
 
 <template>
-    <div class="company-title">
-      <img src="@/assets/Claes_Burgir1.png" alt="Företagslogotyp" class="company-logo">
-    </div>
-
     <div class="menu-container">
         
-            <aside>
-                <Sidebar v-on:category-clicked="OnCategoryClicked"/>
-            </aside>
+            <!-- <aside>
+                <Sidebar />
+            </aside> -->
 
             <main>
               
-              <!-- <button id="cartButton" @click="openCart"> Cart </button>
+              <button id="cartButton" @click="openCart">Open Cart </button>
               <div id="cartModal" class="modal">
                 <div class="modal-content">
                   <span class="close">&times;</span>
              
                 </div>
-              </div> -->
+              </div>
 
-                <div v-for="product in products" :key="product.id" class="articles-container">
-                    <ProductCard :product="product" />
+                <div v-for="(cartProduct,index) in cart.cartProducts" :key="index" class="menu-container">
+                    <CartItem :cartProduct="cartProduct" />
+                </div>
+                <div class="menu-container">
+                 Total price without tax: {{ CartTotal }}
+                </div>
+                <div class="menu-container">
+                  Total price with tax: {{ TaxTotal }}
                 </div>
             </main>
         
     </div>
 
     <div>
+      <textarea v-model="textBox" placeholder="leave a comment with your order here"></textarea>
+
+      <button @click="checkOut"> Checkout </button>
+
+      <button @click="clearCart">Clear Cart</button>
 
     </div>
-    <CartModal/>
 </template>
 
 <style scoped>
 .menu-container {
   padding-top: 1rem;
-}
-
-.menu-container {
-  display: flex;
 }
 
 main {
@@ -122,14 +124,7 @@ main {
   gap: 0.5rem;
 }
 
-@media (max-width: 640px)
-{
-  main {
-    justify-content: center;
-  }
-}
-
-/* .modal{
+.modal{
   display: none; 
   position: fixed; 
   z-index: 1; 
@@ -162,6 +157,6 @@ main {
   color: black;
   text-decoration: none;
   cursor: pointer;
-} */
+}
 
 </style>

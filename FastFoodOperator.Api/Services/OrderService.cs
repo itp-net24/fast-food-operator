@@ -7,7 +7,6 @@ using FastFoodOperator.Api.Entities;
 using FastFoodOperator.Api.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace FastFoodOperator.Api.Services
 {
 	public class OrderService : IOrderService
@@ -119,7 +118,6 @@ namespace FastFoodOperator.Api.Services
 				order.OrderProducts = (orderDto.OrderProductDtos ?? new List<AddOrderProductDto>())
 					.Select(op =>
 					{
-
 						var product = existingProducts.FirstOrDefault(p => p.Id == op.ProductMinimalResponseDto.ProductId);
 						if (product == null)
 							throw new Exception($"Product with ID {op.ProductMinimalResponseDto.ProductId} not found.");
@@ -232,7 +230,6 @@ namespace FastFoodOperator.Api.Services
 				return new GetOrderDto();
 			}
 		}
-
 		public async Task<List<GetOrderDto>> GetOrders()
 		{
 			try
@@ -269,7 +266,6 @@ namespace FastFoodOperator.Api.Services
 				throw;
 			}
 		}
-
 		public async Task<GetOrdernumbersDto> DisplayOrderNumbers() 
 		{
 			try
