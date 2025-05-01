@@ -1,31 +1,40 @@
 <script setup lang="ts">
-  import { ref } from "vue"
-  import type { ComboProduct, ProductVariant } from "@/models/types.ts"
+import { computed } from 'vue'
+  import type { ComboProduct, Variant } from '@/models/types.ts'
 
   const props = defineProps<Props>();
 
   interface Props {
-    variantId: number | null;
+    selection: Variant;
     comboProduct: ComboProduct;
   }
 
   const emits = defineEmits<{
-    (e: 'update:variantId', id: number): void
+    (e: 'update:selection', variant: Variant): void
   }>();
 
-  const updateVariantId = (id: number): void => {
-    emits('update:variantId', id);
-  }
+  const defaultVariant = props.comboProduct.defaultProductVariant
+    ?? props.comboProduct.product.variants[0];
 
-  const selectedVariantId = ref<number | null>(props.comboProduct.defaultProductVariantId);
+  const selectedId = computed({
+    get: () => props.selection ?? defaultVariant,
+    set: (variant: Variant) => {
+      if (!variant) return;
 
-  const isVariantFree = (variant: ProductVariant): boolean => {
-    const diff = Math.max(variant.priceModifier - (props.comboProduct.defaultProductVariant?.priceModifier ?? 0), 0);
-    return diff <= 0;
+      emits('update:selection', {
+        id: variant.id,
+        name: variant.name,
+        priceModifier: variant.priceModifier
+      });
+    },
+  });
+
+  const isVariantFree = (variant: Variant): boolean => {
+    return variantPrice(variant) <= 0;
   };
 
-  const variantPrice = (variant: ProductVariant): number => {
-    return Math.max(variant.priceModifier - (props.comboProduct.defaultProductVariant?.priceModifier ?? 0), 0);
+  const variantPrice = (variant: Variant): number => {
+    return Math.max(variant.priceModifier - (defaultVariant.priceModifier ?? 0), 0);
   };
 </script>
 
@@ -36,25 +45,23 @@
         :key="variant.id"
         class="variant-item"
     >
-      <label class="variant-label">
+      <label class="variant-label variant-details">
         <div class="variant-details">
         <input
             type="radio"
             :name="comboProduct.product.name"
-            v-model="selectedVariantId"
-            :value="variant.id"
-            @change="updateVariantId(variant.id)"
+            v-model="selectedId"
+            :value="variant"
             class="variant-radio"
         />
           <span class="variant-name">{{ variant.name }}</span>
           <span class="variant-price">
-            {{ isVariantFree(variant) ? "GRATIS" : "+" + variantPrice(variant) + "kr" }}
+            {{ isVariantFree(variant) ? "Included" : "+" + variantPrice(variant) + "kr" }}
           </span>
         </div>
       </label>
     </li>
   </ul>
-
 </template>
 
 <style scoped>
