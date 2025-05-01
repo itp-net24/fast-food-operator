@@ -16,6 +16,11 @@ export interface State{
     cart: Cart | {cartProducts:[]}
 }
 
+export interface Tag{
+  id: number;
+  name: string;
+  taxrate: number;
+}
 
 export interface AddOrderDTO
     {
