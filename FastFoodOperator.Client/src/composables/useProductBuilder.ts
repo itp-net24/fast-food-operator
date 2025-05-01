@@ -1,14 +1,16 @@
 import { computed, ref } from 'vue'
 import type {
+  CartContainer,
   Combo,
   ComboGroup,
   ComboProduct,
-  Product,
+  Product, Variant
 } from '@/models/types.ts'
+import { mapComboProductToCart } from '@/utils/cartMapper.ts'
 
 export default () => {
   const $mainProduct = ref<Product>(null!);
-  const $combo = ref<Combo | null>(null);
+  const $combo = ref<CartContainer | null>(null!);
   const $selectGroupProducts = ref<Record<number, ComboProduct>>({});
 
   const initializeProduct = (product: Product) => {
@@ -17,7 +19,15 @@ export default () => {
 
   const initializeCombo = (combo: Combo) => {
     $mainProduct.value = combo.mainComboProduct?.product ?? combo.comboProducts[0].product;
-    $combo.value = combo;
+    $combo.value = {
+      id: combo.id,
+      type: "combo",
+      name: combo.name,
+      price: combo.basePrice,
+      quantity: 1,
+      products: [],
+    };
+
     initializeGroupProducts(combo.comboGroups);
   }
 
@@ -31,14 +41,46 @@ export default () => {
       }
 
       $selectGroupProducts.value[cg.id] = defaultComboProduct;
+
+      const defaultProductVariant = defaultComboProduct.defaultProductVariant ?? defaultComboProduct.product.variants[0];
+      combo.value.products.push(mapComboProductToCart(defaultComboProduct, defaultProductVariant, $mainProduct.value));
     });
   }
 
+  const combo = computed(() => {
+    return $combo.value!;
+  })
+
   const selectedProductFromGroup = (group: ComboGroup) => {
     return computed<ComboProduct>({
-      get: () => $selectGroupProducts.value[group.id],
-      set: (val: ComboProduct) => $selectGroupProducts.value[group.id] = val,
-    })
+      get: (): ComboProduct => {
+        return $selectGroupProducts.value[group.id];
+      },
+
+      set: (val: ComboProduct) => {
+        const previousVal = selectedProductFromGroup(group).value;
+        const index = combo.value.products.findIndex(v => v.__uid === previousVal.__uid);
+
+        const defaultProductVariant = val.defaultProductVariant ?? val.product.variants[0];
+        combo.value.products[index] = mapComboProductToCart(val, defaultProductVariant, $mainProduct.value);
+        $selectGroupProducts.value[group.id] = val
+      },
+    });
+  }
+
+  const selectedVariantFromProduct = (product: ComboProduct) => {
+    const selectedProduct = combo.value.products.find(p => p.__uid === product.__uid);
+
+    return computed<Variant | null>({
+      get: (): Variant | null => {
+        return selectedProduct?.variant ?? null;
+      },
+
+      set: (val: Variant | null) => {
+        if (!selectedProduct) return;
+        selectedProduct.variant = val;
+      }
+    });
   }
 
   return {
@@ -48,5 +90,6 @@ export default () => {
     initializeProduct,
     initializeCombo,
     selectedProductFromGroup,
+    selectedVariantFromProduct,
   }
 }
