@@ -1,4 +1,4 @@
-﻿using FastFoodOperator.Api.DTOs.Product;
+using FastFoodOperator.Api.DTOs.Product;
 
 namespace FastFoodOperator.Api.DTOs.OrderProduct
 {

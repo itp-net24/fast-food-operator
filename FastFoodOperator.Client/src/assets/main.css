@@ -16,12 +16,12 @@ body {
 }
 
 #app {
-    background-color: var(--color-white);
+    background-color: #f8efdd;
     padding: var(--spacing-lg);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow-default);
     width: 100%;
-    max-width: 900px;
+    margin: 1rem;
 }
 
 h1 {
@@ -42,14 +42,6 @@ ul {
     text-align: left;
 }
 
-li {
-    background-color: var(--color-light);
-    margin: var(--spacing-xs) 0;
-    padding: var(--spacing-sm);
-    border-radius: var(--border-radius);
-    font-size: var(--font-size-small);
-}
-
 button {
     background-color: var(--color-secondary);
     color: white;
@@ -63,4 +55,70 @@ button {
 
 button:hover {
     background-color: var(--color-hover);
+}
+
+.border-menu {
+    border: 3px ridge var(--color-border);
+    border-radius: 4px;
+    box-shadow: var(--box-shadow-default);
+    transition: border-color 0.3s ease;
+}
+
+.border-menu:hover {
+    border-color: var(--color-hover);
+}
+
+.company-title img.company-logo {
+    width: 80%;        /* Sätt bildens bredd till 80% av förälderelementet */
+    max-width: 500px;  /* Sätt en max-bredd för att inte göra bilden för stor */
+    height: unset;      /* Bevara bildens proportioner */
+  }
+
+  .company-title {
+    margin-top: 1rem;
+    width: 100%;
+    text-align: center;
+  }
+
+.button-menu {
+    padding: 0.6rem 1.2rem;
+    margin-bottom: var(--spacing-xs);
+    background-color: var(--color-primary);
+    color: white;
+    font-weight: 550;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.button-menu:hover {
+    background-color: var(--color-hover);
+    transform: scale(1.05);
+  }
+
+.drop-down-menu {
+    position: relative;
+    display:flex;
+}
+
+.drop-down-list-menu {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.dropDownOpen {
+    display:flex !important;
+}
+
+@media (max-width: 640px)
+{
+    #app {
+        margin: 0;
+    }
+
+    body {
+        padding: 0;
+    }
 }

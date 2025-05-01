@@ -1,19 +1,57 @@
 import {Product} from '@/models/product'
+import type{ProductToCart,ComboToCart} from '@/models/types'
 
 export interface Cart{
     cartProducts:
-    Array<cartProduct>;
+    Array<ProductToCart>
 }
 
 export interface cartProduct{
-        cartProduct:Product,
+        product:Product,
         qty:number
     }
 
 
 export interface State{
-    cart: Cart;
+    cart: Cart | {cartProducts:[]}
 }
+
+
+export interface AddOrderDTO
+    {
+        customerNote: string,
+        orderComboDtos: [
+          {
+            comboMinimalResponseDto: {
+              products: [
+                {
+                  productVariantId: number,
+                  productId: number,
+                  ingredientsId: [
+                    number
+                  ],
+                  quantity: number
+                }
+              ],
+              comboId: number,
+              quantity: number
+            }
+          }
+        ],
+        orderProductDtos: [
+          {
+            productMinimalResponseDto: {
+              productVariantId: number,
+              productId: number,
+              ingredientsId: [
+                number
+              ],
+              quantity: number
+            }
+          }
+        ]
+      }
+
 
 export interface OrderComboDto {
   comboId: number;

@@ -11,10 +11,10 @@ public class ProductServiceVariantTests : ProductServiceBaseTest
 	public async Task Get_ShouldReturnVariants_WhenProductExists()
 	{
 		const int productId = 1;
-		
+
 		var variants = await Service.GetVariantsByProductIdAsync(productId);
 		var existingVariants = await Context.ProductVariants.Where(v => v.ProductId == productId).ToArrayAsync();
-		
+
 		Assert.IsTrue(variants.Length == existingVariants.Length);
 	}
 
@@ -23,7 +23,7 @@ public class ProductServiceVariantTests : ProductServiceBaseTest
 	{
 		const int productId = 0;
 		var variants = await Service.GetVariantsByProductIdAsync(productId);
-		
+
 		Assert.IsTrue(variants.Length == 0);
 	}
 
@@ -39,22 +39,22 @@ public class ProductServiceVariantTests : ProductServiceBaseTest
 		};
 
 		var variant = await Service.CreateProductVariantAsync(dto);
-		
+
 		Assert.IsNotNull(variant);
 	}
 
 	[TestMethod]
 	public async Task Create_ShouldThrowException_WhenProductDoesNotExist()
 	{
-			var dto = new ProductVariantCreateDto
-    		{
-    			ProductId = 0,
-    			Name = "Test Variant",
-    			Description = "Test Description",
-    			PriceModifier = 9.99m
-    		};
-    
-		    await Assert.ThrowsExceptionAsync<Exception>(() => Service.CreateProductVariantAsync(dto));
+		var dto = new ProductVariantCreateDto
+		{
+			ProductId = 0,
+			Name = "Test Variant",
+			Description = "Test Description",
+			PriceModifier = 9.99m
+		};
+
+		await Assert.ThrowsExceptionAsync<Exception>(() => Service.CreateProductVariantAsync(dto));
 	}
 
 	[TestMethod]
@@ -72,7 +72,7 @@ public class ProductServiceVariantTests : ProductServiceBaseTest
 		await Service.UpdateProductVariantAsync(dto);
 
 		var variant = await Context.ProductVariants.FirstOrDefaultAsync();
-		
+
 		Assert.IsNotNull(variant);
 		Assert.AreEqual(dto.ProductId, variant.ProductId);
 		Assert.AreEqual(dto.Name, variant.Name);
@@ -91,7 +91,7 @@ public class ProductServiceVariantTests : ProductServiceBaseTest
 			Description = "Test Description",
 			PriceModifier = 9.99m
 		};
-    
+
 		await Assert.ThrowsExceptionAsync<Exception>(() => Service.UpdateProductVariantAsync(dto));
 	}
 
@@ -100,9 +100,9 @@ public class ProductServiceVariantTests : ProductServiceBaseTest
 	{
 		const int variantId = 1;
 		var initialVariantCount = await Context.ProductVariants.CountAsync();
-		
+
 		await Service.DeleteProductVariantAsync(variantId);
-		
+
 		var finalVariantCount = await Context.ProductVariants.CountAsync();
 
 		Assert.AreNotEqual(initialVariantCount, finalVariantCount);
@@ -113,11 +113,11 @@ public class ProductServiceVariantTests : ProductServiceBaseTest
 	{
 		const int variantId = 1;
 		var initialComboCount = await Context.ComboProducts.Where(cp => cp.ProductVariantId == variantId).CountAsync();
-		
+
 		await Service.DeleteProductVariantAsync(variantId);
-        
+
 		var finalComboCount = await Context.ComboProducts.Where(cp => cp.ProductVariantId == variantId).CountAsync();
-        		
+
 		Assert.AreNotEqual(initialComboCount, finalComboCount);
 	}
 }

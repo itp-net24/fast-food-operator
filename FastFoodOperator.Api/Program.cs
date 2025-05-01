@@ -3,7 +3,6 @@ using FastFoodOperator.Api.Data;
 using FastFoodOperator.Api.Services;
 using FastFoodOperator.Api.Interfaces;
 
-
 namespace FastFoodOperator.Api
 {
     public class Program
@@ -37,7 +36,6 @@ namespace FastFoodOperator.Api
                             .AllowAnyMethod();
                     });
             });
-
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

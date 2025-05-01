@@ -10,7 +10,7 @@ public class ProductServiceProductTests : ProductServiceBaseTest
     public async Task Get_ShouldReturnProductById_WhenProductExists()
     {
         var product = await Service.GetProductByIdAsync(1);
-        
+
         Assert.IsNotNull(product);
     }
 
@@ -18,25 +18,25 @@ public class ProductServiceProductTests : ProductServiceBaseTest
     public async Task Get_ShouldReturnNull_WhenProductDoesNotExist()
     {
         var product = await Service.GetProductByIdAsync(9999);
-        
+
         Assert.IsNull(product);
     }
-    
+
     [TestMethod]
     public async Task Get_ShouldReturnPaginatedProducts()
     {
         var products = await Service.GetProductsAsync();
-        
+
         Assert.IsNotNull(products);
         Assert.IsTrue(products.Length > 0);
     }
-    
+
     [TestMethod]
     public async Task Get_PaginationShouldUseLimit()
     {
         const int limit = 1;
         var products = await Service.GetProductsAsync(limit);
-        
+
         Assert.IsTrue(products.Length == limit);
     }
 
@@ -47,7 +47,7 @@ public class ProductServiceProductTests : ProductServiceBaseTest
 
         var offset = productCount - 1;
         var products = await Service.GetProductsAsync(10, offset);
-        
+
         Assert.IsTrue(products.Length == 1);
     }
 
@@ -62,7 +62,7 @@ public class ProductServiceProductTests : ProductServiceBaseTest
             CategoryId = 1,
         };
         var product = await Service.CreateProductAsync(dto);
-        
+
         Assert.IsNotNull(product);
         Assert.IsTrue(product.Id > 0);
         Assert.AreEqual(dto.Name, product.Name);
@@ -78,7 +78,7 @@ public class ProductServiceProductTests : ProductServiceBaseTest
         {
             Name = null!
         };
-        
+
         await Assert.ThrowsExceptionAsync<DbUpdateException>(() => Service.CreateProductAsync(dto));
     }
 
@@ -97,11 +97,11 @@ public class ProductServiceProductTests : ProductServiceBaseTest
                 new ProductIngredientCreateDto { IngredientId = 2 }
             ]
         };
-        
+
         await Service.CreateProductAsync(dto);
 
         var product = await Context.Products.Include(p => p.ProductIngredients).OrderBy(p => p.Id).LastOrDefaultAsync();
-        
+
         Assert.IsNotNull(product);
         Assert.IsTrue(product.ProductIngredients.Count == dto.Ingredients.Length);
     }
@@ -123,7 +123,7 @@ public class ProductServiceProductTests : ProductServiceBaseTest
         };
 
         var initialProductCount = Context.Products.Count();
-        
+
         try
         {
             await Assert.ThrowsExceptionAsync<DbUpdateException>(() => Service.CreateProductAsync(dto));
@@ -145,11 +145,11 @@ public class ProductServiceProductTests : ProductServiceBaseTest
             Description = "Test",
             BasePrice = 25.24m,
         };
-        
+
         await Service.UpdateProductAsync(dto);
-        
+
         var product = await Service.GetProductByIdAsync(dto.Id);
-        
+
         Assert.IsNotNull(product);
         Assert.AreEqual(dto.Name, product.Name);
         Assert.AreEqual(dto.Description, product.Description);
@@ -163,11 +163,11 @@ public class ProductServiceProductTests : ProductServiceBaseTest
         var initialProductCount = await Context.Products.CountAsync();
 
         await Service.DeleteProductAsync(productId);
-        
+
         var finalProductCount = await Context.Products.CountAsync();
 
         var references = await Context.ProductVariants.Where(v => v.ProductId == productId).CountAsync();
-        
+
         Assert.AreNotEqual(initialProductCount, finalProductCount);
         Assert.AreEqual(references, 0);
     }

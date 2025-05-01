@@ -6,6 +6,7 @@
     import Fetcher from "@/ApiFetcher.ts"
     import {useCartStore} from '../stores/cart'
     import {storeToRefs} from 'pinia'
+    import CartModal from './CartModal.vue'
     
     
     const fetcher = new Fetcher();
@@ -13,22 +14,36 @@
 
     onMounted(async () => {
   try {
-    products.value = await fetcher.getProducts();
-    cartStore.loadCartInstance()
-
+    products.value = await fetcher.getProducts(32, 0);
+    console.log(products.value);
+    cartStore.loadCartInstance();
   } catch (err) {
     console.error('error:', err);
   }
 })
 
+async function OnCategoryClicked(categoryId: number) {
+  try {
+
+    const result = await fetcher.getProductsByCategoryId(categoryId, 100, 0);
+    if (result != null)
+    {
+      products.value = result;
+    }
+  } catch (err) {
+    console.error('error:', err);
+  }
+}
+
 const cartStore = useCartStore()
 const {cart} = storeToRefs(cartStore)
 
+function checkOut(){
+  cartStore.checkOut()
+        console.log('running button for checkout')
 
-// function clearCart(){
-//   cart.value = {}
-//   localStorage.setItem('cart',JSON.stringify(cart))
-// }
+}
+
 
 
 
@@ -59,11 +74,15 @@ const {cart} = storeToRefs(cartStore)
 </script>
 
 <template>
+    <div class="company-title">
+      <img src="@/assets/Claes_Burgir1.png" alt="Företagslogotyp" class="company-logo">
+    </div>
+
     <div class="menu-container">
         
-            <!-- <aside>
-                <Sidebar />
-            </aside> -->
+            <aside>
+                <Sidebar v-on:category-clicked="OnCategoryClicked"/>
+            </aside>
 
             <main>
               
@@ -83,9 +102,9 @@ const {cart} = storeToRefs(cartStore)
     </div>
 
     <div>
-      {{ cart }}
-      <!-- <button @click="clearCart">Clear Cart</button> -->
+
     </div>
+    <CartModal/>
 </template>
 
 <style scoped>
@@ -93,10 +112,21 @@ const {cart} = storeToRefs(cartStore)
   padding-top: 1rem;
 }
 
+.menu-container {
+  display: flex;
+}
+
 main {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+@media (max-width: 640px)
+{
+  main {
+    justify-content: center;
+  }
 }
 
 /* .modal{
