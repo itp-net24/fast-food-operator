@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import {onMounted, ref, computed} from "vue";
+import {onMounted, ref} from "vue";
 import type {
   Combo,
-  ComboGroup,
-  ComboProduct,
   Product,
-  ProductToCart,
-  ProductVariant,
   CartItem,
+  CartContainer,
   Ingredient,
   BaseProduct
 } from '@/models/types.ts'
@@ -40,9 +37,6 @@ interface Props {
 
 const product = ref<Product | Combo | null>(null);
 
-// Variant Selection
-const selectedVariantIds = ref<Record<number, number>>({});
-
 const getMainProduct = (): Product | null => {
   if(props.type === ProductType.product) {
     const p = product.value as Product;
@@ -57,40 +51,6 @@ const getMainProduct = (): Product | null => {
     return null;
   }
 }
-
-
-
-const initializeSelectedVariantIds = (product: Product | Combo) => {
-  if (props.type === ProductType.product) {
-    if (product.variants.length <= 0) return;
-    selectedVariantIds.value[product.id] = product.variants[0];
-  }
-  else if (props.type === ProductType.combo) {
-    product.comboProducts.forEach(cp => {
-      selectedVariantIds.value[cp.product.id] = cp.defaultProductVariantId;
-    })
-
-    product.comboGroups.forEach(gp => {
-      gp.comboProducts.forEach(cp => {
-        selectedVariantIds.value[cp.product.id] = cp.defaultProductVariantId;
-      })
-    })
-  }
-  else {
-    console.log("Could not determine product type!")
-  }
-
-  console.log(selectedVariantIds.value);
-}
-
-const getSelectedVariant = (cp: ComboProduct | null): ProductVariant | null => {
-  if (!cp) return null;
-
-  const selectVariantId: number = selectedVariantIds.value[cp.product.id];
-  return cp.product.variants.find(v => v.id === selectVariantId) ?? null;
-}
-
-
 
 // Ingredient Selection
 const updateSelectedIngredientIds = (ingredient: Ingredient) => {
@@ -121,18 +81,16 @@ const updateSelectedIngredientIds = (ingredient: Ingredient) => {
 }
 
 
-
-
 // Cart Controls
 const handleConfirm = (quantity: number) => {
-  console.log("Products:", builder.selectGroupProducts.value);
-  console.log("Variants:", selectedVariantIds.value);
+  console.log(builder.combo.value);
+
   // const item = buildCartItem(quantity);
   // console.log(item);
 }
 
-const buildCartItem = (quantity: number): CartItem | null => {
-  const products: ProductToCart[] = [];
+const buildCartItem = (quantity: number): CartContainer | null => {
+  const products: CartItem[] = [];
 
   if (props.type === ProductType.product) {
     const p = product.value as Product;
@@ -156,7 +114,7 @@ const buildCartItem = (quantity: number): CartItem | null => {
   const mainProduct = getMainProduct();
   if (!mainProduct) return null;
 
-  const item: CartItem = {
+  const item: CartContainer = {
     id: mainProduct.id,
     type: props.type,
     name: mainProduct.name,
@@ -188,23 +146,23 @@ onMounted(async () => {
   else {
     console.log("Could not determine product type!");
   }
-
-  console.log(builder.combo.value);
-  initializeSelectedVariantIds(product.value);
 });
 
 
 
-const totalPrice = computed(() => {
-  if (props.type === ProductType.product) {
-    const p = product.value as Product;
-    return getProductPrice(p);
-  }
-  else if (props.type === ProductType.combo) {
-    const c = product.value as Combo;
-    return getComboPrice(c, (cg: ComboGroup) => builder.selectedProductFromGroup(cg).value, (cp: ComboProduct | null) => getSelectedVariant(cp));
-  }
-})
+// const totalPrice = computed(() => {
+//   if (props.type === ProductType.product) {
+//     const p = product.value as Product;
+//     return getProductPrice(p);
+//   }
+//   else if (props.type === ProductType.combo) {
+//     const c = product.value as Combo;
+//     return getComboPrice(c, (cg: ComboGroup) => builder.selectedProductFromGroup(cg).value, (cp: ComboProduct | null) => builder.selectedVariantFromProduct(cp).value);
+//   }
+//   else {
+//     return null;
+//   }
+// });
 </script>
 
 <template>
@@ -219,7 +177,7 @@ const totalPrice = computed(() => {
       <div class="wrapper">
         <BaseProductDetails
           :base-product="product as BaseProduct"
-          :total-price="totalPrice"
+          :total-price="0"
         />
 
         <!-- Single Product -->
@@ -229,8 +187,9 @@ const totalPrice = computed(() => {
 
           <template #combo-product="{comboProduct}">
             <VariantSelector
+              v-if="builder.selectedVariantFromProduct(comboProduct).value"
               :key="comboProduct.id"
-              v-model:variant-id="selectedVariantIds[comboProduct.product.id]"
+              v-model:selection="builder.selectedVariantFromProduct(comboProduct).value!"
               :combo-product="comboProduct"
             />
           </template>
@@ -238,7 +197,7 @@ const totalPrice = computed(() => {
 
         <!-- Group Products -->
         <div
-          v-for="group in builder.combo.value?.comboGroups"
+          v-for="group in product.comboGroups"
           :key="group.id">
 
           <ProductGroupSelector
@@ -247,7 +206,8 @@ const totalPrice = computed(() => {
           />
 
           <VariantSelector
-            v-model:variant-id="selectedVariantIds[builder.selectedProductFromGroup(group).value.product.id]"
+            v-if="builder.selectedVariantFromProduct(builder.selectedProductFromGroup(group).value).value"
+            v-model:selection="builder.selectedVariantFromProduct(builder.selectedProductFromGroup(group).value).value!"
             :combo-product="builder.selectedProductFromGroup(group).value" />
         </div>
 
