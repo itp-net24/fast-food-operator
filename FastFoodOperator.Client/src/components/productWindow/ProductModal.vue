@@ -28,6 +28,9 @@ import {
 } from '@/utils/cartMapper.ts'
 import { getComboPrice, getProductPrice } from '@/utils/productHelpers.ts'
 
+import useProductBuilder from "@/composables/useProductBuilder.ts"
+const builder = useProductBuilder();
+
 const props = defineProps<Props>();
 
 interface Props {
@@ -37,29 +40,8 @@ interface Props {
 
 const product = ref<Product | Combo | null>(null);
 
-
-// Group Product Selection
-const selectedProductIds = ref<Record<number, number>>({});
-
-const initializeSelectedProductIds = (combo: Combo) => {
-  combo.comboGroups.forEach(g => {
-    selectedProductIds.value[g.id] = g.defaultComboProductId ?? 0;
-  })
-}
-
-const handleComboGroupSelection = (groupId: number, productId: number): void => {
-  selectedProductIds[groupId] = productId;
-}
-
-
-
-
 // Variant Selection
 const selectedVariantIds = ref<Record<number, number>>({});
-
-const getSelectedProduct = (group: ComboGroup): ComboProduct | null => {
-  return group.comboProducts.find(cp => cp.id === selectedProductIds.value[group.id]) ?? null;
-}
 
 const getMainProduct = (): Product | null => {
   if(props.type === ProductType.product) {
@@ -143,8 +125,10 @@ const updateSelectedIngredientIds = (ingredient: Ingredient) => {
 
 // Cart Controls
 const handleConfirm = (quantity: number) => {
-  const item = buildCartItem(quantity);
-  console.log(item);
+  console.log("Products:", builder.selectGroupProducts.value);
+  console.log("Variants:", selectedVariantIds.value);
+  // const item = buildCartItem(quantity);
+  // console.log(item);
 }
 
 const buildCartItem = (quantity: number): CartItem | null => {
@@ -160,7 +144,7 @@ const buildCartItem = (quantity: number): CartItem | null => {
       ...c.comboProducts.map(cp => mapComboProductToCart(cp, getSelectedVariant(cp), getMainProduct())),
 
       ...c.comboGroups.flatMap(group => {
-        const cp = getSelectedProduct(group);
+        const cp = builder.selectedProductFromGroup(group).value;
         return cp ? mapComboProductToCart(cp, getSelectedVariant(cp), getMainProduct()) : []
       }));
   }
@@ -199,12 +183,13 @@ onMounted(async () => {
   else if (props.type === ProductType.combo) {
     const c = await GetComboAsync(props.id);
     product.value = c as Combo;
-    initializeSelectedProductIds(product.value);
+    builder.initializeCombo(c);
   }
   else {
     console.log("Could not determine product type!");
   }
 
+  console.log(builder.combo.value);
   initializeSelectedVariantIds(product.value);
 });
 
@@ -217,7 +202,7 @@ const totalPrice = computed(() => {
   }
   else if (props.type === ProductType.combo) {
     const c = product.value as Combo;
-    return getComboPrice(c, (cg: ComboGroup) => getSelectedProduct(cg), (cp: ComboProduct | null) => getSelectedVariant(cp));
+    return getComboPrice(c, (cg: ComboGroup) => builder.selectedProductFromGroup(cg).value, (cp: ComboProduct | null) => getSelectedVariant(cp));
   }
 })
 </script>
@@ -252,20 +237,19 @@ const totalPrice = computed(() => {
         </ComboProductList>
 
         <!-- Group Products -->
-        <ProductGroupSelector
-          v-if="type === ProductType.combo"
-          :selected-product-ids="selectedProductIds"
-          :groups="product.comboGroups"
-          @update-selection="handleComboGroupSelection">
+        <div
+          v-for="group in builder.combo.value?.comboGroups"
+          :key="group.id">
 
-          <template #group-selected-product="{comboProduct}">
-            <VariantSelector
-              :key="comboProduct.id"
-              v-model:variant-id="selectedVariantIds[comboProduct.product.id]"
-              :combo-product="comboProduct"
-            />
-          </template>
-        </ProductGroupSelector>
+          <ProductGroupSelector
+            v-model:selection="builder.selectedProductFromGroup(group).value"
+            :group="group"
+          />
+
+          <VariantSelector
+            v-model:variant-id="selectedVariantIds[builder.selectedProductFromGroup(group).value.product.id]"
+            :combo-product="builder.selectedProductFromGroup(group).value" />
+        </div>
 
         <hr />
         <h2>Ingredients</h2>
