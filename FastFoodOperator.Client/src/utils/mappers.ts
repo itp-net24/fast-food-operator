@@ -1,8 +1,8 @@
-import type {Combo, ComboGroup, ComboProduct, Ingredient, Product, ProductVariant} from "@/models/types.ts";
+import type {Combo, ComboGroup, ComboProduct, Ingredient, Product, Variant} from "@/models/types.ts";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function mapToProduct(data: any): Product {
-  const variants: ProductVariant[] = safeMap(data.variants, mapToProductVariant);
+  const variants: Variant[] = safeMap(data.variants, mapToProductVariant);
 
   return {
     id: data.id,
@@ -17,7 +17,10 @@ export function mapToProduct(data: any): Product {
 }
 
 export function mapToCombo(data: any): Combo {
-  const comboProducts: ComboProduct[] = safeMap(data.comboProducts, mapToComboProduct);
+  const uidRef = { value: 0 };
+
+  const comboProducts: ComboProduct[] = safeMap(data.comboProducts, d => mapToComboProduct(d, uidRef));
+  const comboGroups: ComboGroup[] = safeMap(data.comboGroups, d => mapToComboGroup(d, uidRef));
 
   return {
     id: data.id,
@@ -30,12 +33,12 @@ export function mapToCombo(data: any): Combo {
     mainComboProduct: comboProducts.find(cp => cp.id === data.mainComboProductId) ?? null,
 
     comboProducts: comboProducts,
-    comboGroups: safeMap(data.comboGroups, mapToComboGroup),
+    comboGroups: comboGroups,
   };
 }
 
-export function mapToComboGroup(data: any): ComboGroup {
-  const comboProducts = safeMap(data.comboProducts, mapToComboProduct);
+export function mapToComboGroup(data: any, uidRef: { value: number }): ComboGroup {
+  const comboProducts = safeMap(data.comboProducts, d => mapToComboProduct(d, uidRef));
 
   return {
     id: data.id,
@@ -47,10 +50,11 @@ export function mapToComboGroup(data: any): ComboGroup {
   }
 }
 
-export function mapToComboProduct(data: any): ComboProduct {
+export function mapToComboProduct(data: any, uidRef: { value: number }): ComboProduct {
   const product = mapToProduct(data.product);
 
   return {
+    __uid: uidRef.value++,
     id: data.id,
     product: product,
 
@@ -59,7 +63,7 @@ export function mapToComboProduct(data: any): ComboProduct {
   }
 }
 
-export function mapToProductVariant(data: any): ProductVariant {
+export function mapToProductVariant(data: any): Variant {
   return {
     id: data.id,
     name: data.name,

@@ -1,11 +1,11 @@
-import type { Combo, ComboGroup, ComboProduct, Product, ProductVariant } from '@/models/types.ts'
+import type { Combo, ComboGroup, ComboProduct, Product, Variant } from '@/models/types.ts'
 
-export const getProductPrice = (product: Product, variant?: ProductVariant): number => {
+export const getProductPrice = (product: Product, variant?: Variant): number => {
   const v = variant ? variant : product.defaultVariant ?? product.variants ? product.variants[0] : null;
   return product.basePrice + (v?.priceModifier ?? 0);
 }
 
-export const getComboPrice = (combo: Combo, getSelectedProduct: (cg: ComboGroup) => ComboProduct | null, getSelectedVariant: (cp: ComboProduct | null) => ProductVariant | null): number => {
+export const getComboPrice = (combo: Combo, getSelectedProduct: (cg: ComboGroup) => ComboProduct | null, getSelectedVariant: (cp: ComboProduct | null) => Variant | null): number => {
   const comboTotal = combo.comboProducts.reduce((acc, cp) => {
     const variant = getSelectedVariant(cp);
     const selectedModifier = variant?.priceModifier ?? 0;
