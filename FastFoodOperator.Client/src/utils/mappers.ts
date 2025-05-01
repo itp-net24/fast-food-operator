@@ -35,12 +35,15 @@ export function mapToCombo(data: any): Combo {
 }
 
 export function mapToComboGroup(data: any): ComboGroup {
+  const comboProducts = safeMap(data.comboProducts, mapToComboProduct);
+
   return {
     id: data.id,
     name: data.name,
 
     defaultComboProductId: data.defaultComboProductId,
-    comboProducts: safeMap(data.comboProducts, mapToComboProduct),
+    defaultComboProduct: comboProducts.find(cp => cp.id === data.defaultComboProductId) ?? null,
+    comboProducts: comboProducts,
   }
 }
 

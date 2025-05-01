@@ -29,6 +29,7 @@ export interface ComboGroup {
   id: number;
   name: string;
   defaultComboProductId: number | null;
+  defaultComboProduct: ComboProduct | null;
   comboProducts: ComboProduct[];
 }
 
