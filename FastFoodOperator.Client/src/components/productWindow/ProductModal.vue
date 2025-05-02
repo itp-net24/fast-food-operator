@@ -12,7 +12,6 @@ import ProductCartControls from "@/components/productWindow/ProductCartControls.
 import IngredientSelector from "@/components/productWindow/IngredientSelector.vue";
 import BaseProductDetails from "@/components/productWindow/BaseProductDetails.vue";
 import VariantSelector from "@/components/productWindow/VariantSelector.vue";
-import ComboProductList from "@/components/productWindow/ComboProductList.vue";
 import ProductGroupSelector from "@/components/productWindow/ProductGroupSelector.vue";
 
 import {GetComboAsync, GetProductAsync} from "@/services/productService.ts";
@@ -87,19 +86,15 @@ onMounted(async () => {
         />
 
         <!-- Single Product -->
-        <ComboProductList
-          v-if="type === ProductType.combo"
-          :combo-products="product.comboProducts">
+        <div v-for="comboProduct in product.comboProducts" :key="comboProduct.id">
+          {{ comboProduct.product.name }}
 
-          <template #combo-product="{comboProduct}">
-            <VariantSelector
-              v-if="builder.selectedVariantFromProduct(comboProduct).value"
-              :key="comboProduct.id"
-              v-model:selection="builder.selectedVariantFromProduct(comboProduct).value!"
-              :combo-product="comboProduct"
-            />
-          </template>
-        </ComboProductList>
+          <VariantSelector
+            v-if="builder.selectedVariantFromProduct(comboProduct).value"
+            v-model:selection="builder.selectedVariantFromProduct(comboProduct).value!"
+            :combo-product="comboProduct"
+          />
+        </div>
 
         <!-- Group Products -->
         <div
@@ -117,13 +112,17 @@ onMounted(async () => {
             :combo-product="builder.selectedProductFromGroup(group).value" />
         </div>
 
-        <hr />
-        <h2>Ingredients</h2>
+        <!-- Ingredients -->
+        <div>
+          <hr />
 
-        <IngredientSelector
-          v-model:selected-ingredients="builder.selectedIngredients.value"
-          @update-ingredients="builder.updateIngredients"
-        />
+          <h2>Ingredients</h2>
+
+          <IngredientSelector
+            v-model:selected-ingredients="builder.selectedIngredients.value"
+            @update-ingredients="builder.updateIngredients"
+          />
+        </div>
       </div>
 
       <ProductCartControls
