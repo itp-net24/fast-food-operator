@@ -1,24 +1,27 @@
 import { computed, ref } from 'vue'
 import type {
-  CartContainer,
+  CartContainer, CartItem,
   Combo,
   ComboGroup,
   ComboProduct, Ingredient,
   Product, Variant
 } from '@/models/types.ts'
-import { mapComboProductToCart } from '@/utils/cartMapper.ts'
+import {
+  calculateCartContainerTotal,
+  defaultProductOfCombo, defaultProductOfGroup
+} from '@/utils/helpers.ts'
+import { mapComboProductToCart, mapProductToCart } from '@/utils/mappers.ts'
 
 export default () => {
-  const $mainProduct = ref<Product>(null!);
+  const main = ref<CartItem>(null!);
   const $combo = ref<CartContainer | null>(null!);
   const $selectGroupProducts = ref<Record<number, ComboProduct>>({});
 
   const initializeProduct = (product: Product) => {
-    $mainProduct.value = product;
+    main.value = mapProductToCart(product);
   }
 
   const initializeCombo = (combo: Combo) => {
-    $mainProduct.value = combo.mainComboProduct?.product ?? combo.comboProducts[0].product;
     $combo.value = {
       id: combo.id,
       type: "combo",
@@ -28,28 +31,38 @@ export default () => {
       products: [],
     };
 
-    initializeComboProducts(combo.comboProducts);
-    initializeGroupProducts(combo.comboGroups);
+    const mainProduct = defaultProductOfCombo(combo);
+    if (!mainProduct) {
+      console.log(`ERROR: no main product in combo: ${combo.name}`);
+      return;
+    }
+
+    initializeComboProducts(combo.comboProducts, mainProduct);
+    initializeGroupProducts(combo.comboGroups, mainProduct);
   }
 
-  const initializeComboProducts = (products: ComboProduct[]) => {
+  const initializeComboProducts = (products: ComboProduct[], mainProduct: ComboProduct | null) => {
     products.forEach(product => {
-      combo.value.products.push(mapComboProductToCart(product, product.defaultProductVariant ?? product.product.variants[0], $mainProduct.value));
+      const item = mapComboProductToCart(product, product && product == mainProduct);
+
+      combo.value.products.push(item);
+
+      // Important for main to reference the same object as in product array for ingredients to update correctly!
+      if (item.__uid == mainProduct?.__uid)
+        main.value = item;
     })
   }
-  const initializeGroupProducts = (groups: ComboGroup[]) => {
-    groups.forEach((cg: ComboGroup) => {
-      const defaultComboProduct = cg.defaultComboProduct ?? cg.comboProducts[0];
 
+  const initializeGroupProducts = (groups: ComboGroup[], mainProduct: ComboProduct | null) => {
+    groups.forEach((cg: ComboGroup) => {
+      const defaultComboProduct = defaultProductOfGroup(cg);
       if (!defaultComboProduct) {
         console.log(`ERROR: missing products in group: ${cg.name}`);
         return;
       }
 
       $selectGroupProducts.value[cg.id] = defaultComboProduct;
-
-      const defaultProductVariant = defaultComboProduct.defaultProductVariant ?? defaultComboProduct.product.variants[0];
-      combo.value.products.push(mapComboProductToCart(defaultComboProduct, defaultProductVariant, $mainProduct.value));
+      combo.value.products.push(mapComboProductToCart(defaultComboProduct, defaultComboProduct == mainProduct));
     });
   }
 
@@ -67,8 +80,7 @@ export default () => {
         const previousVal = selectedProductFromGroup(group).value;
         const index = combo.value.products.findIndex(v => v.__uid === previousVal.__uid);
 
-        const defaultProductVariant = val.defaultProductVariant ?? val.product.variants[0];
-        combo.value.products[index] = mapComboProductToCart(val, defaultProductVariant, $mainProduct.value);
+        combo.value.products[index] = mapComboProductToCart(val, false);
         $selectGroupProducts.value[group.id] = val
       },
     });
@@ -89,19 +101,21 @@ export default () => {
     });
   }
 
-  const selectedIngredients = computed<Ingredient[]>(() => $mainProduct.value.ingredients);
+  const selectedIngredients = computed<Ingredient[] | null>(() => main.value.ingredients ?? null);
 
   const updateIngredients = (ingredient: Ingredient) => {
-    const index = $mainProduct.value.ingredients.findIndex(i => i.id === ingredient.id);
-    if (index < 0)
-      $mainProduct.value.ingredients.push(ingredient);
-    else
-      $mainProduct.value.ingredients.splice(index, 1);
+    const index = main.value.ingredients?.findIndex(i => i.id === ingredient.id);
+    if (index && index < 0)
+      main.value.ingredients?.push(ingredient);
+    else if (index && index > 0)
+      main.value.ingredients?.splice(index, 1);
   }
+
+  const getTotal = computed(() => calculateCartContainerTotal(combo.value));
 
   return {
     combo: $combo,
-    mainProduct: $mainProduct,
+    mainProduct: main,
     selectGroupProducts:$selectGroupProducts,
     initializeProduct,
     initializeCombo,
@@ -109,5 +123,6 @@ export default () => {
     selectedVariantFromProduct,
     selectedIngredients,
     updateIngredients,
+    getTotal,
   }
 }
