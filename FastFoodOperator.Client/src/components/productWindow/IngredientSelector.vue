@@ -13,24 +13,22 @@
     (e: 'update-ingredients', ingredient: Ingredient): void;
   }>();
 
+  const ingredients = ref<Ingredient[]>([]);
   const includedIngredients: number[] = props.selectedIngredients.map(i => i.id);
 
-  const isSelected = (ingredient: Ingredient): boolean => {
-    return props.selectedIngredients.some(i => i.id === ingredient.id);
-  }
+  const isSelected = (ingredient: Ingredient): boolean =>
+    includedIngredients.some(i => i === ingredient.id)
 
   const getPrice = (ingredient: Ingredient): number => {
-    if (includedIngredients.some(i => i === ingredient.id)) {
+    if (isSelected(ingredient))
       return 0;
-    }
-    else return ingredient.priceModifier;
+    else
+      return ingredient.priceModifier;
   }
 
-  const handleUpdate = (ingredient: Ingredient) => {
+  const updateIngredients = (ingredient: Ingredient) => {
     emits('update-ingredients', reactive(ingredient));
   }
-
-  const ingredients = ref<Ingredient[]>([]);
 
   onMounted(async () => {
     ingredients.value = await GetIngredientsAsync();
@@ -47,7 +45,7 @@
         <input
             type="checkbox"
             :checked="isSelected(ingredient)"
-            @change="handleUpdate(ingredient)"
+            @change="updateIngredients(ingredient)"
         />
         <span class="ingredient-name">{{ ingredient.name }}</span>
         <span class="ingredient-price">{{ getPrice(ingredient) == 0 ? "Included" : "+" + getPrice(ingredient) + "kr" }}</span>
