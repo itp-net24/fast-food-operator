@@ -3,7 +3,7 @@ import type {
   CartContainer,
   Combo,
   ComboGroup,
-  ComboProduct,
+  ComboProduct, Ingredient,
   Product, Variant
 } from '@/models/types.ts'
 import { mapComboProductToCart } from '@/utils/cartMapper.ts'
@@ -28,9 +28,15 @@ export default () => {
       products: [],
     };
 
+    initializeComboProducts(combo.comboProducts);
     initializeGroupProducts(combo.comboGroups);
   }
 
+  const initializeComboProducts = (products: ComboProduct[]) => {
+    products.forEach(product => {
+      combo.value.products.push(mapComboProductToCart(product, product.defaultProductVariant ?? product.product.variants[0], $mainProduct.value));
+    })
+  }
   const initializeGroupProducts = (groups: ComboGroup[]) => {
     groups.forEach((cg: ComboGroup) => {
       const defaultComboProduct = cg.defaultComboProduct ?? cg.comboProducts[0];
@@ -83,6 +89,16 @@ export default () => {
     });
   }
 
+  const selectedIngredients = computed<Ingredient[]>(() => $mainProduct.value.ingredients);
+
+  const updateIngredients = (ingredient: Ingredient) => {
+    const index = $mainProduct.value.ingredients.findIndex(i => i.id === ingredient.id);
+    if (index < 0)
+      $mainProduct.value.ingredients.push(ingredient);
+    else
+      $mainProduct.value.ingredients.splice(index, 1);
+  }
+
   return {
     combo: $combo,
     mainProduct: $mainProduct,
@@ -91,5 +107,7 @@ export default () => {
     initializeCombo,
     selectedProductFromGroup,
     selectedVariantFromProduct,
+    selectedIngredients,
+    updateIngredients,
   }
 }
