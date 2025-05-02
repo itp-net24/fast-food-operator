@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, watch } from 'vue'
   import type { ComboProduct, Variant } from '@/models/types.ts'
+import { getVariantDiscount, roundToPrecision } from '@/utils/helpers.ts'
+import { CURRENCY_SYMBOL, PRECISION_DISPLAY } from '../../../config.ts'
 
   const props = defineProps<Props>();
 
@@ -13,28 +15,21 @@ import { computed } from 'vue'
     (e: 'update:selection', variant: Variant): void
   }>();
 
-  const defaultVariant = props.comboProduct.defaultProductVariant
-    ?? props.comboProduct.product.variants[0];
+  const selectedId = ref<number>(props.comboProduct.defaultProductVariant?.id
+    ?? props.comboProduct.product.variants[0].id);
 
-  const selectedId = computed({
-    get: () => props.selection ?? defaultVariant,
-    set: (variant: Variant) => {
-      if (!variant) return;
+  const defaultVariant: Variant = props.comboProduct.product.variants.find(v => v.id === selectedId.value)!;
 
-      emits('update:selection', {
-        id: variant.id,
-        name: variant.name,
-        priceModifier: variant.priceModifier
-      });
-    },
+  watch(selectedId, (newId) => {
+    const variant = props.comboProduct.product.variants.find(v => v.id === newId);
+    if (!variant) return;
+
+    const newVariant = { ...variant, priceModifier: getVariantDiscount(variant, defaultVariant) };
+    emits('update:selection', newVariant);
   });
 
   const isVariantFree = (variant: Variant): boolean => {
-    return variantPrice(variant) <= 0;
-  };
-
-  const variantPrice = (variant: Variant): number => {
-    return Math.max(variant.priceModifier - (defaultVariant.priceModifier ?? 0), 0);
+    return getVariantDiscount(variant, defaultVariant) <= 0;
   };
 </script>
 
@@ -51,12 +46,13 @@ import { computed } from 'vue'
             type="radio"
             :name="comboProduct.product.name"
             v-model="selectedId"
-            :value="variant"
+            :value="variant.id"
             class="variant-radio"
         />
           <span class="variant-name">{{ variant.name }}</span>
           <span class="variant-price">
-            {{ isVariantFree(variant) ? "Included" : "+" + variantPrice(variant) + "kr" }}
+            {{ isVariantFree(variant) ? "Included" : "+" + getVariantDiscount(variant, defaultVariant, PRECISION_DISPLAY) + CURRENCY_SYMBOL
+            }}
           </span>
         </div>
       </label>

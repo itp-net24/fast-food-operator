@@ -1,7 +1,9 @@
 <script setup lang="ts">
-  import { ref, onMounted, reactive } from "vue"
+import { ref, onMounted, reactive, watch } from 'vue'
   import { GetIngredientsAsync } from "@/services/productService.ts"
   import type {Ingredient} from "@/models/types.ts";
+import { getVariantDiscount, roundToPrecision } from '@/utils/helpers.ts'
+  import { CURRENCY_SYMBOL, PRECISION_DISPLAY } from '../../../config.ts'
 
   const props = defineProps<Props>();
 
@@ -27,7 +29,7 @@
   }
 
   const updateIngredients = (ingredient: Ingredient) => {
-    emits('update-ingredients', reactive(ingredient));
+    emits('update-ingredients', { ...ingredient, priceModifier: getPrice(ingredient) });
   }
 
   onMounted(async () => {
@@ -48,7 +50,8 @@
             @change="updateIngredients(ingredient)"
         />
         <span class="ingredient-name">{{ ingredient.name }}</span>
-        <span class="ingredient-price">{{ getPrice(ingredient) == 0 ? "Included" : "+" + getPrice(ingredient) + "kr" }}</span>
+        <span class="ingredient-price">{{ getPrice(ingredient) == 0 ? "Included" : "+" + roundToPrecision(getPrice(ingredient), PRECISION_DISPLAY) + CURRENCY_SYMBOL
+          }}</span>
       </label>
     </li>
   </ul>

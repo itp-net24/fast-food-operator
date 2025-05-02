@@ -15,9 +15,9 @@ import VariantSelector from "@/components/productWindow/VariantSelector.vue";
 import ProductGroupSelector from "@/components/productWindow/ProductGroupSelector.vue";
 
 import {GetComboAsync, GetProductAsync} from "@/services/productService.ts";
-import useProductBuilder from "@/composables/useProductBuilder.ts"
+import useProduct from "@/composables/useProduct.ts"
 
-const builder = useProductBuilder();
+const builder = useProduct();
 
 const props = defineProps<Props>();
 
@@ -52,22 +52,6 @@ onMounted(async () => {
     console.log("Could not determine product type!");
   }
 });
-
-
-
-// const totalPrice = computed(() => {
-//   if (props.type === ProductType.product) {
-//     const p = product.value as Product;
-//     return getProductPrice(p);
-//   }
-//   else if (props.type === ProductType.combo) {
-//     const c = product.value as Combo;
-//     return getComboPrice(c, (cg: ComboGroup) => builder.selectedProductFromGroup(cg).value, (cp: ComboProduct | null) => builder.selectedVariantFromProduct(cp).value);
-//   }
-//   else {
-//     return null;
-//   }
-// });
 </script>
 
 <template>
@@ -82,7 +66,7 @@ onMounted(async () => {
       <div class="wrapper">
         <BaseProductDetails
           :base-product="product as BaseProduct"
-          :total-price="0"
+          :total-price="builder.getTotal.value"
         />
 
         <!-- Single Product -->

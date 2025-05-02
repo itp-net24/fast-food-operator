@@ -1,7 +1,9 @@
 <script setup lang="ts">
   import type {BaseProduct} from "@/models/types.ts";
+  import { CURRENCY_SYMBOL } from '../../../config.ts'
+  import { roundToPrecision } from '../../utils/helpers.ts'
 
-  const props = defineProps<Props>();
+  defineProps<Props>();
 
   interface Props {
     totalPrice: number;
@@ -15,7 +17,7 @@
 
     <div class="product-content">
       <h2 class="product-name">{{baseProduct.name}}</h2>
-      <span class="product-price">{{ totalPrice + 'kr' }}</span>
+      <span class="product-price">{{ roundToPrecision(totalPrice, 0) + CURRENCY_SYMBOL }}</span>
     </div>
   </div>
 </template>
