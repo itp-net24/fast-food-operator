@@ -115,11 +115,14 @@ export default () => {
   const selectedIngredients = computed<Ingredient[] | null>(() => main.value.ingredients ?? null);
 
   const updateIngredients = (ingredient: Ingredient) => {
-    const index = main.value.ingredients?.findIndex(i => i.id === ingredient.id);
-    if (index && index < 0)
-      main.value.ingredients?.push(ingredient);
-    else if (index && index > 0)
-      main.value.ingredients?.splice(index, 1);
+    if (!main.value.ingredients) return;
+
+    const index = main.value.ingredients.findIndex(i => i.id === ingredient.id);
+
+    if (index === -1)
+      main.value.ingredients.push(ingredient);
+    else
+      main.value.ingredients.splice(index, 1);
   }
 
   const getTotal = computed(() => calculateCartContainerTotal(combo.value));
