@@ -7,7 +7,7 @@ import type {
   Product,
   Variant,
 } from '@/models/types.ts'
-import { defaultVariant } from '@/utils/helpers.ts'
+import { defaultVariantOfProduct } from '@/utils/helpers.ts'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function mapToProduct(data: any): Product {
@@ -104,7 +104,7 @@ export const mapProductToCart = (p: Product): CartItem => {
 }
 
 export const mapComboProductToCart = (cp: ComboProduct, includeIngredients: boolean): CartItem => {
-  const variant = defaultVariant(cp)
+  const variant = defaultVariantOfProduct(cp)
 
   return {
     __uid: cp.__uid,
