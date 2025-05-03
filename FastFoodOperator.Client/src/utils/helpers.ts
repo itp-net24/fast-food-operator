@@ -25,6 +25,10 @@ export const roundToPrecision = (value: number, precision: number): number => {
   return Math.round(value * factor) / factor;
 }
 
+export const clamp = (value: number, min: number, max: number): number => {
+  return Math.min(max, Math.max(min, value));
+}
+
 export const defaultProductOfCombo = (combo: Combo): ComboProduct | null => combo.mainComboProduct ?? combo.comboProducts[0] ?? null;
 export const defaultProductOfGroup = (group: ComboGroup): ComboProduct | null => group.defaultComboProduct ?? group.comboProducts[0] ?? null;
 export const defaultVariant = (product: ComboProduct): Variant | null => product.defaultProductVariant ?? product.product.variants[0] ?? null;
