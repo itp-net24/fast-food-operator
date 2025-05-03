@@ -18,7 +18,18 @@ export default () => {
   const $selectGroupProducts = ref<Record<number, ComboProduct>>({});
 
   const initializeProduct = (product: Product) => {
-    main.value = mapProductToCart(product);
+
+    const item = mapProductToCart(product);
+    $combo.value = {
+      id: product.id,
+      type: "product",
+      name: product.name,
+      price: product.basePrice,
+      quantity: 1,
+      products: [item],
+    }
+
+    main.value = item;
   }
 
   const initializeCombo = (combo: Combo) => {
