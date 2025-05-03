@@ -8,7 +8,6 @@ import type {
 import {ProductType} from "@/enums/enums.ts"
 
 import PopupModal from "@/components/PopupModal.vue";
-import ProductCartControls from "@/components/productWindow/ProductCartControls.vue";
 import IngredientSelector from "@/components/productWindow/IngredientSelector.vue";
 import BaseProductDetails from "@/components/productWindow/BaseProductDetails.vue";
 import VariantSelector from "@/components/productWindow/VariantSelector.vue";
@@ -16,6 +15,7 @@ import ProductGroupSelector from "@/components/productWindow/ProductGroupSelecto
 
 import {GetComboAsync, GetProductAsync} from "@/services/productService.ts";
 import useProduct from "@/composables/useProduct.ts"
+import ValueSelector from '@/components/ValueSelector.vue'
 
 const builder = useProduct();
 
@@ -109,10 +109,11 @@ onMounted(async () => {
         </div>
       </div>
 
-      <ProductCartControls
-        class="controls"
-        @confirm="handleConfirm"
-      />
+      <div class="cart-controls">
+        <ValueSelector v-model:value="builder.combo.value.quantity" :min="1" :max="99" :step="1" />
+        <button class="cart-button" @click="handleConfirm">Add To Cart</button>
+      </div>
+
     </div>
   </PopupModal>
 </template>
@@ -158,9 +159,32 @@ onMounted(async () => {
   background: #ff4500; /* Darker grey on hover */
 }
 
-.controls{
+.cart-button {
+  width: 100%;
+  height: 70%;
+  background-color: orangered;
+  color: white;
+  border-radius: 0.7rem;
+  border: none;
+}
+
+.cart-controls {
   position: absolute;
   bottom: 0;
   left: 0;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 5rem;
+  width: 100%;
+  border-top: 1px solid black;
+  background-color: white;
+  border-radius: 0 0 1rem 1rem;
+}
+
+.cart-controls > * {
+  margin: 2rem;
 }
 </style>
