@@ -384,7 +384,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                     { 29, 40.00m, null, "Classic Swedish kanelbulle", "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-kanelbulle:nutrition-calculator-tile", "Cinnamon Bun" },
                     { 30, 32.00m, null, "Moist chocolate muffin", "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-muffinchoklad:nutrition-calculator-tile", "Chocolate Muffin" },
                     { 31, 32.00m, null, "Chocolate-glazed mini donut", "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-mini-donutchoklad:nutrition-calculator-tile", "MiniDonut Choklad" },
-                    { 32, 18.00m, null, "Fresh apple snack pack", "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-accessories-apples:nutrition-calculator-tile", "Apple Slices" }
+                    { 32, 18.00m, null, "Fresh apple snack pack", "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-accessories-apples:nutrition-calculator-tile", "Apple Slices" },
+                    { 33, 40.00m, null, "Very  cold", null, "Beer" }
                 });
 
             migrationBuilder.InsertData(
@@ -397,7 +398,8 @@ namespace FastFoodOperator.Api.Data.Migrations
                     { 3, "Sides", 1.12m },
                     { 4, "Desserts", 1.12m },
                     { 5, "Hot drinks", 1.12m },
-                    { 6, "Combo", 0m }
+                    { 6, "Combo", 1m },
+                    { 7, "Alcohol", 1.25m }
                 });
 
             migrationBuilder.InsertData(
@@ -491,7 +493,9 @@ namespace FastFoodOperator.Api.Data.Migrations
                     { 29, 4 },
                     { 30, 4 },
                     { 31, 4 },
-                    { 32, 3 }
+                    { 32, 3 },
+                    { 33, 2 },
+                    { 33, 7 }
                 });
 
             migrationBuilder.InsertData(

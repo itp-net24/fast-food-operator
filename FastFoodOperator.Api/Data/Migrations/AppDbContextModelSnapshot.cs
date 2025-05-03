@@ -719,6 +719,13 @@ namespace FastFoodOperator.Api.Data.Migrations
                             Description = "Fresh apple snack pack",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-accessories-apples:nutrition-calculator-tile",
                             Name = "Apple Slices"
+                        },
+                        new
+                        {
+                            Id = 33,
+                            BasePrice = 40.00m,
+                            Description = "Very  cold",
+                            Name = "Beer"
                         });
                 });
 
@@ -946,6 +953,16 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             ProductId = 32,
                             TagId = 3
+                        },
+                        new
+                        {
+                            ProductId = 33,
+                            TagId = 7
+                        },
+                        new
+                        {
+                            ProductId = 33,
+                            TagId = 2
                         });
                 });
 
@@ -1120,7 +1137,13 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 6,
                             Name = "Combo",
-                            TaxRate = 0m
+                            TaxRate = 1m
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Alcohol",
+                            TaxRate = 1.25m
                         });
                 });
 
