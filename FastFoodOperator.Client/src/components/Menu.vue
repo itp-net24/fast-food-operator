@@ -72,10 +72,6 @@ const {cart} = storeToRefs(cartStore)
 </script>
 
 <template>
-    <div class="company-title">
-      <img src="@/assets/Claes_Burgir1.png" alt="Företagslogotyp" class="company-logo">
-    </div>
-
     <div class="menu-container">
         
             <aside>
