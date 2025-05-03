@@ -22,7 +22,7 @@
   <div class="backdrop" :class="{ 'background-blur': enableBlur }" @click="closePopupWindow"></div>
 
   <div class="popup-window">
-    <button id="popup-close-button" v-if="enableCloseButton" @click="closePopupWindow">X</button>
+    <button class="button-basic" id="popup-close-button" v-if="enableCloseButton" @click="closePopupWindow">X</button>
 
       <slot />
 

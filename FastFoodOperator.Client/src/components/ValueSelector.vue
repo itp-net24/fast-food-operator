@@ -21,9 +21,9 @@
 
 <template>
   <div class="wrapper">
-    <button class="button" id="button-decrement" @click="updateValue(currentValue - step)" :disabled="currentValue <= minimumValue"></button>
+    <button class="button-basic button" id="button-decrement" @click="updateValue(currentValue - step)" :disabled="currentValue <= minimumValue"></button>
     <span id="value">{{currentValue}}</span>
-    <button class="button" id="button-increment" @click="updateValue(currentValue + step)" :disabled="currentValue >= maximumValue"></button>
+    <button class="button-basic button" id="button-increment" @click="updateValue(currentValue + step)" :disabled="currentValue >= maximumValue"></button>
   </div>
 </template>
 
