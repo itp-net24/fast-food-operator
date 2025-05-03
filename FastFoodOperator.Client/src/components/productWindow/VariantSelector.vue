@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+  import { ref, watch } from 'vue'
   import type { ComboProduct, Variant } from '@/models/types.ts'
-import { defaultVariantOfProduct, getVariantDiscount } from '@/utils/helpers.ts'
-import { CURRENCY_SYMBOL, PRECISION_DISPLAY } from '../../../config.ts'
+  import { defaultVariantOfProduct, getVariantDiscount } from '@/utils/helpers.ts'
+  import { CURRENCY_SYMBOL, PRECISION_DISPLAY } from '../../../config.ts'
 
   const props = defineProps<Props>();
 
@@ -11,29 +11,25 @@ import { CURRENCY_SYMBOL, PRECISION_DISPLAY } from '../../../config.ts'
     comboProduct: ComboProduct;
   }
 
-  const emits = defineEmits<{
-    (e: 'update:selection', variant: Variant): void
-  }>();
+  const emits = defineEmits<{ (e: 'update:selection', variant: Variant): void }>();
 
   const selectedId = ref<number>(defaultVariantOfProduct(props.comboProduct).id);
 
-  const selectedVariant: Variant = props.comboProduct.product.variants.find(v => v.id === selectedId.value)!;
+  const selectedVariant = ref<Variant>(props.comboProduct.product.variants.find(v => v.id === selectedId.value)!);
 
   watch (() => props.comboProduct, (newCombo) => {
     selectedId.value = defaultVariantOfProduct(newCombo).id;
-  })
+  });
 
   watch(selectedId, (newId) => {
     const variant = props.comboProduct.product.variants.find(v => v.id === newId);
     if (!variant) return;
 
-    const newVariant = { ...variant, priceModifier: getVariantDiscount(variant, selectedVariant) };
+    const newVariant = { ...variant, priceModifier: getVariantDiscount(variant, selectedVariant.value) };
     emits('update:selection', newVariant);
   });
 
-  const isVariantFree = (variant: Variant): boolean => {
-    return getVariantDiscount(variant, selectedVariant) <= 0;
-  };
+  const isVariantFree = (variant: Variant): boolean => getVariantDiscount(variant, selectedVariant.value) <= 0;
 </script>
 
 <template>
@@ -54,8 +50,7 @@ import { CURRENCY_SYMBOL, PRECISION_DISPLAY } from '../../../config.ts'
         />
           <span class="variant-name">{{ variant.name }}</span>
           <span class="variant-price">
-            {{ isVariantFree(variant) ? "Included" : "+" + getVariantDiscount(variant, selectedVariant, PRECISION_DISPLAY) + CURRENCY_SYMBOL
-            }}
+            {{ isVariantFree(variant) ? "Included" : "+" + getVariantDiscount(variant, selectedVariant, PRECISION_DISPLAY) + CURRENCY_SYMBOL }}
           </span>
         </div>
       </label>
