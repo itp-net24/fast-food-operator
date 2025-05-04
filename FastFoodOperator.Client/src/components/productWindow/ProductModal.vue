@@ -10,12 +10,13 @@ import {ProductType} from "@/enums/enums.ts"
 import PopupModal from "@/components/PopupModal.vue";
 import IngredientSelector from "@/components/productWindow/IngredientSelector.vue";
 import BaseProductDetails from "@/components/productWindow/BaseProductDetails.vue";
-import VariantSelector from "@/components/productWindow/VariantSelector.vue";
 import ProductGroupSelector from "@/components/productWindow/ProductGroupSelector.vue";
-
-import {GetComboAsync, GetProductAsync} from "@/services/productService.ts";
-import useProduct from "@/composables/useProduct.ts"
 import ValueSelector from '@/components/ValueSelector.vue'
+import VariantSelector from '@/components/productWindow/VariantSelector.vue'
+
+import { GetComboAsync, GetProductAsync } from '@/services/productService.ts'
+import {  defaultVariantOfProduct } from '@/utils/helpers.ts'
+import useProduct from "@/composables/useProduct.ts"
 
 const builder = useProduct();
 
@@ -26,7 +27,8 @@ interface Props {
   type: ProductType;
 }
 
-const product = ref<Product | Combo | null>(null);
+const product = ref<Product>(null!);
+const combo = ref<Combo | null>(null);
 
 
 const handleConfirm = () => {
@@ -37,15 +39,15 @@ const handleConfirm = () => {
 // Popup
 const popup = ref<boolean>(true);
 
-
 onMounted(async () => {
   if (props.type === ProductType.product) {
     const p = await GetProductAsync(props.id);
-    product.value = p as Product;
+    product.value = p;
+    builder.initializeProduct(p);
   }
   else if (props.type === ProductType.combo) {
     const c = await GetComboAsync(props.id);
-    product.value = c as Combo;
+    combo.value = c;
     builder.initializeCombo(c);
   }
   else {
@@ -56,7 +58,7 @@ onMounted(async () => {
 
 <template>
   <PopupModal
-    v-if="popup && product"
+    v-if="popup && (product || combo)"
     :enable-close-button="true"
     :enable-blur="true"
     :close-on-outside-click="true"
@@ -64,36 +66,48 @@ onMounted(async () => {
 
     <div class="container">
       <div class="wrapper">
-        <BaseProductDetails
-          :base-product="product as BaseProduct"
+        <BaseProductDetails v-if="product || combo"
+          :base-product="product as BaseProduct ?? combo as BaseProduct"
           :total-price="builder.getTotal.value"
         />
 
-        <!-- Single Product -->
-        <div v-for="comboProduct in product.comboProducts" :key="comboProduct.id">
-          {{ comboProduct.product.name }}
-
+        <div v-if="product">
           <VariantSelector
-            v-if="builder.selectedVariantFromProduct(comboProduct).value"
-            v-model:selection="builder.selectedVariantFromProduct(comboProduct).value!"
-            :combo-product="comboProduct"
+            v-model:selection="builder.mainProduct.value.variant"
+            :variants="product.variants"
+            :default-variant="product.defaultVariant"
           />
         </div>
 
-        <!-- Group Products -->
-        <div
-          v-for="group in product.comboGroups"
-          :key="group.id">
+        <!-- Single Product -->
+        <div v-if="combo">
+          <div v-for="comboProduct in combo.comboProducts" :key="comboProduct.__uid">
+            {{ comboProduct.product.name }}
 
-          <ProductGroupSelector
-            v-model:selection="builder.selectedProductFromGroup(group).value"
-            :group="group"
-          />
+            <VariantSelector
+              v-model:selection="builder.selectedVariantFromProduct(comboProduct).value"
+              :variants="comboProduct.product.variants"
+              :default-variant="defaultVariantOfProduct(comboProduct)"
+              :uid="comboProduct.__uid"
+            />
+          </div>
 
-          <VariantSelector
-            v-if="builder.selectedVariantFromProduct(builder.selectedProductFromGroup(group).value).value"
-            v-model:selection="builder.selectedVariantFromProduct(builder.selectedProductFromGroup(group).value).value!"
-            :combo-product="builder.selectedProductFromGroup(group).value" />
+          <!-- Group Products -->
+          <div
+            v-for="group in combo.comboGroups"
+            :key="group.id">
+
+            <ProductGroupSelector
+              v-model:selection="builder.selectedProductFromGroup(group).value"
+              :group="group"
+            />
+
+            <VariantSelector
+              v-model:selection="builder.selectedVariantFromProduct(builder.selectedProductFromGroup(group).value).value"
+              :variants="builder.selectedProductFromGroup(group).value.product.variants"
+              :default-variant="defaultVariantOfProduct(builder.selectedProductFromGroup(group).value)"
+            />
+          </div>
         </div>
 
         <!-- Ingredients -->
