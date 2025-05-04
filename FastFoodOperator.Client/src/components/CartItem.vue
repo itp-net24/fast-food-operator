@@ -45,10 +45,10 @@ function removeFromCart(){
         <h2> {{ cartProduct.product?.name }}</h2>
         
         <span>
-        <button @click="decrementFromCart">- 1</button>
-        <button @click="addToCart">+ 1</button>
+        <button class="button-basic" @click="decrementFromCart">- 1</button>
+        <button class="button-basic" @click="addToCart">+ 1</button>
         </span>
-        <button @click="removeFromCart">Remove</button>
+        <button class="button-basic" @click="removeFromCart">Remove</button>
     </article>
 </template>
 

@@ -34,11 +34,11 @@ const emit = defineEmits<{
 
 <template>
     <div class="sidebar-container" v-bind:class="{'open border-sidebar': sideMenuOpen}">
-        <button class="sidebar-toggle button-menu border-menu" v-on:click="sideMenuOpen = !sideMenuOpen">
+        <button class="button-basic sidebar-toggle button-menu border-menu" v-on:click="sideMenuOpen = !sideMenuOpen">
             {{ sideMenuOpen ? '◂' : '▸' }}
         </button>
         <h2 class="title">Our Menu</h2>
-        <ul class="category-list">
+        <ul class="category-list ul-reset">
             <li class="category border-menu" v-for="category in categories" :key="category.id" v-on:click="CategoryClicked(category.id)">
                 {{ category.name }}
             </li>

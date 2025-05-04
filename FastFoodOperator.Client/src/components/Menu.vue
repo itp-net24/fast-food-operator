@@ -86,7 +86,7 @@ function checkOut(){
 
             <main>
               
-              <!-- <button id="cartButton" @click="openCart"> Cart </button>
+              <!-- <button class="button-basic" id="cartButton" @click="openCart"> Cart </button>
               <div id="cartModal" class="modal">
                 <div class="modal-content">
                   <span class="close">&times;</span>

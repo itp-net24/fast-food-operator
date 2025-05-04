@@ -16,11 +16,11 @@ const adminMenuOpen = ref<boolean>(false);
 
       
       <nav class="drop-down-menu">
-        <button class="admin-menu-toggle button-menu" v-on:click="adminMenuOpen = !adminMenuOpen">
+        <button class="button-basic admin-menu-toggle button-menu" v-on:click="adminMenuOpen = !adminMenuOpen">
         ☰ Views
         </button>
 
-        <ul class="drop-down-list-menu" v-bind:class="{dropDownOpen: adminMenuOpen}">
+        <ul class="drop-down-list-menu ul-reset" v-bind:class="{dropDownOpen: adminMenuOpen}">
           <li><RouterLink class="admin-nav-link border-menu" to="/menu">Menu</RouterLink></li>
           <li><RouterLink class="admin-nav-link border-menu" to="/display-order">Display Orders</RouterLink></li>
           <li><RouterLink class="admin-nav-link border-menu" to="/kitchen-display">Kitchen Display</RouterLink></li>
