@@ -5,7 +5,7 @@ namespace FastFoodOperator.Api.Controller
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class CategoryController(ProductService service, ILogger<CategoryController> logger) : ControllerBase
+	public class TagController(ProductService service, ILogger<TagController> logger) : ControllerBase
 	{
 
 		[HttpGet]
@@ -24,7 +24,7 @@ namespace FastFoodOperator.Api.Controller
 		}
 
 		[HttpGet("{id}")]
-		public async Task<IActionResult> GetCategory(int id)
+		public async Task<IActionResult> GetTags(int id)
 		{
 			try
 			{
