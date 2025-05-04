@@ -51,7 +51,6 @@
 
     font-size: 1.4rem;
     color: black;
-    width: 2rem;
     text-align: center;
   }
 

@@ -263,7 +263,7 @@ onMounted(async () => {
   width: 100%;
 
   border-top: 1px solid var(--color-border);
-  box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.2);
 
   background-color: var(--color-white);
   border-radius: 0 0 var(--border-radius) var(--border-radius);
