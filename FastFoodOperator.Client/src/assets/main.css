@@ -6,16 +6,6 @@
     margin: 0;
 }
 
-body {
-    font-family: var(--font-family-base);
-    background-color: var(--color-background);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    margin: 0;
-    padding: var(--spacing-lg);
-}
-
 #app {
     background-color: #f8efdd;
     padding: var(--spacing-lg);
