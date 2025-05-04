@@ -1,5 +1,6 @@
 using FastFoodOperator.Api.DTOs.Product;
 using FastFoodOperator.Api.DTOs.ProductVariant;
+using FastFoodOperator.Api.DTOs.Tags;
 using FastFoodOperator.Api.Entities;
 
 namespace FastFoodOperator.Api.DTOs.Combo;
@@ -15,6 +16,7 @@ public class ComboResponseDto
 	
 	public ComboProductResponseDto[] ComboProducts { get; set; } = [];
 	public ComboGroupResponseDto[] ComboGroups { get; set; } = [];
+	public TagResponseDto[] Tags { get; set; } = [];
 }
 
 public class ComboGroupResponseDto
