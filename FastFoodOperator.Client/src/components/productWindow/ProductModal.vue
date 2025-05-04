@@ -36,9 +36,18 @@ const handleConfirm = () => {
 
 
 // Popup
+const mobileBreakpoint: number = 450;
 const popup = ref<boolean>(true);
+const isMobile = ref<boolean>(false);
+
+const updateIsMobile = () => {
+  isMobile.value = window.matchMedia(`(max-width: ${mobileBreakpoint}px)`).matches;
+}
 
 onMounted(async () => {
+  const mediaQuery = window.matchMedia(`(max-width: ${mobileBreakpoint}px)`);
+  mediaQuery.addEventListener('change', updateIsMobile);
+
   if (props.type === ProductType.product) {
     const p = await GetProductAsync(props.id);
     product.value = p;
@@ -58,7 +67,7 @@ onMounted(async () => {
 <template v-if="builder.mainProduct.value">
   <PopupModal
     v-if="popup && (product || combo)"
-    :enable-close-button="true"
+    :enable-close-button="isMobile"
     :enable-blur="true"
     :close-on-outside-click="true"
     @close="popup=false">
