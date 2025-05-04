@@ -8,8 +8,7 @@
         public decimal BasePrice { get; set; }
         public string? ImageUrl { get; set; }
         
-        public int CategoryId { get; set; }
-        public Category Category { get; set; } = null!;
+        public ICollection<ProductTag> Tags { get; set; } = [];
         
         
         public int? DefaultVariantId { get; set; }

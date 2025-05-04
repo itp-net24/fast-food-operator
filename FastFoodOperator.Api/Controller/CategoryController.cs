@@ -7,15 +7,15 @@ namespace FastFoodOperator.Api.Controller
 	[ApiController]
 	public class CategoryController(ProductService service, ILogger<CategoryController> logger) : ControllerBase
 	{
-	
+
 		[HttpGet]
-		public async Task <IActionResult> GetCategories()
+		public async Task<IActionResult> GetCategories()
 		{
 			try
 			{
-				var categories = await service.GetCategoriesAsync();
+				var categories = await service.GetTagsAsync();
 				return Ok(categories);
-			} 
+			}
 			catch (Exception ex)
 			{
 				logger.LogError(ex, "Failed to get categories");
@@ -24,11 +24,11 @@ namespace FastFoodOperator.Api.Controller
 		}
 
 		[HttpGet("{id}")]
-		public async Task <IActionResult> GetCategory(int id)
+		public async Task<IActionResult> GetCategory(int id)
 		{
 			try
 			{
-				var category = await service.GetCategoryByIdAsync(id);
+				var category = await service.GetTagsByIdAsync(id);
 
 				if (category == null)
 				{

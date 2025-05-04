@@ -1,19 +1,19 @@
+import type { Tag } from "./interfaces";
+
 
 export class Product {
     id: number;
     name: string;
-    description: string;
-    category: number;
+    tags: Tag[];
     basePrice: number;
     pictureUrl: string;
 
-    constructor(id:number, name:string, description:string, basePrice:number, pictureUrl:string, category:number) {
+    constructor(id:number, name:string, tags: Tag[], basePrice:number, pictureUrl:string, category:number) {
         this.id = id;
         this.name = name;
-        this.description = description;
+        this.tags = tags;
         this.basePrice = basePrice;
         this.pictureUrl = pictureUrl;
-        this.category = category
     }
 }
 
