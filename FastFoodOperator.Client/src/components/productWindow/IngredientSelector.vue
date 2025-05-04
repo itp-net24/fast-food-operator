@@ -61,15 +61,7 @@
 </template>
 
 <style scoped>
-hr {
-  opacity: 20;
-  margin-bottom: 1rem;
-}
-
 .ingredient-list {
-  padding: 0;
-  list-style: none;
-
   user-select: none;
 }
 
@@ -77,11 +69,11 @@ hr {
   margin-bottom: 0.2rem;
   border-radius: 0.3rem;
   border: 1px solid transparent;
+  padding: 0.3rem;
 }
 
 .ingredient-item:hover {
-  background-color: lightpink;
-  border: 1px solid rgba(0, 0, 0, 0.3);
+  background-color: #e7e7e7;
 }
 
 .ingredient-content {
@@ -100,5 +92,30 @@ input[type="checkbox"] {
 .ingredient-name {
   flex-grow: 1;
   margin-left: 0.8rem;
+}
+
+.ingredient-price {
+  color: gray;
+}
+
+input[type=checkbox] {
+  border: 1px solid black;
+  padding: 0.5em;
+  border-radius: 0.2rem;
+  -webkit-appearance: none;
+
+  cursor: pointer;
+}
+
+input[type=checkbox]:checked {
+  background-color: var(--color-dark);
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwb2x5bGluZSBwb2ludHM9IjIwIDYgOSAxNyA0IDEyIi8+PC9zdmc+");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1em 1em;
+}
+
+input[type=checkbox]:focus {
+  outline-color: transparent;
 }
 </style>

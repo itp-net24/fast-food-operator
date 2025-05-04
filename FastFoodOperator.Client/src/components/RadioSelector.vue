@@ -30,8 +30,8 @@
   });
 </script>
 
-<template>
-  <ul v-if="selectedId">
+<template v-if="selectedId">
+  <ul class="radio-list">
     <li
       v-for="option in props.options"
       :key="optionKey(option)"
@@ -52,6 +52,11 @@
 </template>
 
 <style scoped>
+  .radio-list {
+    list-style: none;
+    padding: 0;
+  }
+
   .label-container {
     display: flex;
     align-items: center;
@@ -65,21 +70,24 @@
   }
 
   .label-container:hover {
-    border-color: orangered;
+    background-color: #e7e7e7;
   }
 
   input[type=radio] {
-    border: 1px solid black;
+    border: 2px solid black;
     padding: 0.5em;
-    border-radius: 0.2rem;
+    border-radius: 50%;
     -webkit-appearance: none;
 
     cursor: pointer;
+    scale: 1;
+
+    transition: transform .3s ease, box-shadow .3s ease;
   }
 
   input[type=radio]:checked {
-    background-color: cornflowerblue;
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwb2x5bGluZSBwb2ludHM9IjIwIDYgOSAxNyA0IDEyIi8+PC9zdmc+");
+    box-shadow: inset 0 0 0 4px black;
+    transform: scale(1.1);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 1em 1em;

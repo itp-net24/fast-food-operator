@@ -44,11 +44,12 @@
   width: 100%;
   padding: 0.5rem 0.75rem;
   font-size: 1rem;
-  border: 2px solid rgba(232, 232, 232, 0.53);
+  border: 2px solid rgba(255, 69, 0, 0.62);
   border-radius: 6px;
   background-color: #fff;
-  color: #333;
+  color: var(--color-dark);
   appearance: none;
+
   background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="%23333" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
   background-repeat: no-repeat;
   background-position: right 0.5rem center;
@@ -58,9 +59,11 @@
 
 .group-select:focus {
   border-color: orangered;
+  outline: none;
 }
 
 .group-select:hover {
   border-color: orangered;
+  outline: none;
 }
 </style>

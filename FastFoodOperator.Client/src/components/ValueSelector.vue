@@ -65,11 +65,15 @@
     user-select: none;
   }
 
+  .value-selector-container > * {
+    margin: 0.3rem;
+  }
+
   .value-selector-button {
     background-color: #f8f8f8;
     border-radius: 50%;
     aspect-ratio: 1;
-    height: 1.8rem;
+    height: 2rem;
 
     border: 0.1rem solid rgba(0, 0, 0, 0.5);
     color: black;
