@@ -23,6 +23,7 @@ export default () => {
     $combo.value = {
       id: product.id,
       type: "product",
+      imageUrl: product.imageUrl,
       name: product.name,
       price: product.basePrice,
       quantity: 1,
@@ -37,6 +38,7 @@ export default () => {
       id: combo.id,
       type: "combo",
       name: combo.name,
+      imageUrl: combo.imageUrl,
       price: combo.basePrice,
       quantity: 1,
       products: [],

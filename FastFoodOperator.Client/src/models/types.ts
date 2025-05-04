@@ -53,6 +53,7 @@ export interface Ingredient {
 export interface CartContainer {
   id: number;
   type: string;
+  imageUrl: string | null;
   name: string;
   price: number;
   quantity: number;
