@@ -1,5 +1,4 @@
 using FastFoodOperator.Api.Data;
-using FastFoodOperator.Api.DTOs.Category;
 using FastFoodOperator.Api.DTOs.Combo;
 using FastFoodOperator.Api.DTOs.Ingredient;
 using FastFoodOperator.Api.DTOs.Product;
@@ -30,7 +29,12 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 					Id = c.Id,
 					Name = c.Name,
 					BasePrice = c.BasePrice,
-
+					Tags = c.Tags.Select(t => new TagResponseDto
+						{
+							Id = t.Tag.Id,
+							Name = t.Tag.Name,
+							TaxRate = t.Tag.TaxRate
+						}).ToArray(),
 					ImageUrl = c.ImageUrl,
 					MainComboProductId = c.MainComboProductId,
 					ComboProducts = c.ComboProducts.Select(sp => new ComboProductResponseDto
@@ -43,6 +47,12 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 							Name = sp.Product.Name,
 							Description = sp.Product.Description,
 							BasePrice = sp.Product.BasePrice,
+							Tags = sp.Product.Tags.Select(t => new TagResponseDto
+							{
+								Id = t.Tag.Id,
+								Name = t.Tag.Name,
+								TaxRate = t.Tag.TaxRate
+							}).ToArray(),
 							ImageUrl = sp.Product.ImageUrl,
 							Variants = sp.Product.Variants.Select(v => new ProductVariantResponseDto
 							{
@@ -74,6 +84,12 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 								Name = cp.Product.Name,
 								Description = cp.Product.Description,
 								BasePrice = cp.Product.BasePrice,
+								Tags = cp.Product.Tags.Select(t => new TagResponseDto
+								{
+									Id = t.Tag.Id,
+									Name = t.Tag.Name,
+									TaxRate = t.Tag.TaxRate
+								}).ToArray(),
 								ImageUrl = cp.Product.ImageUrl,
 								Variants = cp.Product.Variants.Select(v => new ProductVariantResponseDto
 								{
@@ -338,19 +354,25 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				.Where(p => p.Id == id)
 				.Include(p => p.ProductIngredients)
 				.ThenInclude(pi => pi.Ingredient)
-				.Select(p => new ProductResponseDto 
+				.Select(p => new ProductResponseDto
 				{
 					Id = p.Id,
 					Name = p.Name,
 					Description = p.Description,
 					BasePrice = p.BasePrice,
 					ImageUrl = p.ImageUrl,
+					Tags = p.Tags.Select(t => new TagResponseDto
+					{
+						Id = t.Tag.Id,
+						Name = t.Tag.Name,
+						TaxRate = t.Tag.TaxRate
+					}).ToArray(),
 					Variants = p.Variants.Select(v => new ProductVariantResponseDto
 					{
 						Id = v.Id,
 						Name = v.Name,
 						PriceModifier = v.PriceModifier,
-						ProductId = v.ProductId
+						ProductId = v.ProductId,
 					}).ToArray(),
 					Ingredients = p.ProductIngredients.Select(pi => new IngredientResponseDto
 					{
@@ -899,14 +921,14 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 	#endregion
 
 	#region Category
-	public async Task<CategoryResponseDto?> GetTagsByIdAsync(int id)
+	public async Task<TagMinimalResponseDto?> GetTagsByIdAsync(int id)
 	{
 		logger.LogInformation("Fetching category: {CategoryId}", id);
 
 		try
 		{
 			var category = await context.Tags
-				.Select(c => new CategoryResponseDto
+				.Select(c => new TagMinimalResponseDto
 				{
 					Id = c.Id,
 					Name = c.Name
@@ -929,7 +951,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		}
 	}
 
-	public async Task<CategoryResponseDto[]> GetTagsAsync(int limit = 5, int offset = 0)
+	public async Task<TagMinimalResponseDto[]> GetTagsAsync(int limit = 5, int offset = 0)
 	{
 		logger.LogInformation("Fetching categories with limit {Limit} and offset {Offset}", limit, offset);
 
@@ -940,7 +962,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				.OrderBy(c => c.Id)
 				.Skip(offset)
 				.Take(limit)
-				.Select(p => new CategoryResponseDto
+				.Select(p => new TagMinimalResponseDto
 				{
 					Id = p.Id,
 					Name = p.Name,
@@ -961,7 +983,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		}
 	}
 
-	public async Task<CategoryResponseDto> CreateCategoryAsync(CategoryCreateDto dto)
+	public async Task<TagMinimalResponseDto> CreateCategoryAsync(TagCreateDto dto)
 	{
 		logger.LogInformation("Creating category: {CategoryName}", dto.Name);
 
@@ -974,7 +996,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 
 			logger.LogInformation("Successfully created new category: {CategoryName}", dto.Name);
 
-			return new CategoryResponseDto
+			return new TagMinimalResponseDto
 			{
 				Id = category.Id,
 				Name = category.Name
@@ -987,7 +1009,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		}
 	}
 
-	public async Task UpdateCategoryAsync(CategoryUpdateDto dto)
+	public async Task UpdateCategoryAsync(TagUpdateDto dto)
 	{
 		logger.LogInformation("Updating category: {CategoryId}", dto.Id);
 

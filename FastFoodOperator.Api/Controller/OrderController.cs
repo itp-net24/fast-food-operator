@@ -24,7 +24,7 @@ namespace FastFoodOperator.Api.Controller
 			try
 			{
 				var response = await _orderService.AddOrder(orderDto);
-				return Ok(new { message = $"{response}" });
+				return Ok(response);
 			}
 			catch (Exception ex)
 			{

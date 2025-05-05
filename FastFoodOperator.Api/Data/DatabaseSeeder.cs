@@ -13,7 +13,8 @@ namespace FastFoodOperator.Api.Data
 				new Tag { Id = 3, Name = "Sides" , TaxRate = 1.12m },
 				new Tag { Id = 4, Name = "Desserts" , TaxRate = 1.12m },
 				new Tag { Id = 5, Name = "Hot drinks" , TaxRate = 1.12m },
-				new Tag { Id = 6, Name = "Combo" }
+				new Tag { Id = 6, Name = "Combo", TaxRate = 1m },
+				new Tag { Id = 7, Name = "Alcohol", TaxRate = 1.25m}
 			);
 
 			modelBuilder.Entity<Ingredient>().HasData(
@@ -56,7 +57,8 @@ namespace FastFoodOperator.Api.Data
 				new Product { Id = 29, Name = "Cinnamon Bun",           Description = "Classic Swedish kanelbulle",                 BasePrice = 40.00m, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-kanelbulle:nutrition-calculator-tile" },
 				new Product { Id = 30, Name = "Chocolate Muffin",        Description = "Moist chocolate muffin",                     BasePrice = 32.00m, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-muffinchoklad:nutrition-calculator-tile" },
 				new Product { Id = 31, Name = "MiniDonut Choklad",       Description = "Chocolate-glazed mini donut",                BasePrice = 32.00m, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-mini-donutchoklad:nutrition-calculator-tile" },
-				new Product { Id = 32, Name = "Apple Slices",            Description = "Fresh apple snack pack",                     BasePrice = 18.00m, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-accessories-apples:nutrition-calculator-tile" }
+				new Product { Id = 32, Name = "Apple Slices",            Description = "Fresh apple snack pack",                     BasePrice = 18.00m, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-accessories-apples:nutrition-calculator-tile" },
+				new Product { Id = 33, Name = "Beer",					Description = "Very  cold",									BasePrice = 40.00m }
 
 			);
 
@@ -92,7 +94,9 @@ namespace FastFoodOperator.Api.Data
 				new ProductTag { ProductId = 29, TagId = 4 },
 				new ProductTag { ProductId = 30, TagId = 4 },
 				new ProductTag { ProductId = 31, TagId = 4 },
-				new ProductTag { ProductId = 32, TagId = 3 }
+				new ProductTag { ProductId = 32, TagId = 3 },
+				new ProductTag { ProductId = 33, TagId = 7 },
+				new ProductTag { ProductId = 33, TagId = 2 }
 );
 
 			modelBuilder.Entity<ProductIngredient>().HasData(
