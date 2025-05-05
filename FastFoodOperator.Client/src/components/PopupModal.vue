@@ -22,7 +22,7 @@
   <div class="backdrop" :class="{ 'background-blur': enableBlur }" @click="closePopupWindow"></div>
 
   <div class="popup-window">
-    <button class="button-basic" id="popup-close-button" v-if="enableCloseButton" @click="closePopupWindow">X</button>
+    <button id="popup-close-button" v-if="enableCloseButton" @click="closePopupWindow">X</button>
 
       <slot />
 
@@ -39,9 +39,10 @@
     z-index: 999;
     cursor: pointer;
 
-    border: 1px solid black;
+    background-color: rgba(0, 0, 0, 0.17);
     border-radius: 50%;
 
+    width: 2rem;
     aspect-ratio: 1;
   }
 

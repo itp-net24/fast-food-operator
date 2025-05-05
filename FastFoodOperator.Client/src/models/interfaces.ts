@@ -1,5 +1,5 @@
 import {Product} from '@/models/product'
-import type{ProductToCart,ComboToCart} from '@/models/types'
+import type{ProductToCart,CartItem} from '@/models/types'
 
 export interface Cart{
     cartProducts:
@@ -58,18 +58,17 @@ export interface OrderComboDto {
   quantity: number;
   priceModifier: number;
 }
-  
+
 export interface OrderProductDto {
   productId: number;
   quantity: number;
-  productVariant: string; 
-  productVariantPriceModifier: number; 
-  productIngredients: string[]; 
+  productVariant: string;
+  productVariantPriceModifier: number;
+  productIngredients: string[];
 }
-  
+
 export interface CreateOrderDto {
     customerNote: string;
-    orderComboDtos?: OrderComboDto[];  
-    orderProductDtos?: OrderProductDto[];  
+    orderComboDtos?: OrderComboDto[];
+    orderProductDtos?: OrderProductDto[];
   }
-  

@@ -1,41 +1,60 @@
 <script setup lang="ts">
+  import { ref, watch } from "vue"
+  import { clamp } from '@/utils/helpers.ts'
+
   const props = defineProps<Props>();
 
   interface Props {
-    currentValue: number;
-    minimumValue: number;
-    maximumValue: number;
+    value: number;
+    min: number;
+    max: number;
     step: number;
   }
 
-  const emits = defineEmits<{
-    (e: 'update:currentValue', value: number): void;
-  }>();
+  const inputValue = ref<number>(props.value);
 
-  const updateValue = (val: number) => {
-    if (val >= props.minimumValue && val <= props.maximumValue) {
-      emits('update:currentValue', val);
-    }
-  };
+  watch(() => props.value, (newVal) => inputValue.value = newVal);
+
+  const emits = defineEmits<{ (e: 'update:value', value: number): void; }>();
+
+  const updateValue = (val: number) => emits('update:value', clamp(val, props.min, props.max));
 </script>
 
 <template>
-  <div class="wrapper">
-    <button class="button-basic button" id="button-decrement" @click="updateValue(currentValue - step)" :disabled="currentValue <= minimumValue"></button>
-    <span id="value">{{currentValue}}</span>
-    <button class="button-basic button" id="button-increment" @click="updateValue(currentValue + step)" :disabled="currentValue >= maximumValue"></button>
+  <div class="value-selector-container">
+    <button class="value-selector-button" @click="updateValue(inputValue - step)" :disabled="value <= min">-</button>
+
+    <input
+      id="current-value"
+      type="number"
+      :min="min"
+      :max="max"
+      :step="step"
+      v-model.number="inputValue"
+      @change="updateValue(inputValue)"
+    />
+
+    <button class="value-selector-button" @click="updateValue(inputValue + step)" :disabled="value >= max">+</button>
   </div>
 </template>
 
 <style scoped>
-  #value {
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  #current-value {
+    width: 2rem;
+    height: 2rem;
+
     font-size: 1.4rem;
     color: black;
-    width: 2rem;
     text-align: center;
   }
 
-  .wrapper {
+  .value-selector-container {
     width: 7rem;
     display: flex;
     flex-direction: row;
@@ -45,19 +64,15 @@
     user-select: none;
   }
 
-  #button-decrement::before {
-    content: "-";
+  .value-selector-container > * {
+    margin: 0.3rem;
   }
 
-  #button-increment::before {
-    content: "+";
-  }
-
-  .button {
+  .value-selector-button {
     background-color: #f8f8f8;
     border-radius: 50%;
     aspect-ratio: 1;
-    height: 1.8rem;
+    height: 2rem;
 
     border: 0.1rem solid rgba(0, 0, 0, 0.5);
     color: black;

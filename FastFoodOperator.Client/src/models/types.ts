@@ -7,14 +7,9 @@ export interface BaseProduct {
 }
 
 export interface Product extends BaseProduct{
-  variants: ProductVariant[];
+  defaultVariant?: Variant | null;
+  variants: Variant[];
   ingredients: Ingredient[];
-}
-
-export interface Ingredient {
-  id: number;
-  name: string;
-  priceModifier: number;
 }
 
 export interface Combo extends BaseProduct {
@@ -28,17 +23,25 @@ export interface ComboGroup {
   id: number;
   name: string;
   defaultComboProductId: number | null;
+  defaultComboProduct: ComboProduct | null;
   comboProducts: ComboProduct[];
 }
 
 export interface ComboProduct {
+  __uid: number,
   id: number;
   product: Product;
   defaultProductVariantId: number | null;
-  defaultProductVariant: ProductVariant | null;
+  defaultProductVariant: Variant | null;
 }
 
-export interface ProductVariant {
+export interface Variant {
+  id: number;
+  name: string;
+  priceModifier: number;
+}
+
+export interface Ingredient {
   id: number;
   name: string;
   priceModifier: number;
@@ -47,26 +50,20 @@ export interface ProductVariant {
 
 
 // ToCart interfaces
-export interface ComboToCart {
+export interface CartContainer {
   id: number;
+  type: string;
+  imageUrl: string | null;
   name: string;
   price: number;
-  product: ProductToCart[];
+  quantity: number;
+  products: CartItem[];
 }
 
-export interface ProductToCart {
+export interface CartItem {
+  __uid: number;
   id: number;
   name: string;
-  variant?: VariantToCart | null;
-  ingredients?: IngredientToCart[] | null;
-}
-
-export interface VariantToCart {
-  id: number;
-  name: string;
-}
-
-export interface IngredientToCart {
-  id: number;
-  name: string;
+  variant?: Variant | null;
+  ingredients?: Ingredient[] | null;
 }

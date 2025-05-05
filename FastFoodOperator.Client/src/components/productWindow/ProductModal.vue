@@ -1,361 +1,275 @@
 <script setup lang="ts">
-import {onMounted, ref, computed} from "vue";
-import type {Combo, ComboGroup, ComboProduct, Product, ProductToCart, ProductVariant, ComboToCart} from "@/models/types.ts";
+import {onMounted, ref} from "vue";
+import type {
+  Combo,
+  Product,
+} from '@/models/types.ts'
 import {ProductType} from "@/enums/enums.ts"
-import {GetComboAsync, GetProductAsync} from "@/services/productService.ts";
 
-import ProductCartControls from "@/components/ProductCartControls.vue";
-import IngredientsList from "@/components/IngredientsList.vue";
 import PopupModal from "@/components/PopupModal.vue";
-import BaseProductDetails from "@/components/BaseProductDetails.vue";
-import VariantSelector from "@/components/VariantSelector.vue";
-import ComboProductList from "@/components/ComboProductList.vue";
-import ProductGroupSelector from "@/components/ProductGroupSelector.vue";
+import IngredientSelector from "@/components/productWindow/IngredientSelector.vue";
+import ProductGroupSelector from "@/components/productWindow/ProductGroupSelector.vue";
+import ValueSelector from '@/components/ValueSelector.vue'
+import VariantSelector from '@/components/productWindow/VariantSelector.vue'
+
+import { GetComboAsync, GetProductAsync } from '@/services/productService.ts'
+import { defaultVariantOfProduct, roundToPrecision } from '@/utils/helpers.ts'
+import useProduct from "@/composables/useProduct.ts"
+import { CURRENCY_SYMBOL } from '../../../config.ts'
+
+const builder = useProduct();
 
 const props = defineProps<Props>();
 
-  interface Props {
-    id: number;
-    type: ProductType;
+interface Props {
+  id: number;
+  type: ProductType;
+}
+
+const product = ref<Product>(null!);
+const combo = ref<Combo | null>(null);
+
+
+const handleConfirm = () => {
+  console.log(builder.combo.value);
+}
+
+
+// Popup
+const mobileBreakpoint: number = 450;
+const popup = ref<boolean>(true);
+const isMobile = ref<boolean>(false);
+
+const updateIsMobile = () => {
+  isMobile.value = window.matchMedia(`(max-width: ${mobileBreakpoint}px)`).matches;
+}
+
+onMounted(async () => {
+  const mediaQuery = window.matchMedia(`(max-width: ${mobileBreakpoint}px)`);
+  mediaQuery.addEventListener('change', updateIsMobile);
+
+  if (props.type === ProductType.product) {
+    const p = await GetProductAsync(props.id);
+    product.value = p;
+    builder.initializeProduct(p);
   }
-
-  const product = ref<Product | Combo | null>(null);
-
-
-  // Group Product Selection
-  const selectedProductIds = ref<Record<number, number>>({});
-
-  const initializeSelectedProductIds = (combo: Combo) => {
-    combo.comboGroups.forEach(g => {
-      selectedProductIds.value[g.id] = g.defaultComboProductId ?? 0;
-    })
+  else if (props.type === ProductType.combo) {
+    const c = await GetComboAsync(props.id);
+    combo.value = c;
+    builder.initializeCombo(c);
   }
-
-  const handleComboGroupSelection = (groupId: number, productId: number): void => {
-    selectedProductIds[groupId] = productId;
+  else {
+    console.log("Could not determine product type!");
   }
-
-
-
-
-  // Variant Selection
-  const selectedVariantIds = ref<Record<number, number>>({});
-
-  const selectedProduct = (group: ComboGroup): ComboProduct | null => {
-    return group.comboProducts.find(cp => cp.id === selectedProductIds.value[group.id]) ?? null;
-  }
-
-
-const initializeSelectedVariantIds = (product: Product | Combo) => {
-    if (props.type === ProductType.product) {
-      if (product.variants.length <= 0) return;
-      selectedVariantIds.value[product.id] = product.variants[0];
-    }
-    else if (props.type === ProductType.combo) {
-      product.comboProducts.forEach(cp => {
-        selectedVariantIds.value[cp.product.id] = cp.defaultProductVariantId;
-      })
-
-      product.comboGroups.forEach(gp => {
-        gp.comboProducts.forEach(cp => {
-          selectedVariantIds.value[cp.product.id] = cp.defaultProductVariantId;
-        })
-      })
-    }
-    else {
-      console.log("Could not determine product type!")
-    }
-
-    console.log(selectedVariantIds.value);
-  }
-
-
-
-  // Ingredient Selection
-  const updateSelectedIngredientIds = (ingredient: Ingredient) => {
-    if (props.type === ProductType.product) {
-      const p = product.value as Product;
-
-      const exists = p.ingredients.some(i => i.id == ingredient.id);
-      if (exists) {
-        p.ingredients = p.ingredients.filter(i => i.id != ingredient.id);
-      } else {
-        p.ingredients.push(ingredient);
-      }
-    }
-    else if (props.type === ProductType.combo) {
-      const c = product.value as Combo;
-      const p: Product = c.mainComboProduct?.product ?? c.comboProducts[0].product;
-
-      const exists: boolean = p.ingredients.some(i => i.id == ingredient.id);
-      if (exists) {
-        p.ingredients = p.ingredients.filter(i => i.id != ingredient.id);
-      } else {
-        p.ingredients.push(ingredient);
-      }
-    }
-    else {
-      console.log("Could not determine product type!")
-    }
-  }
-
-
-
-
-  // Cart Controls
-  const handleConfirm = () => {
-    console.log("Variant Selections", selectedVariantIds.value);
-    console.log("Group Selections", selectedProductIds.value);
-
-    const combo = product.value as Combo;
-    console.log(buildComboToCart(combo));
-  }
-
-  const buildProductToCart = (product: Product): ProductToCart => {
-
-  }
-
-  const selectVariant = (cp: ComboProduct): ProductVariant | null => {
-    const selectVariantId: number = selectedVariantIds.value[cp.product.id];
-    return cp.product.variants.find(v => v.id === selectVariantId) ?? null;
-  }
-
-  const test = (comboProducts: ComboProduct[]) => {
-    return comboProducts.map((cp): ProductToCart => {
-      const variant = selectVariant(cp);
-
-      return {
-        id: cp.product.id,
-        name: cp.product.name,
-        variant: variant != null ? ({ id: variant.id, name: variant.name }) : null,
-        ingredients: getMainProduct()?.id === cp.product.id ? cp.product.ingredients.map(i => ({ id: cp.product.id, name: cp.product.name })) : null,
-      }
-    });
-  }
-
-  const buildComboToCart = (combo: Combo): ComboToCart => {
-    console.log(combo);
-    const products: ProductToCart[] = [
-      ...test(combo.comboProducts),
-      ...combo.comboGroups.map(group => {
-        const cp = selectedProduct(group);
-        if (!cp) return null;
-
-        const variant = selectVariant(cp);
-
-        return {
-          id: cp.product.id,
-          name: cp.product.name,
-          variant: variant != null ? ({ id: variant.id, name: variant.name }) : null,
-          ingredients: null,
-        }
-      })
-    ];
-
-    const cart: ComboToCart = {
-      id: combo.id,
-      name: combo.name,
-      price: totalPrice.value!,
-      product: products,
-    }
-
-    return cart;
-  }
-
-
-
-
-  // Popup
-  const popup = ref<boolean>(true);
-
-
-
-
-  const getMainProduct = (): Product | null => {
-    if(props.type === ProductType.product) {
-      return product.value;
-    }
-    else if (props.type === ProductType.combo) {
-      const combo = product.value as Combo;
-      return combo.mainComboProduct?.product ?? combo.comboProducts[0].product;
-    }
-    else {
-      console.log("Could not determine product type!");
-      return null;
-    }
-  }
-
-
-
-
-  onMounted(async () => {
-    if (props.type === ProductType.product) {
-      const p = await GetProductAsync(props.id);
-      product.value = p as Product;
-    }
-    else if (props.type === ProductType.combo) {
-      const c = await GetComboAsync(props.id);
-      product.value = c as Combo;
-      initializeSelectedProductIds(product.value);
-    }
-    else {
-      console.log("Could not determine product type!");
-    }
-
-    initializeSelectedVariantIds(product.value);
-  });
-
-
-
-
-  const totalPrice = computed(() => {
-    if (props.type === ProductType.product) {
-      const p = product.value as Product;
-      return p.basePrice + p.variants[selectedVariantIds.value[p.id]].priceModifier;
-    }
-    else if (props.type === ProductType.combo) {
-      const c = product.value as Combo;
-
-
-      const comboTotal = c.comboProducts.reduce((acc, cp) => {
-        const selectedId = selectedVariantIds.value[cp.product.id];
-        const selectedModifier = cp.product.variants[selectedId]?.priceModifier ?? 0;
-        const defaultModifier = cp.defaultProductVariant?.priceModifier ?? 0;
-
-        return acc + selectedModifier - defaultModifier;
-      }, 0);
-
-      const groupTotal = c.comboGroups.reduce((acc, cg) => {
-        const cp = selectedProduct(cg);
-        // console.log("Selected CP:", cp);
-
-        const selectVariantId = selectedVariantIds.value[cp.product.id];
-        const selectVariant= cp.product.variants.find(v => v.id === selectVariantId);
-        // console.log("Selected Variant:", selectVariant);
-
-        const selectedModifier = selectVariant.priceModifier ?? 0;
-        const defaultModifier = cp.defaultProductVariant?.priceModifier ?? 0;
-
-        return acc + Math.max(selectedModifier - defaultModifier, 0);
-      }, 0);
-
-      const mp = c.mainComboProduct?.product ?? c.comboProducts[0].product
-      const ingredientsTotal = mp.ingredients.reduce((acc, i) => {
-        return acc + i.priceModifier;
-      }, 0);
-
-      return Math.round((c.basePrice + comboTotal + groupTotal + ingredientsTotal) * 100) / 100;
-    }
-  })
+});
 </script>
 
-<template>
+<template v-if="builder.mainProduct.value">
   <PopupModal
-      v-if="popup && product"
-      :enable-close-button="true"
-      :enable-blur="true"
-      :close-on-outside-click="true"
-      @close="popup=false">
+    v-if="popup && (product || combo)"
+    :enable-close-button="isMobile"
+    :enable-blur="true"
+    :close-on-outside-click="true"
+    @close="popup=false">
 
     <div class="container">
-      <div class="wrapper">
-        <BaseProductDetails
-            :base-product="product as BaseProduct"
-            :total-price="totalPrice"
-        />
 
-        <!-- Single Product -->
-        <ComboProductList
-            v-if="type === ProductType.combo"
-            :combo-products="product.comboProducts">
+      <div class="container-scrollable">
+        <img v-if="builder.combo.value.imageUrl" class="product-image" :src="builder.combo.value.imageUrl" :alt="`image of ${builder.combo.value.name}`" />
+        <div class="wrapper">
 
-          <template #combo-product="{comboProduct}">
+          <div class="product-content">
+            <h2 class="main-product-name">{{ builder.combo.value.name}}</h2>
+            <span class="product-price">{{ roundToPrecision(builder.getTotal.value, 0) + CURRENCY_SYMBOL }}</span>
+          </div>
+
+          <div v-if="product">
             <VariantSelector
-                :key="comboProduct.id"
-                v-model:variant-id="selectedVariantIds[comboProduct.product.id]"
-                :combo-product="comboProduct"
+              v-model:selection="builder.mainProduct.value.variant"
+              :variants="product.variants"
+              :default-variant="product.defaultVariant"
             />
-          </template>
-        </ComboProductList>
+          </div>
 
-        <!-- Group Products -->
-        <ProductGroupSelector
-            v-if="type === ProductType.combo"
-            :selected-product-ids="selectedProductIds"
-            :groups="product.comboGroups"
-            @update-selection="handleComboGroupSelection">
+          <!-- Single Product -->
+          <div v-if="combo">
+            <div v-for="comboProduct in combo.comboProducts"
+                 class="product-list"
+                 :key="comboProduct.__uid">
+              <h2 class="product-name">{{ comboProduct.product.name }}</h2>
 
-          <template #group-selected-product="{comboProduct}">
-            <VariantSelector
-                :key="comboProduct.id"
-                v-model:variant-id="selectedVariantIds[comboProduct.product.id]"
-                :combo-product="comboProduct"
+              <VariantSelector
+                v-model:selection="builder.selectedVariantFromProduct(comboProduct).value"
+                :variants="comboProduct.product.variants"
+                :default-variant="defaultVariantOfProduct(comboProduct)"
+                :uid="comboProduct.__uid"
+              />
+            </div>
+
+            <!-- Group Products -->
+            <div v-for="group in combo.comboGroups"
+                 class="product-list"
+                 :key="group.id">
+              <h2 class="product-name">{{ group.name }}</h2>
+
+              <ProductGroupSelector
+                v-model:selection="builder.selectedProductFromGroup(group).value"
+                :group="group"
+              />
+
+              <VariantSelector
+                v-model:selection="builder.selectedVariantFromProduct(builder.selectedProductFromGroup(group).value).value"
+                :variants="builder.selectedProductFromGroup(group).value.product.variants"
+                :default-variant="defaultVariantOfProduct(builder.selectedProductFromGroup(group).value)"
+              />
+            </div>
+          </div>
+
+          <!-- Ingredients -->
+          <div class="product-list">
+            <h2 class="product-name">Ingredients</h2>
+
+            <IngredientSelector
+              v-model:selected-ingredients="builder.selectedIngredients.value"
+              @update-ingredients="builder.updateIngredients"
             />
-          </template>
-        </ProductGroupSelector>
+          </div>
+        </div>
 
-        <hr />
-        <h2>Ingredients</h2>
+        <div class="cart-controls">
+          <ValueSelector v-model:value="builder.combo.value.quantity" :min="1" :max="99" :step="1" />
+          <button class="cart-button" @click="handleConfirm">Add To Cart</button>
+        </div>
+        </div>
 
-        <IngredientsList
-            v-if="product"
-            v-model:selected-ingredients="getMainProduct().ingredients"
-            @update-ingredients="updateSelectedIngredientIds"
-        />
-      </div>
-
-      <ProductCartControls
-          class="controls"
-          @confirm="handleConfirm"
-      />
     </div>
   </PopupModal>
 </template>
 
 <style scoped>
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  width: clamp(400px, 50vw, 600px);
+  height: 80vh;
+
+  color: var(--color-dark);
+  background-color: var(--color-white);
+
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow-default);
+
+  overflow: hidden;
+}
+
+@media screen and (max-width: 450px) {
   .container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    width: clamp(360px, 30vw, 500px);
-    height: 80vh;
-
-    border-radius: 1rem;
-
-    color: black;
-    background-color: white;
-
-    overflow: hidden;
+    width: 100vw;
+    min-width: 400px;
+    height: 100vh;
   }
+}
 
-  .wrapper {
-    overflow-y: auto;
-    margin-bottom: 5rem;
-    padding: 2rem 2rem 0 2rem;
-  }
+.container-scrollable {
+  overflow-y: auto;
+  margin-bottom: 5rem;
+}
 
-  .wrapper::-webkit-scrollbar {
-    width: .5rem; /* Width of the scrollbar */
-  }
+.wrapper {
+  padding: 1rem 1rem 1rem 1rem;
+}
 
-  .wrapper::-webkit-scrollbar-track {
-    background: transparent; /* Make the track transparent */
-  }
+.container-scrollable::-webkit-scrollbar {
+  width: 8px;
+}
 
-  .wrapper::-webkit-scrollbar-thumb {
-    background: rgba(255, 69, 0, 0.75); /* Light grey color for the thumb */
-    border-radius: 1rem; /* Rounded corners */
-  }
+.container-scrollable::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-  .wrapper::-webkit-scrollbar-thumb:hover {
-    background: #ff4500; /* Darker grey on hover */
-  }
+.container-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(255, 69, 0, 0.75);
+  border-radius: var(--border-radius);
+}
 
-  .controls{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-  }
+.container-scrollable::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary);
+}
+
+.product-image {
+  width: 100%;
+  aspect-ratio: 16/9;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  padding: 0;
+}
+
+.product-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.product-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0.4rem;
+}
+
+.main-product-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.product-price {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.product-list {
+  background-color: var(--color-background);
+  border-radius: var(--border-radius);
+  margin: 1rem 0;
+  padding: 1rem;
+}
+
+
+.cart-button {
+  width: 100%;
+  height: 70%;
+  background-color: orangered;
+  color: var(--color-white);
+  border-radius: var(--border-radius);
+  border: none;
+}
+
+.cart-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 5rem;
+  width: 100%;
+
+  border-top: 1px solid var(--color-border);
+  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.2);
+
+  background-color: var(--color-white);
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+.cart-controls > * {
+  margin: 1rem;
+}
 </style>

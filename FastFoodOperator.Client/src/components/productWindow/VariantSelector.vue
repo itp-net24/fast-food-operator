@@ -1,108 +1,67 @@
 <script setup lang="ts">
-  import { ref } from "vue"
-  import type { ComboProduct, ProductVariant } from "@/models/types.ts"
+  import RadioSelector from '@/components/RadioSelector.vue'
+  import type { Variant } from '@/models/types.ts'
+  import { getVariantDiscount } from '@/utils/helpers.ts'
+  import { CURRENCY_SYMBOL, PRECISION_DISPLAY, PRECISION_INTERNAL } from '../../../config.ts'
 
   const props = defineProps<Props>();
 
   interface Props {
-    variantId: number | null;
-    comboProduct: ComboProduct;
+    selection: Variant | null;
+    variants: Variant[];
+    defaultVariant?: Variant | null;
+    uid?: number;
   }
 
-  const emits = defineEmits<{
-    (e: 'update:variantId', id: number): void
-  }>();
+  const emits = defineEmits<{ (e: 'update:selection', variant: Variant): void }>();
 
-  const updateVariantId = (id: number): void => {
-    emits('update:variantId', id);
+  const defaultVariant = props.defaultVariant ?? props.variants[0];
+
+  const displayPriceMessage = (id: number): string => {
+    const variant = props.variants.find(v => v.id === id);
+    const price = getVariantDiscount(variant, defaultVariant, PRECISION_DISPLAY);
+
+    return price > 0 ? `+${price}${CURRENCY_SYMBOL}` : 'Included'
   }
 
-  const selectedVariantId = ref<number | null>(props.comboProduct.defaultProductVariantId);
-
-  const isVariantFree = (variant: ProductVariant): boolean => {
-    const diff = Math.max(variant.priceModifier - (props.comboProduct.defaultProductVariant?.priceModifier ?? 0), 0);
-    return diff <= 0;
-  };
-
-  const variantPrice = (variant: ProductVariant): number => {
-    return Math.max(variant.priceModifier - (props.comboProduct.defaultProductVariant?.priceModifier ?? 0), 0);
-  };
+  const onVariantSelected = (variant: Variant): void => {
+    const v = { ...variant, priceModifier: getVariantDiscount(variant, defaultVariant, PRECISION_INTERNAL) }
+    emits('update:selection', v);
+  }
 </script>
 
-<template>
-  <ul class="variant-list">
-    <li
-        v-for="variant in comboProduct.product.variants"
-        :key="variant.id"
-        class="variant-item"
-    >
-      <label class="variant-label">
-        <div class="variant-details">
-        <input
-            type="radio"
-            :name="comboProduct.product.name"
-            v-model="selectedVariantId"
-            :value="variant.id"
-            @change="updateVariantId(variant.id)"
-            class="variant-radio"
-        />
-          <span class="variant-name">{{ variant.name }}</span>
-          <span class="variant-price">
-            {{ isVariantFree(variant) ? "GRATIS" : "+" + variantPrice(variant) + "kr" }}
-          </span>
-        </div>
-      </label>
-    </li>
-  </ul>
-
+<template v-if="selection">
+  <RadioSelector
+    :selection="selection"
+    :options="variants"
+    :option-key="(option) => `${uid}-${option.id}`"
+    @update:selection="(variant) => onVariantSelected(variant)"
+  >
+    <template #label="{ option }">
+      <div class="variant-details">
+        <p class="variant-name">{{ option.name }}</p>
+        <p class="variant-price">{{ displayPriceMessage(option.id) }}</p>
+      </div>
+    </template>
+  </RadioSelector>
 </template>
 
 <style scoped>
   .variant-details {
     display: flex;
     flex-direction: row;
-    justify-content: start;
+    justify-content: space-between;
     align-items: center;
+
+    width: 100%;
+    padding: 0.4rem;
   }
 
-  .variant-name{
-    flex-grow: 1;
-    margin-left: 0.6rem;
+  .variant-details > p {
+    margin: 0;
   }
 
   .variant-price {
     color: gray;
-  }
-
-  .variant-list {
-    list-style: none;
-    padding: 0.5rem;
-
-    font-size: 0.9rem;
-    font-weight: 100;
-  }
-
-  .variant-label {
-    display: block;
-    padding: 0.4rem;
-  }
-
-  input[type=radio] {
-    border: 1px solid black;
-    padding: 0.5em;
-    border-radius: 0.2rem;
-    -webkit-appearance: none;
-  }
-
-  input[type=radio]:checked {
-    background-color: cornflowerblue;
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwb2x5bGluZSBwb2ludHM9IjIwIDYgOSAxNyA0IDEyIi8+PC9zdmc+");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 1em 1em;
-  }
-
-  input[type=radio]:focus {
-    outline-color: transparent;
   }
 </style>
