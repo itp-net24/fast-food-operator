@@ -3,7 +3,7 @@ import type {
 } from '@/models/types.ts'
 import { PRECISION_INTERNAL } from '../../config.ts'
 
-export const calculateCartContainerTotal = (container: CartContainer, precision: number = PRECISION_INTERNAL) => {
+export const getProductTotalPrice = (container: CartContainer, precision: number = PRECISION_INTERNAL) => {
   const total = container.products.reduce((acc, p) => {
     const variantCost = p.variant?.priceModifier ?? 0
     const ingredientsTotal = p.ingredients?.reduce((acc, i) => acc + i.priceModifier, 0) ?? 0;
@@ -14,6 +14,10 @@ export const calculateCartContainerTotal = (container: CartContainer, precision:
   return roundToPrecision(total, precision);
 }
 
+export const getTaxRate = (tags: Tag[]) => {
+  return Math.max( ...tags.map(t => t.tax));
+}
+
 export const getVariantDiscount = (variant: Variant, defaultVariant: Variant | null = null, precision: number = PRECISION_INTERNAL) => {
   const value = Math.max(variant.priceModifier - (defaultVariant?.priceModifier ?? 0), 0);
 
@@ -21,7 +25,7 @@ export const getVariantDiscount = (variant: Variant, defaultVariant: Variant | n
 }
 
 export const roundToPrecision = (value: number, precision: number): number => {
-  const factor = Math.pow(100, precision);
+  const factor = Math.pow(10, precision);
   return Math.round(value * factor) / factor;
 }
 
