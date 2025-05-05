@@ -1,7 +1,7 @@
-﻿<!-- För Visning -->
+<!-- För Visning -->
 <template>
   <div :class="['order-card', statusClass]">
-    <p>
+    <p class="paragraph">
       <strong>Order #: </strong>{{ order.orderNumber }}
       <span
         v-if="order.customerNote && order.customerNote !== 'string' && order.customerNote.trim() !== ''"
@@ -10,18 +10,18 @@
         ⚠️WARNING SEE BELOW⚠️
       </span>
     </p>
-    <p v-if="order.customerNote && order.customerNote !== 'string' && order.customerNote.trim() !== ''">
+    <p class="paragraph" v-if="order.customerNote && order.customerNote !== 'string' && order.customerNote.trim() !== ''">
       <strong>Note:</strong> {{ order.customerNote }}
     </p>
-    <p><strong>Created:</strong> {{ order.createdAt }}</p>
+    <p class="paragraph"><strong>Created:</strong> {{ order.createdAt }}</p>
 
     <!-- Produkter -->
     <div>
       <strong>Products:</strong>
-      <ul>
+      <ul class="ul-reset">
         <li v-for="(product, index) in order.orderProducts" :key="index">
           {{ product.productName }} x{{ product.quantity }}
-          <ul v-if="product.ingredients.length">
+          <ul class="ul-reset" v-if="product.ingredients.length">
             <li v-for="(ingredient, index) in product.ingredients" :key="ingredient.ingredientName">
               - {{ ingredient }}
             </li>
@@ -33,10 +33,10 @@
     <!-- Combos -->
     <div v-if="order.orderCombos.length">
       <strong>Combos:</strong>
-      <ul>
+      <ul class="ul-reset">
         <li v-for="combo in order.orderCombos" :key="combo.comboId">
           {{ combo.comboName }} x{{ combo.quantity }}
-          <ul v-if="combo.ingredients.length">
+          <ul class="ul-reset" v-if="combo.ingredients.length">
             <li v-for="ingredient in combo.ingredients" :key="ingredient.ingredientName">
               - {{ ingredient.ingredientName }}
             </li>
@@ -47,17 +47,19 @@
 
     <!-- Action-knapp för att markera som påbörjad eller klar -->
     <button
+      class="button-basic"
       v-if="status === 0"
       @click="$emit('start', order)"
     >Mark as started</button>
 
     <button
+      class="button-basic"
       v-else-if="status === 1"
       @click="$emit('complete', order)"
     >Mark as finished</button>
 
     <!-- Raderaknapp -->
-    <button @click="$emit('delete', order)">
+    <button class="button-basic" @click="$emit('delete', order)">
       Delete order
     </button>
 

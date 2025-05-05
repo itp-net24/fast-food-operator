@@ -69,6 +69,16 @@ namespace FastFoodOperator.Api.Migrations
                         {
                             Id = 3,
                             Name = "Sides"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Desserts"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Hot drinks"
                         });
                 });
 
@@ -473,47 +483,287 @@ namespace FastFoodOperator.Api.Migrations
                             BasePrice = 14.99m,
                             CategoryId = 1,
                             Description = "A classic cheeseburger",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-cheeseburger-NEW:nutrition-calculator-tile",
                             Name = "Cheeseburger"
                         },
                         new
                         {
                             Id = 2,
-                            BasePrice = 29.99m,
+                            BasePrice = 64.99m,
                             CategoryId = 1,
                             Description = "A classic big mac",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-bigmac-NY2:nutrition-calculator-tile",
                             Name = "Big Mac"
                         },
                         new
                         {
                             Id = 3,
-                            BasePrice = 1.99m,
+                            BasePrice = 9.99m,
                             CategoryId = 2,
                             Description = "Refreshing soda",
-                            Name = "Coke"
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-cocacola-original-medium:nutrition-calculator-tile",
+                            Name = "Coca-Cola"
                         },
                         new
                         {
                             Id = 4,
-                            BasePrice = 1.99m,
+                            BasePrice = 9.99m,
                             CategoryId = 2,
                             Description = "Refreshing soda",
-                            Name = "Pepsi"
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-cocacola-original-medium:nutrition-calculator-tile",
+                            Name = "Coca-Cola Zero"
                         },
                         new
                         {
                             Id = 5,
-                            BasePrice = 2.99m,
+                            BasePrice = 19.99m,
                             CategoryId = 3,
                             Description = "Crispy golden fries",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-accessories-french-fries-mellan2:nutrition-calculator-tile",
                             Name = "French Fries"
                         },
                         new
                         {
                             Id = 6,
-                            BasePrice = 2.99m,
+                            BasePrice = 39.99m,
                             CategoryId = 3,
                             Description = "Crispy nuggies",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-chicken-mcnuggets-4p-NEW:nutrition-calculator-tile",
                             Name = "Chicken Nuggets"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            BasePrice = 35.00m,
+                            CategoryId = 1,
+                            Description = "Two beef patties with cheese",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-double-cheeseburger-NEW:nutrition-calculator-tile",
+                            Name = "Double Cheeseburger"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            BasePrice = 51.00m,
+                            CategoryId = 1,
+                            Description = "Triple-stacked cheesy classic",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-triple-cheeseburger-NEW:nutrition-calculator-tile",
+                            Name = "Triple Cheeseburger"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            BasePrice = 80.00m,
+                            CategoryId = 1,
+                            Description = "¼-lb beef, cheese & onions",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-qp-cheese-NEW:nutrition-calculator-tile",
+                            Name = "Quarter Pounder Cheese"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            BasePrice = 77.00m,
+                            CategoryId = 1,
+                            Description = "Swedish McD classic with fresh veggies",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-mcfeast-NEW:nutrition-calculator-tile",
+                            Name = "McFeast"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            BasePrice = 67.00m,
+                            CategoryId = 1,
+                            Description = "Beef, bacon & chili béarnaise sauce",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-creamychipotle:nutrition-calculator-tile",
+                            Name = "Chili Bearnaise"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            BasePrice = 79.00m,
+                            CategoryId = 1,
+                            Description = "Emmentaler, red onion & Tasty sauce",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-tasty_4_1-burger:nutrition-calculator-tile",
+                            Name = "Tasty Burger"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            BasePrice = 105.00m,
+                            CategoryId = 1,
+                            Description = "Tasty with crispy bacon",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-tasty-bacon_4_1-burger:nutrition-calculator-tile",
+                            Name = "Tasty Bacon"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            BasePrice = 83.00m,
+                            CategoryId = 1,
+                            Description = "Crispy chicken fillet sandwich",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-chickenfish-mccrispy:nutrition-calculator-tile",
+                            Name = "McCrispy"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            BasePrice = 95.00m,
+                            CategoryId = 1,
+                            Description = "McCrispy with spicy sambal sauce",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-chickenfish-mcrispy-spicy2:nutrition-calculator-tile",
+                            Name = "McCrispy Spicy"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            BasePrice = 63.00m,
+                            CategoryId = 1,
+                            Description = "Classic mayo & lettuce chicken burger",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-mcchicken-NEW:nutrition-calculator-tile",
+                            Name = "McChicken"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            BasePrice = 24.00m,
+                            CategoryId = 2,
+                            Description = "Orange soda",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-fanta-orange-medium:nutrition-calculator-tile",
+                            Name = "Fanta"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            BasePrice = 24.00m,
+                            CategoryId = 2,
+                            Description = "Tropical fruit soda",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-fanta-exotic-medium:nutrition-calculator-tile",
+                            Name = "Fanta Exotic"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            BasePrice = 24.00m,
+                            CategoryId = 2,
+                            Description = "Sugar-free lemon-lime soda",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-sprite-zero-medium:nutrition-calculator-tile",
+                            Name = "Sprite Zero Sugar"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            BasePrice = 41.00m,
+                            CategoryId = 5,
+                            Description = "McCafé organic latte",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-LatteVaniljCaramel:nutrition-calculator-tile",
+                            Name = "Latte"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            BasePrice = 41.00m,
+                            CategoryId = 5,
+                            Description = "Foamy espresso-based coffee",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-Cappuccino-NEW:nutrition-calculator-tile",
+                            Name = "Cappuccino"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            BasePrice = 32.00m,
+                            CategoryId = 5,
+                            Description = "Single espresso shot",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-Espresso-Cortado-NEW:nutrition-calculator-tile",
+                            Name = "Espresso"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            BasePrice = 25.00m,
+                            CategoryId = 5,
+                            Description = "Creamy O’Boy hot chocolate",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-Choklad:nutrition-calculator-tile",
+                            Name = "Hot Chocolate"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            BasePrice = 34.00m,
+                            CategoryId = 2,
+                            Description = "Cloudy apple juice",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-godmorgon-apple:nutrition-calculator-tile",
+                            Name = "God Morgon Äppeljuice"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            BasePrice = 18.00m,
+                            CategoryId = 3,
+                            Description = "Crispy pastry with apple filling",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-desserts-applepie:nutrition-calculator-tile",
+                            Name = "Apple Pie"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            BasePrice = 24.00m,
+                            CategoryId = 4,
+                            Description = "Soft-serve with hot fudge",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-sundae-chocolate:nutrition-calculator-tile",
+                            Name = "Sundae Chocolate"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            BasePrice = 35.00m,
+                            CategoryId = 4,
+                            Description = "Soft-serve blended with Oreo pieces",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-desserts-mcflurry-oreo:nutrition-calculator-tile",
+                            Name = "McFlurry Oreo"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            BasePrice = 32.00m,
+                            CategoryId = 4,
+                            Description = "Rich three-chocolate cookie",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-desserts-triplechocolatecookie:nutrition-calculator-tile",
+                            Name = "Triple Chocolate Cookie"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            BasePrice = 40.00m,
+                            CategoryId = 4,
+                            Description = "Classic Swedish kanelbulle",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-kanelbulle:nutrition-calculator-tile",
+                            Name = "Cinnamon Bun"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            BasePrice = 32.00m,
+                            CategoryId = 4,
+                            Description = "Moist chocolate muffin",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-muffinchoklad:nutrition-calculator-tile",
+                            Name = "Chocolate Muffin"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            BasePrice = 32.00m,
+                            CategoryId = 4,
+                            Description = "Chocolate-glazed mini donut",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-mini-donutchoklad:nutrition-calculator-tile",
+                            Name = "MiniDonut Choklad"
+                        },
+                        new
+                        {
+                            Id = 32,
+                            BasePrice = 18.00m,
+                            CategoryId = 3,
+                            Description = "Fresh apple snack pack",
+                            ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-accessories-apples:nutrition-calculator-tile",
+                            Name = "Apple Slices"
                         });
                 });
 

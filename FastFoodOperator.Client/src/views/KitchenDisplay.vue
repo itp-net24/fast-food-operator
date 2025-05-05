@@ -1,6 +1,6 @@
 ﻿<template>
   <div class="kitchen-container">
-    <h1>Kitchen Display</h1>
+    <h1 class="title-prim-color">Kitchen Display</h1>
 
     <div class="orders-wrapper">
       <!-- Ej påbörjade ordrar -->

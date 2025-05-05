@@ -7,10 +7,10 @@
     <div class="display-box">
       <h2>Preparing</h2>
       <div class="number-display">
-        <p v-if="activeOrderNumbers.length > 0" v-for="(num, index) in activeOrderNumbers" :key="index">
+        <p class="paragraph" v-if="activeOrderNumbers.length > 0" v-for="(num, index) in activeOrderNumbers" :key="index">
           #{{ num }}
         </p>
-        <p v-else>No Active Orders</p>
+        <p class="paragraph" v-else>No Active Orders</p>
       </div>
     </div>
 
@@ -20,7 +20,7 @@
         <p
           v-for="(order, index) in completedOrderNumbers"
           :key="'ready-' + index"
-          class="completed-highlight"
+          class="completed-highlight paragraph"
         >
           #{{ order.number }}
         </p>
