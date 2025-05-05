@@ -9,7 +9,6 @@ export const useCartStore = defineStore('cart',{
     state: ():State => ({
         cart:{cartProducts:[]}
     }),
-
     actions:{
         loadCartInstance(){
             const cs = localStorage.getItem('cart')
@@ -59,7 +58,6 @@ export const useCartStore = defineStore('cart',{
 
             }
 
-
             localStorage.setItem('cart',JSON.stringify(this.cart))
 
 
@@ -76,7 +74,6 @@ export const useCartStore = defineStore('cart',{
           {
               this.cart = {
                   cartProducts:[
-
                   ]
               }
           }
@@ -108,7 +105,6 @@ export const useCartStore = defineStore('cart',{
               this.cart = cartLocalStorage
 
           }
-
 
           localStorage.setItem('cart',JSON.stringify(this.cart))
 
@@ -199,7 +195,6 @@ export const useCartStore = defineStore('cart',{
 
             // empty cart for next order
            this.clearCart()
-
         },
 
         async createOrder(order: OrderDTO) : Promise<any> {
