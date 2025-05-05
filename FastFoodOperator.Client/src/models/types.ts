@@ -24,6 +24,7 @@ export interface Combo extends BaseProduct {
   tags: Tag[];
 }
 
+
 export interface ComboGroup {
   id: number;
   name: string;
@@ -39,6 +40,7 @@ export interface ComboProduct {
   defaultProductVariantId: number | null;
   defaultProductVariant: Variant | null;
 }
+
 
 export interface Tag {
   id: number;
@@ -58,7 +60,19 @@ export interface Ingredient {
   priceModifier: number;
 }
 
-// ToCart interfaces
+
+export interface TaxSummary {
+  taxRate: number; // e.g. 0.25 for 25%
+  priceSummary: PriceSummary;
+}
+
+export interface PriceSummary {
+  total: number,
+  net: number,
+  gross: number,
+}
+
+
 export interface CartContainer {
   id: number;
   type: string;
