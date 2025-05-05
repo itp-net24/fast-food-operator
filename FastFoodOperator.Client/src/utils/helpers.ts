@@ -14,6 +14,40 @@ export const getProductTotalPrice = (container: CartContainer, precision: number
   return roundToPrecision(total, precision);
 }
 
+// Initial prices include tax!
+export const getProductPriceSummary = (container: CartContainer, precision: number = PRECISION_INTERNAL): TaxSummary => {
+  const totalProductCost: number = container.products.reduce((acc: number, p: CartItem) => {
+    const variantCost: number = p.variant?.priceModifier ?? 0;
+    const ingredientsCost: number = p.ingredients?.reduce((acc, i) => acc + i.priceModifier, 0) ?? 0;
+
+    return acc + p.basePrice + variantCost + ingredientsCost;
+  }, 0);
+
+  const productWeightMap: Map<Product, number> = container.products.reduce((map: Map<Product, number>, p: CartItem) => {
+    const productCost = p.basePrice + (p.variant?.priceModifier ?? 0) + (p.ingredients?.reduce((acc, i) => acc + i.priceModifier, 0) ?? 0);
+
+    map.set(p, productCost / totalProductCost);
+    return map;
+  }, new Map<Product, number>());
+
+  const priceSummary = container.products.reduce((acc: PriceSummary, p) => {
+    const total = productWeightMap.get(p) * getProductTotalPrice(container);
+    acc.total += total;
+
+    const net = total / p.tax;
+    acc.net += net;
+    acc.gross += total - net;
+
+    return acc;
+  }, { total: 0, net: 0, gross: 0 });
+
+  (['total', 'net', 'gross'] as const).forEach(key => {
+    priceSummary[key] = roundToPrecision(priceSummary[key], precision);
+  });
+
+  return { taxRate: getTaxRate(container.tags), priceSummary: priceSummary };
+}
+
 export const getTaxRate = (tags: Tag[]) => {
   return Math.max( ...tags.map(t => t.tax));
 }
