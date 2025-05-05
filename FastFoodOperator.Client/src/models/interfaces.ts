@@ -1,19 +1,35 @@
 import {Product} from '@/models/product'
-import type{ProductToCart,CartItem} from '@/models/types'
+import type{CartContainer,CartItem} from '@/models/types'
 
 export interface Cart{
     cartProducts:
-    Array<ProductToCart>
+    Array<CartContainer>,
+    cartCombos:
+    Array<CartContainer>
 }
 
-export interface cartProduct{
-        product:Product,
-        qty:number
-    }
+// ToCart interfaces
+// export interface CartContainer {
+//   id: number;
+//   type: string;
+//   imageUrl: string | null;
+//   name: string;
+//   price: number;
+//   quantity: number;
+//   products: CartItem[];
+// }
+
+// export interface CartItem {
+//   __uid: number;
+//   id: number;
+//   name: string;
+//   variant?: Variant | null;
+//   ingredients?: Ingredient[] | null;
+// }
 
 
 export interface State{
-    cart: Cart | {cartProducts:[]}
+    cart: Cart | {cartProducts:[],cartCombos:[]}
 }
 
 
