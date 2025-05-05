@@ -89,21 +89,21 @@ public class ProductController(ProductService service) : ControllerBase
 	[ProducesResponseType(typeof(ProductResponseDto), StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-	public async Task<IActionResult> AddProduct([FromBody] ProductCreateDto dto)
-	{
-		if (!ModelState.IsValid)
-			return BadRequest(ModelState);
+	//public async Task<IActionResult> AddProduct([FromBody] ProductCreateDto dto)
+	//{
+	//	if (!ModelState.IsValid)
+	//		return BadRequest(ModelState);
 		
-		try
-		{
-			var createdProduct = await service.CreateProductAsync(dto);
-			return CreatedAtAction(nameof(GetProduct), new { id = createdProduct.Id }, createdProduct);
-		}
-		catch (Exception)
-		{
-			return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occured");
-		}
-	}
+	//	try
+	//	{
+	//		var createdProduct = await service.CreateProductAsync(dto);
+	//		return CreatedAtAction(nameof(GetProduct), new { id = createdProduct.Id }, createdProduct);
+	//	}
+	//	catch (Exception)
+	//	{
+	//		return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occured");
+	//	}
+	//}
 
 	/// <summary>
 	/// Updates an existing product.
