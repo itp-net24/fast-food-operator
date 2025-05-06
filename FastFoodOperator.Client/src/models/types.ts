@@ -4,6 +4,7 @@ export interface BaseProduct {
   description: string | null;
   basePrice: number;
   imageUrl: string | null;
+  tags: Tag[];
 }
 
 export interface Product extends BaseProduct{
@@ -11,7 +12,6 @@ export interface Product extends BaseProduct{
   variants: Variant[];
 
   ingredients: Ingredient[];
-  tags: Tag[];
 }
 
 export interface Combo extends BaseProduct {
@@ -20,8 +20,6 @@ export interface Combo extends BaseProduct {
 
   comboProducts: ComboProduct[];
   comboGroups: ComboGroup[];
-
-  tags: Tag[];
 }
 
 

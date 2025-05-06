@@ -10,9 +10,7 @@ import type {
 import { defaultVariantOfProduct, getTaxRate } from '@/utils/helpers.ts'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export function mapToProduct(data: any): Product {
-  const variants: Variant[] = safeMap(data.variants, mapToProductVariant)
-
+export const mapToBaseProduct = (data: any): BaseProduct => {
   return {
     id: data.id,
     name: data.name,
@@ -20,6 +18,14 @@ export function mapToProduct(data: any): Product {
     basePrice: data.basePrice,
     imageUrl: data.pictureUrl ?? null,
     tags: safeMap(data.tags, mapToTag),
+  }
+}
+
+export function mapToProduct(data: any): Product {
+  const variants: Variant[] = safeMap(data.variants, mapToProductVariant)
+
+  return {
+    ...mapToBaseProduct(data),
     variants: variants,
     defaultVariant: variants.find((v) => v.id === data.defaultProductVariantId) ?? null,
     ingredients: data.ingredients,
@@ -35,12 +41,7 @@ export function mapToCombo(data: any): Combo {
   const comboGroups: ComboGroup[] = safeMap(data.comboGroups, (d) => mapToComboGroup(d, uidRef))
 
   return {
-    id: data.id,
-    name: data.name,
-    description: data.description ?? null,
-    basePrice: data.basePrice,
-    imageUrl: data.imageUrl ?? null,
-    tags: safeMap(data.tags, mapToTag),
+    ...mapToBaseProduct(data),
 
     mainComboProductId: data.mainComboProductId ?? null,
     mainComboProduct: comboProducts.find((cp) => cp.id === data.mainComboProductId) ?? null,
