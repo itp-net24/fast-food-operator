@@ -241,7 +241,7 @@ export const useCartStore = defineStore('cart', {
     // },
 
     removeFromCart(pro: Product) {
-      (this.cart as Cart).cartProducts = (this.cart as Cart).cartProducts.filter(ci => ci.product.id != pro.id)
+      (this.cart as Cart).cartProducts = (this.cart as Cart).cartProducts.filter(ci => ci.id != pro.id)
       localStorage.setItem('cart', JSON.stringify(this.cart))
     },
 
@@ -262,7 +262,7 @@ export const useCartStore = defineStore('cart', {
       //map all products in cart to orderProductDtos
       checkOutProducts = (this.cart as Cart).cartProducts.map((ci: CartContainer) => {
           return{
-          productVariantId: ci.products.map(vi => vi.variant?.id),
+          productVariantId: ci.products.map((vi:CartItem) => vi.variant?.id ?? 0),
           productId: ci.id,
           productIngredientsId: ci.products.map(pi => pi.ingredients?.flatMap(i => i.id)),
           quantity: ci.quantity
@@ -305,6 +305,7 @@ export const useCartStore = defineStore('cart', {
         ]
       }
     
+      console.log(this.cart)
     
       const receipt = fetcher.createOrder(order);
       console.log(receipt)
