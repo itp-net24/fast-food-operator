@@ -52,19 +52,32 @@ article {
   justify-content: space-between;
   align-items: center;
   gap: 4px;
-
+  cursor: pointer;
   background-color: white;
 }
 
 h2 {
   padding: var(--spacing-xs);
   min-height: 60px;
+  
 }
 
 #product-image {
-  height: 256px;
-  width: 256px;
-  background-repeat: no-repeat;
-  background-size: cover;
+  max-height: 256px;
+  max-width: 256px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+@media (max-width: 640px)
+{
+  article {
+    width: auto;
+  }
+  
+  h2 {
+    overflow: hidden;
+  }
 }
 </style>
