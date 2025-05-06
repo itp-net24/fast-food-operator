@@ -57,6 +57,9 @@ watch([() => props.id, () => props.type], async () => {
 });
 
 const fetchComboOrProduct = async () => {
+  product.value = null!;
+  combo.value = null;
+
   if (props.type === ProductType.product) {
     const p = await GetProductAsync(props.id);
     product.value = p;
@@ -84,11 +87,11 @@ const fetchComboOrProduct = async () => {
     <div class="container">
 
       <div class="container-scrollable">
-        <img v-if="builder.combo.value.imageUrl" class="product-image" :src="builder.combo.value.imageUrl" :alt="`image of ${builder.combo.value.name}`" />
+        <img v-if="builder.combo.value?.imageUrl" class="product-image" :src="builder.combo.value?.imageUrl" :alt="`image of ${builder.combo.value.name}`" />
         <div class="wrapper">
 
           <div class="product-content">
-            <h2 class="main-product-name">{{ builder.combo.value.name}}</h2>
+            <h2 class="main-product-name">{{ builder.combo.value?.name}}</h2>
             <span class="product-price">{{ roundToPrecision(builder.getTotal.value, 0) + CURRENCY_SYMBOL }}</span>
           </div>
 
