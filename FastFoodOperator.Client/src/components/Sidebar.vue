@@ -7,8 +7,10 @@ const fetcher:Fetcher = new Fetcher();
 const categories = ref<Category[] | null>();
 
 const sideMenuOpen = ref<boolean>(false);
+const activeCategory = ref<number | null>(null);
 
 function CategoryClicked(categoryId:number):void {
+    activeCategory.value = categoryId;
     emit('categoryClicked', categoryId);
 }
 
@@ -39,7 +41,11 @@ const emit = defineEmits<{
         </button>
         <h2 class="title">Our Menu</h2>
         <ul class="category-list ul-reset">
-            <li class="category border-menu" v-for="category in categories" :key="category.id" v-on:click="CategoryClicked(category.id)">
+            <li 
+            class="category border-menu popout" 
+            v-bind:class="activeCategory === category.id ? 'active-highlight-vertical-line' : ''"
+            v-for="category in categories" :key="category.id" 
+            v-on:click="CategoryClicked(category.id)">
                 {{ category.name }}
             </li>
         </ul>
@@ -83,6 +89,7 @@ const emit = defineEmits<{
     cursor: pointer;
 }
 
+
 @media (max-width: 640px)
 {
     .sidebar-toggle {
@@ -94,7 +101,10 @@ const emit = defineEmits<{
     .sidebar-container {
         position:fixed;
         left: 0;
+        top: 25%;
+
         background-color: white;
+
         padding: 1rem;
         margin-left: 2px;
 

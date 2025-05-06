@@ -104,6 +104,37 @@
     display:flex !important;
 }
 
+.popout {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.popout:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.popout-text {
+    transition: font-size 0.3s ease;
+}
+
+.active-highlight-vertical-line {
+    position:relative;
+}
+
+.active-highlight-vertical-line::before {
+    content: '';
+    height: 100%;
+    width: 5px;
+    border-radius: 4px;
+
+    background-color: var(--color-hover);
+
+    position:absolute;
+    left: 0;
+    top:0;
+}
+
 @media (max-width: 640px)
 {
     #app {

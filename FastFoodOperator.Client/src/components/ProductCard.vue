@@ -53,6 +53,8 @@ article {
   align-items: center;
   gap: 4px;
   cursor: pointer;
+    overflow:hidden;
+    background-color: white;
   background-color: white;
 }
 
