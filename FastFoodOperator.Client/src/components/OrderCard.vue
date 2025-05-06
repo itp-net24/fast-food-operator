@@ -21,7 +21,7 @@
       <ul class="ul-reset">
         <li v-for="(product, index) in order.orderProducts" :key="index">
           {{ product.productName }} x{{ product.quantity }}
-          <ul class="ul-reset" v-if="product.ingredients.length">
+          <ul class="ul-reset" v-if="product.ingredients">
             <li v-for="(ingredient, index) in product.ingredients" :key="ingredient.ingredientName">
               - {{ ingredient }}
             </li>
@@ -36,11 +36,7 @@
       <ul class="ul-reset">
         <li v-for="combo in order.orderCombos" :key="combo.comboId">
           {{ combo.comboName }} x{{ combo.quantity }}
-          <ul class="ul-reset" v-if="combo.ingredients.length">
-            <li v-for="ingredient in combo.ingredients" :key="ingredient.ingredientName">
-              - {{ ingredient.ingredientName }}
-            </li>
-          </ul>
+          {{ combo.products }}
         </li>
       </ul>
     </div>
@@ -67,6 +63,7 @@
 </template>
 
 <script>
+
 export default {
   props: {
     order: Object,

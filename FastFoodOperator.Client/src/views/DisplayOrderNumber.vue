@@ -31,6 +31,7 @@
 
 <script>
 import '@/assets/DisplayOrderNumber.css';
+import { GetOrders } from '@/services/fetcher';
 
 export default {
   name: 'DisplayOrder',
@@ -56,9 +57,7 @@ export default {
   methods: {
     async getOrderNumbers() {
       try {
-        const response = await fetch('https://localhost:8080/api/order/GetOrders');
-
-        if (!response.ok) throw new Error(`API-svar: ${response.statusText}`);
+        const response = await GetOrders();
 
         const orders = await response.json();
 

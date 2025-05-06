@@ -147,6 +147,20 @@ export const mapToCartContainer = (base: BaseProduct, products: CartItem[]): Car
   }
 }
 
+export const mapToOrder = (data:any): Order => {
+  return {
+    id: data.orderId,
+    orderNumber: data.orderNumber,
+    customerNote: data.customerNote,
+    orderStatus: data.orderStatus,
+    createdAt: data.createdAt,
+    startedAt: data.startedAt,
+    completedAt: data.completedAt,
+    orderProducts: data.orderProducts || [],
+    orderCombos: data.orderCombos || []
+  }
+}
+
 function safeMap<T, R>(array: T[] | null | undefined, mapFn: (item: T) => R): R[] {
   return Array.isArray(array) ? array.map(mapFn) : []
 }

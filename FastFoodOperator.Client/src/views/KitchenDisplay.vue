@@ -36,6 +36,8 @@
 <script>
 import '@/assets/kitchenDisplay.css';
 import OrderSection from '../components/OrderSection.vue';
+import { StartOrder, CompleteOrder, DeleteOrder, GetOrders } from '@/services/fetcher';
+
 
 export default {
   components: { OrderSection },
@@ -49,12 +51,15 @@ export default {
 
   computed: {
     pendingOrders() {
+      console.log('pedning Orders:', this.orders.filter(order => order.orderStatus === 0));
       return this.orders.filter(order => order.orderStatus === 0); // Ej påbörjade ordrar
     },
     activeOrders() {
+      console.log('Active Orders:', this.orders.filter(order => order.orderStatus === 1));
       return this.orders.filter(order => order.orderStatus === 1); // Pågående ordrar
     },
     completedOrders() {
+      console.log('Active Orders:', this.orders.filter(order => order.orderStatus === 2));
       return this.showCompleted
         ? this.orders.filter(order => order.orderStatus === 2) //Färdiga ordrar
         : [];
@@ -67,32 +72,18 @@ export default {
     // Hämtar ordrar från API
     async fetchOrders() {
       try {
-        const res = await fetch('https://localhost:8080/api/order/GetOrders');
-        const data = await res.json();
-        this.orders = data;
+        const orders = await GetOrders();
+        this.orders = orders
       } catch (error) {
-        console.error('Fel vid hämtning av ordrar:', error);
+        console.error('Error fetching orders:', error);
       }
     },
 
     // Markera order som påbörjad
     async markOrderAsInProgress(order) {
       try {
-        const response = await fetch('https://localhost:8080/api/order/startOrder', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            orderId: order.orderId,
-            orderNumber: order.orderNumber,
-            orderStatus: 1 // Sätt status till 1 påbörjad
-          }),
-        });
-
-        if (!response.ok) throw new Error('Misslyckades att markera order som påbörjad');
-
-        await this.fetchOrders(); // Uppdatera listan efter att ha markerat som påbörjad
+        await StartOrder({ orderId: order.orderId });
+        await this.fetchOrders();
       } catch (error) {
         console.error('Fel vid uppdatering av order:', error);
       }
@@ -103,12 +94,7 @@ export default {
       if (!confirm(`Are you sure you want to delete #${order.orderNumber}?`)) return;
 
       try {
-        const response = await fetch(`https://localhost:8080/api/order/${order.orderId}`, {
-          method: 'DELETE'
-        });
-
-        if (!response.ok) throw new Error('Kunde inte radera ordern');
-
+        await DeleteOrder(order.orderId);
         // Uppdatera listan efter borttagning
         await this.fetchOrders();
 
@@ -119,22 +105,13 @@ export default {
 
     // Markera order som klar
     async markOrderAsComplete(order) {
-      try {
-        const response = await fetch('https://localhost:8080/api/order/completeOrder', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ orderId: order.orderId }),
-        });
-
-        if (!response.ok) throw new Error('Misslyckades att markera order som klar');
-
-        await this.fetchOrders();
-      } catch (error) {
-        console.error('Fel vid uppdatering av order:', error);
-      }
+    try {
+      await CompleteOrder({ orderId: order.orderId }); // Pass orderId in an object
+      await this.fetchOrders();
+    } catch (error) {
+      console.error('Fel vid uppdatering av order:', error);
     }
+  }
   },
   mounted() {
     this.fetchOrders(); // Hämtar ordrar

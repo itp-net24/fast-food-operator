@@ -73,5 +73,9 @@ main {
   main {
     justify-content: center;
   }
+
+  .articles-container {
+    flex-basis: 45%;
+  }
 }
 </style>
