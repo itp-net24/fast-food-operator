@@ -18,6 +18,7 @@ export default () => {
   const $selectGroupProducts = ref<Record<number, ComboProduct>>({});
 
   const initializeProduct = (product: Product) => {
+    resetState();
 
     const item = mapProductToCart(product);
     $combo.value = mapToCartContainer(product, [item]);
@@ -26,8 +27,9 @@ export default () => {
   }
 
   const initializeCombo = (combo: Combo) => {
-    $combo.value = mapToCartContainer(combo);
+    resetState();
 
+    $combo.value = mapToCartContainer(combo, []);
     const mainProduct = defaultProductOfCombo(combo);
     if (!mainProduct) {
       console.log(`ERROR: no main product in combo: ${combo.name}`);
@@ -98,7 +100,7 @@ export default () => {
     });
   }
 
-  const selectedIngredients = computed<Ingredient[] | null>(() => main.value?.ingredients ?? null);
+  const selectedIngredients = computed<Ingredient[]>(() => main.value?.ingredients ?? []);
 
   const updateIngredients = (ingredient: Ingredient) => {
     if (!main.value.ingredients) return;
@@ -112,6 +114,12 @@ export default () => {
   }
 
   const getTotal = computed(() => getProductTotalPrice(combo.value));
+
+  const resetState = () => {
+    main.value = null!;
+    $combo.value = null;
+    $selectGroupProducts.value = {};
+  }
 
   return {
     combo: $combo,
