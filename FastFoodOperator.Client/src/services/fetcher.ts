@@ -1,5 +1,11 @@
-import type { Product, Ingredient, Combo } from "../models/types.ts";
-import { mapToBaseProduct, mapToCombo, mapToIngredient, mapToProduct } from '@/utils/mappers.ts'
+import type { Product, Ingredient, Combo, BaseProduct, Tag } from '../models/types.ts'
+import {
+  mapToBaseProduct,
+  mapToCombo,
+  mapToIngredient,
+  mapToProduct,
+  mapToTag
+} from '@/utils/mappers.ts'
 import { API_BASE_PATH } from '../../config.ts'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
