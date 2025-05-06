@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isProductCombo } from '@/utils/helpers.ts'
+import { defaultProductOfGroup, isProductCombo } from '@/utils/helpers.ts'
 import { GetComboAsync, GetProductAsync } from '@/services/fetcher.ts'
 import { mapComboProductToCart, mapProductToCart, mapToCartContainer } from '@/utils/mappers.ts'
 
@@ -15,7 +15,10 @@ const addToCart = async (): void => {
   let productToAdd: CartContainer;
   if (isProductCombo(props.baseProduct as BaseProduct)) {
     const combo = await GetComboAsync(props.baseProduct.id);
-    const items = mapComboProductToCart(combo.comboProducts);
+
+    const items = combo.comboProducts.map(cp => mapComboProductToCart(cp));
+    combo.comboGroups.forEach(group => items.push(mapComboProductToCart(defaultProductOfGroup(group))));
+
     productToAdd = mapToCartContainer(combo, items);
   }
   else {

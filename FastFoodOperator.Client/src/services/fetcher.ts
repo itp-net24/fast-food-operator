@@ -9,8 +9,7 @@ export const fetchJson = async (url: string): Promise<any> => {
     if (!response.ok)
       throw new Error(`HTTP error! status: ${response.status}`);
 
-    const result = await response.json();
-    return result;
+    return await response.json();
   }
   catch (error) {
     console.error("Error fetching from API!", error);
