@@ -7,7 +7,7 @@ import type {
   Product,
   Variant,
 } from '@/models/types.ts'
-import { defaultVariantOfProduct, getTaxRate } from '@/utils/helpers.ts'
+import { defaultVariantOfProduct, getTaxRate, isProductCombo } from '@/utils/helpers.ts'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const mapToBaseProduct = (data: any): BaseProduct => {
@@ -16,7 +16,7 @@ export const mapToBaseProduct = (data: any): BaseProduct => {
     name: data.name,
     description: data.description ?? null,
     basePrice: data.basePrice,
-    imageUrl: data.pictureUrl ?? null,
+    imageUrl: data.imageUrl ?? null,
     tags: safeMap(data.tags, mapToTag),
   }
 }
@@ -129,6 +129,19 @@ export const mapComboProductToCart = (cp: ComboProduct, includeIngredients: bool
     ingredients: includeIngredients
       ? cp.product.ingredients.map((i) => ({ ...i, priceModifier: 0 }))
       : null,
+  }
+}
+
+export const mapToCartContainer = (base: BaseProduct, products: CartItem[]): CartContainer => {
+  return {
+    id: base.id,
+    type: isProductCombo(base) ? 'combo' : 'product',
+    imageUrl: base.imageUrl,
+    name: base.name,
+    tags: base.tags,
+    price: base.basePrice,
+    quantity: 1,
+    products: products ?? [],
   }
 }
 
