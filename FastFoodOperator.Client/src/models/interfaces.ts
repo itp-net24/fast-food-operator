@@ -32,6 +32,11 @@ export interface State{
     cart: Cart | {cartProducts:[],cartCombos:[]}
 }
 
+export interface Tag{
+  id: number;
+  name: string;
+  taxrate: number;
+}
 
 export interface AddOrderDTO
     {

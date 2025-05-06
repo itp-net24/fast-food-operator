@@ -3,7 +3,7 @@ import type {
 } from '@/models/types.ts'
 import { PRECISION_INTERNAL } from '../../config.ts'
 
-export const calculateCartContainerTotal = (container: CartContainer, precision: number = PRECISION_INTERNAL) => {
+export const getProductTotalPrice = (container: CartContainer, precision: number = PRECISION_INTERNAL) => {
   const total = container.products.reduce((acc, p) => {
     const variantCost = p.variant?.priceModifier ?? 0
     const ingredientsTotal = p.ingredients?.reduce((acc, i) => acc + i.priceModifier, 0) ?? 0;
@@ -14,6 +14,44 @@ export const calculateCartContainerTotal = (container: CartContainer, precision:
   return roundToPrecision(total, precision);
 }
 
+// Initial prices include tax!
+export const getProductPriceSummary = (container: CartContainer, precision: number = PRECISION_INTERNAL): TaxSummary => {
+  const totalProductCost: number = container.products.reduce((acc: number, p: CartItem) => {
+    const variantCost: number = p.variant?.priceModifier ?? 0;
+    const ingredientsCost: number = p.ingredients?.reduce((acc, i) => acc + i.priceModifier, 0) ?? 0;
+
+    return acc + p.basePrice + variantCost + ingredientsCost;
+  }, 0);
+
+  const productWeightMap: Map<Product, number> = container.products.reduce((map: Map<Product, number>, p: CartItem) => {
+    const productCost = p.basePrice + (p.variant?.priceModifier ?? 0) + (p.ingredients?.reduce((acc, i) => acc + i.priceModifier, 0) ?? 0);
+
+    map.set(p, productCost / totalProductCost);
+    return map;
+  }, new Map<Product, number>());
+
+  const priceSummary = container.products.reduce((acc: PriceSummary, p) => {
+    const total = productWeightMap.get(p) * getProductTotalPrice(container);
+    acc.total += total;
+
+    const net = total / p.tax;
+    acc.net += net;
+    acc.gross += total - net;
+
+    return acc;
+  }, { total: 0, net: 0, gross: 0 });
+
+  (['total', 'net', 'gross'] as const).forEach(key => {
+    priceSummary[key] = roundToPrecision(priceSummary[key], precision);
+  });
+
+  return { taxRate: getTaxRate(container.tags), priceSummary: priceSummary };
+}
+
+export const getTaxRate = (tags: Tag[]) => {
+  return Math.max( ...tags.map(t => t.tax));
+}
+
 export const getVariantDiscount = (variant: Variant, defaultVariant: Variant | null = null, precision: number = PRECISION_INTERNAL) => {
   const value = Math.max(variant.priceModifier - (defaultVariant?.priceModifier ?? 0), 0);
 
@@ -21,7 +59,7 @@ export const getVariantDiscount = (variant: Variant, defaultVariant: Variant | n
 }
 
 export const roundToPrecision = (value: number, precision: number): number => {
-  const factor = Math.pow(100, precision);
+  const factor = Math.pow(10, precision);
   return Math.round(value * factor) / factor;
 }
 

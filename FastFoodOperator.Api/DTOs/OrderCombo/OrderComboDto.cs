@@ -9,6 +9,6 @@ namespace FastFoodOperator.Api.DTOs.OrderCombo
 		
 		public required string ComboName { get; set; } = string.Empty!;
 		public int Quantity { get; set; }
-		public List<string> Ingredients { get; set; } = [];
+		public string Products { get; set; } = string.Empty!;
 	}
 }

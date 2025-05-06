@@ -19,6 +19,7 @@
   const selectedId = ref<number>(props.selection?.id ?? props.options[0]?.id ?? 0);
 
   watch(() => props.selection, (update) => {
+    if (!update) return;
     selectedId.value = update.id;
   })
 
@@ -30,7 +31,7 @@
   });
 </script>
 
-<template v-if="selectedId">
+<template v-if="selectedId && options && options.length > 0">
   <ul class="radio-list">
     <li
       v-for="option in props.options"

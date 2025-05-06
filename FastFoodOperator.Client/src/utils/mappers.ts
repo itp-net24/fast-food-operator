@@ -7,7 +7,7 @@ import type {
   Product,
   Variant,
 } from '@/models/types.ts'
-import { defaultVariantOfProduct } from '@/utils/helpers.ts'
+import { defaultVariantOfProduct, getTaxRate } from '@/utils/helpers.ts'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function mapToProduct(data: any): Product {
@@ -19,6 +19,7 @@ export function mapToProduct(data: any): Product {
     description: data.description ?? null,
     basePrice: data.basePrice,
     imageUrl: data.pictureUrl ?? null,
+    tags: safeMap(data.tags, mapToTag),
     variants: variants,
     defaultVariant: variants.find((v) => v.id === data.defaultProductVariantId) ?? null,
     ingredients: data.ingredients,
@@ -39,6 +40,7 @@ export function mapToCombo(data: any): Combo {
     description: data.description ?? null,
     basePrice: data.basePrice,
     imageUrl: data.imageUrl ?? null,
+    tags: safeMap(data.tags, mapToTag),
 
     mainComboProductId: data.mainComboProductId ?? null,
     mainComboProduct: comboProducts.find((cp) => cp.id === data.mainComboProductId) ?? null,
@@ -91,6 +93,14 @@ export function mapToIngredient(data: any): Ingredient {
   }
 }
 
+export const  mapToTag = (data: any): Tag => {
+  return {
+    id: data.id,
+    name: data.name,
+    tax: data.taxRate,
+  }
+}
+
 export const mapProductToCart = (p: Product): CartItem => {
   const variant = p.defaultVariant ?? p.variants[0]
 
@@ -98,6 +108,8 @@ export const mapProductToCart = (p: Product): CartItem => {
     __uid: -1,
     id: p.id,
     name: p.name,
+    basePrice: p.basePrice,
+    tax: getTaxRate(p.tags),
     variant: variant ? { ...variant, priceModifier: 0 } : null,
     ingredients: p.ingredients.map((i) => ({ ...i, priceModifier: 0 })),
   }
@@ -110,6 +122,8 @@ export const mapComboProductToCart = (cp: ComboProduct, includeIngredients: bool
     __uid: cp.__uid,
     id: cp.product.id,
     name: cp.product.name,
+    basePrice: cp.product.basePrice,
+    tax: getTaxRate(cp.product.tags),
     variant: variant ? { ...variant, priceModifier: 0 } : null,
     ingredients: includeIngredients
       ? cp.product.ingredients.map((i) => ({ ...i, priceModifier: 0 }))

@@ -37,51 +37,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.ToTable("ComboGroupCombo", (string)null);
                 });
 
-            modelBuilder.Entity("FastFoodOperator.Api.Entities.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Burgers"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Drinks"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Sides"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Desserts"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Hot drinks"
-                        });
-                });
-
             modelBuilder.Entity("FastFoodOperator.Api.Entities.Combo", b =>
                 {
                     b.Property<int>("Id")
@@ -228,6 +183,43 @@ namespace FastFoodOperator.Api.Data.Migrations
                             Id = 6,
                             ComboGroupId = 2,
                             ProductId = 6
+                        });
+                });
+
+            modelBuilder.Entity("FastFoodOperator.Api.Entities.ComboTag", b =>
+                {
+                    b.Property<int>("ComboId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ComboId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("ComboTag");
+
+                    b.HasData(
+                        new
+                        {
+                            ComboId = 1,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ComboId = 1,
+                            TagId = 6
+                        },
+                        new
+                        {
+                            ComboId = 2,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ComboId = 2,
+                            TagId = 6
                         });
                 });
 
@@ -450,9 +442,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("decimal(10, 2)");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("DefaultVariantId")
                         .HasColumnType("int");
 
@@ -472,8 +461,6 @@ namespace FastFoodOperator.Api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.ToTable("Products");
 
                     b.HasData(
@@ -481,7 +468,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 1,
                             BasePrice = 14.99m,
-                            CategoryId = 1,
                             Description = "A classic cheeseburger",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-cheeseburger-NEW:nutrition-calculator-tile",
                             Name = "Cheeseburger"
@@ -490,7 +476,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 2,
                             BasePrice = 64.99m,
-                            CategoryId = 1,
                             Description = "A classic big mac",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-bigmac-NY2:nutrition-calculator-tile",
                             Name = "Big Mac"
@@ -499,7 +484,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 3,
                             BasePrice = 9.99m,
-                            CategoryId = 2,
                             Description = "Refreshing soda",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-cocacola-original-medium:nutrition-calculator-tile",
                             Name = "Coca-Cola"
@@ -508,7 +492,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 4,
                             BasePrice = 9.99m,
-                            CategoryId = 2,
                             Description = "Refreshing soda",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-cocacola-original-medium:nutrition-calculator-tile",
                             Name = "Coca-Cola Zero"
@@ -517,7 +500,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 5,
                             BasePrice = 19.99m,
-                            CategoryId = 3,
                             Description = "Crispy golden fries",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-accessories-french-fries-mellan2:nutrition-calculator-tile",
                             Name = "French Fries"
@@ -526,7 +508,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 6,
                             BasePrice = 39.99m,
-                            CategoryId = 3,
                             Description = "Crispy nuggies",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-chicken-mcnuggets-4p-NEW:nutrition-calculator-tile",
                             Name = "Chicken Nuggets"
@@ -535,7 +516,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 7,
                             BasePrice = 35.00m,
-                            CategoryId = 1,
                             Description = "Two beef patties with cheese",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-double-cheeseburger-NEW:nutrition-calculator-tile",
                             Name = "Double Cheeseburger"
@@ -544,7 +524,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 8,
                             BasePrice = 51.00m,
-                            CategoryId = 1,
                             Description = "Triple-stacked cheesy classic",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-triple-cheeseburger-NEW:nutrition-calculator-tile",
                             Name = "Triple Cheeseburger"
@@ -553,7 +532,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 9,
                             BasePrice = 80.00m,
-                            CategoryId = 1,
                             Description = "¼-lb beef, cheese & onions",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-qp-cheese-NEW:nutrition-calculator-tile",
                             Name = "Quarter Pounder Cheese"
@@ -562,7 +540,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 10,
                             BasePrice = 77.00m,
-                            CategoryId = 1,
                             Description = "Swedish McD classic with fresh veggies",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-mcfeast-NEW:nutrition-calculator-tile",
                             Name = "McFeast"
@@ -571,7 +548,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 11,
                             BasePrice = 67.00m,
-                            CategoryId = 1,
                             Description = "Beef, bacon & chili béarnaise sauce",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-creamychipotle:nutrition-calculator-tile",
                             Name = "Chili Bearnaise"
@@ -580,7 +556,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 12,
                             BasePrice = 79.00m,
-                            CategoryId = 1,
                             Description = "Emmentaler, red onion & Tasty sauce",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-tasty_4_1-burger:nutrition-calculator-tile",
                             Name = "Tasty Burger"
@@ -589,7 +564,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 13,
                             BasePrice = 105.00m,
-                            CategoryId = 1,
                             Description = "Tasty with crispy bacon",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-tasty-bacon_4_1-burger:nutrition-calculator-tile",
                             Name = "Tasty Bacon"
@@ -598,7 +572,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 14,
                             BasePrice = 83.00m,
-                            CategoryId = 1,
                             Description = "Crispy chicken fillet sandwich",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-chickenfish-mccrispy:nutrition-calculator-tile",
                             Name = "McCrispy"
@@ -607,7 +580,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 15,
                             BasePrice = 95.00m,
-                            CategoryId = 1,
                             Description = "McCrispy with spicy sambal sauce",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-chickenfish-mcrispy-spicy2:nutrition-calculator-tile",
                             Name = "McCrispy Spicy"
@@ -616,7 +588,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 16,
                             BasePrice = 63.00m,
-                            CategoryId = 1,
                             Description = "Classic mayo & lettuce chicken burger",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-mcchicken-NEW:nutrition-calculator-tile",
                             Name = "McChicken"
@@ -625,7 +596,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 17,
                             BasePrice = 24.00m,
-                            CategoryId = 2,
                             Description = "Orange soda",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-fanta-orange-medium:nutrition-calculator-tile",
                             Name = "Fanta"
@@ -634,7 +604,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 18,
                             BasePrice = 24.00m,
-                            CategoryId = 2,
                             Description = "Tropical fruit soda",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-fanta-exotic-medium:nutrition-calculator-tile",
                             Name = "Fanta Exotic"
@@ -643,7 +612,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 19,
                             BasePrice = 24.00m,
-                            CategoryId = 2,
                             Description = "Sugar-free lemon-lime soda",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-sprite-zero-medium:nutrition-calculator-tile",
                             Name = "Sprite Zero Sugar"
@@ -652,7 +620,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 20,
                             BasePrice = 41.00m,
-                            CategoryId = 5,
                             Description = "McCafé organic latte",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-LatteVaniljCaramel:nutrition-calculator-tile",
                             Name = "Latte"
@@ -661,7 +628,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 21,
                             BasePrice = 41.00m,
-                            CategoryId = 5,
                             Description = "Foamy espresso-based coffee",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-Cappuccino-NEW:nutrition-calculator-tile",
                             Name = "Cappuccino"
@@ -670,7 +636,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 22,
                             BasePrice = 32.00m,
-                            CategoryId = 5,
                             Description = "Single espresso shot",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-Espresso-Cortado-NEW:nutrition-calculator-tile",
                             Name = "Espresso"
@@ -679,7 +644,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 23,
                             BasePrice = 25.00m,
-                            CategoryId = 5,
                             Description = "Creamy O’Boy hot chocolate",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-Choklad:nutrition-calculator-tile",
                             Name = "Hot Chocolate"
@@ -688,7 +652,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 24,
                             BasePrice = 34.00m,
-                            CategoryId = 2,
                             Description = "Cloudy apple juice",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-drinks-godmorgon-apple:nutrition-calculator-tile",
                             Name = "God Morgon Äppeljuice"
@@ -697,7 +660,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 25,
                             BasePrice = 18.00m,
-                            CategoryId = 3,
                             Description = "Crispy pastry with apple filling",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-desserts-applepie:nutrition-calculator-tile",
                             Name = "Apple Pie"
@@ -706,7 +668,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 26,
                             BasePrice = 24.00m,
-                            CategoryId = 4,
                             Description = "Soft-serve with hot fudge",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-sundae-chocolate:nutrition-calculator-tile",
                             Name = "Sundae Chocolate"
@@ -715,7 +676,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 27,
                             BasePrice = 35.00m,
-                            CategoryId = 4,
                             Description = "Soft-serve blended with Oreo pieces",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-desserts-mcflurry-oreo:nutrition-calculator-tile",
                             Name = "McFlurry Oreo"
@@ -724,7 +684,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 28,
                             BasePrice = 32.00m,
-                            CategoryId = 4,
                             Description = "Rich three-chocolate cookie",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-desserts-triplechocolatecookie:nutrition-calculator-tile",
                             Name = "Triple Chocolate Cookie"
@@ -733,7 +692,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 29,
                             BasePrice = 40.00m,
-                            CategoryId = 4,
                             Description = "Classic Swedish kanelbulle",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-kanelbulle:nutrition-calculator-tile",
                             Name = "Cinnamon Bun"
@@ -742,7 +700,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 30,
                             BasePrice = 32.00m,
-                            CategoryId = 4,
                             Description = "Moist chocolate muffin",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-muffinchoklad:nutrition-calculator-tile",
                             Name = "Chocolate Muffin"
@@ -751,7 +708,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 31,
                             BasePrice = 32.00m,
-                            CategoryId = 4,
                             Description = "Chocolate-glazed mini donut",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-mini-donutchoklad:nutrition-calculator-tile",
                             Name = "MiniDonut Choklad"
@@ -760,10 +716,16 @@ namespace FastFoodOperator.Api.Data.Migrations
                         {
                             Id = 32,
                             BasePrice = 18.00m,
-                            CategoryId = 3,
                             Description = "Fresh apple snack pack",
                             ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-accessories-apples:nutrition-calculator-tile",
                             Name = "Apple Slices"
+                        },
+                        new
+                        {
+                            Id = 33,
+                            BasePrice = 40.00m,
+                            Description = "Very  cold",
+                            Name = "Beer"
                         });
                 });
 
@@ -814,6 +776,193 @@ namespace FastFoodOperator.Api.Data.Migrations
                             ProductId = 2,
                             IngredientId = 3,
                             Required = false
+                        });
+                });
+
+            modelBuilder.Entity("FastFoodOperator.Api.Entities.ProductTag", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("ProductTag");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductId = 1,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ProductId = 2,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ProductId = 3,
+                            TagId = 2
+                        },
+                        new
+                        {
+                            ProductId = 4,
+                            TagId = 2
+                        },
+                        new
+                        {
+                            ProductId = 5,
+                            TagId = 3
+                        },
+                        new
+                        {
+                            ProductId = 6,
+                            TagId = 3
+                        },
+                        new
+                        {
+                            ProductId = 7,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ProductId = 8,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ProductId = 9,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ProductId = 10,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ProductId = 11,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ProductId = 12,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ProductId = 13,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ProductId = 14,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ProductId = 15,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ProductId = 16,
+                            TagId = 1
+                        },
+                        new
+                        {
+                            ProductId = 17,
+                            TagId = 2
+                        },
+                        new
+                        {
+                            ProductId = 18,
+                            TagId = 2
+                        },
+                        new
+                        {
+                            ProductId = 19,
+                            TagId = 2
+                        },
+                        new
+                        {
+                            ProductId = 20,
+                            TagId = 5
+                        },
+                        new
+                        {
+                            ProductId = 21,
+                            TagId = 5
+                        },
+                        new
+                        {
+                            ProductId = 22,
+                            TagId = 5
+                        },
+                        new
+                        {
+                            ProductId = 23,
+                            TagId = 5
+                        },
+                        new
+                        {
+                            ProductId = 24,
+                            TagId = 2
+                        },
+                        new
+                        {
+                            ProductId = 25,
+                            TagId = 4
+                        },
+                        new
+                        {
+                            ProductId = 26,
+                            TagId = 4
+                        },
+                        new
+                        {
+                            ProductId = 27,
+                            TagId = 4
+                        },
+                        new
+                        {
+                            ProductId = 28,
+                            TagId = 4
+                        },
+                        new
+                        {
+                            ProductId = 29,
+                            TagId = 4
+                        },
+                        new
+                        {
+                            ProductId = 30,
+                            TagId = 4
+                        },
+                        new
+                        {
+                            ProductId = 31,
+                            TagId = 4
+                        },
+                        new
+                        {
+                            ProductId = 32,
+                            TagId = 3
+                        },
+                        new
+                        {
+                            ProductId = 33,
+                            TagId = 7
+                        },
+                        new
+                        {
+                            ProductId = 33,
+                            TagId = 2
                         });
                 });
 
@@ -933,6 +1082,71 @@ namespace FastFoodOperator.Api.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("FastFoodOperator.Api.Entities.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("TaxRate")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tags");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Burgers",
+                            TaxRate = 1.12m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Drinks",
+                            TaxRate = 1.12m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Sides",
+                            TaxRate = 1.12m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Desserts",
+                            TaxRate = 1.12m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Hot drinks",
+                            TaxRate = 1.12m
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Combo",
+                            TaxRate = 1m
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Alcohol",
+                            TaxRate = 1.25m
+                        });
+                });
+
             modelBuilder.Entity("ComboComboGroup", b =>
                 {
                     b.HasOne("FastFoodOperator.Api.Entities.ComboGroup", null)
@@ -990,6 +1204,25 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("FastFoodOperator.Api.Entities.ComboTag", b =>
+                {
+                    b.HasOne("FastFoodOperator.Api.Entities.Combo", "Combo")
+                        .WithMany("Tags")
+                        .HasForeignKey("ComboId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FastFoodOperator.Api.Entities.Tag", "Tag")
+                        .WithMany("ComboTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Combo");
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("FastFoodOperator.Api.Entities.OrderCombo", b =>
                 {
                     b.HasOne("FastFoodOperator.Api.Entities.Order", "Order")
@@ -1012,17 +1245,6 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("FastFoodOperator.Api.Entities.Product", b =>
-                {
-                    b.HasOne("FastFoodOperator.Api.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
             modelBuilder.Entity("FastFoodOperator.Api.Entities.ProductIngredient", b =>
                 {
                     b.HasOne("FastFoodOperator.Api.Entities.Ingredient", "Ingredient")
@@ -1042,6 +1264,25 @@ namespace FastFoodOperator.Api.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("FastFoodOperator.Api.Entities.ProductTag", b =>
+                {
+                    b.HasOne("FastFoodOperator.Api.Entities.Product", "Product")
+                        .WithMany("Tags")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FastFoodOperator.Api.Entities.Tag", "Tag")
+                        .WithMany("ProductTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("FastFoodOperator.Api.Entities.ProductVariant", b =>
                 {
                     b.HasOne("FastFoodOperator.Api.Entities.Product", "Product")
@@ -1056,6 +1297,8 @@ namespace FastFoodOperator.Api.Data.Migrations
             modelBuilder.Entity("FastFoodOperator.Api.Entities.Combo", b =>
                 {
                     b.Navigation("ComboProducts");
+
+                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("FastFoodOperator.Api.Entities.ComboGroup", b =>
@@ -1081,7 +1324,16 @@ namespace FastFoodOperator.Api.Data.Migrations
 
                     b.Navigation("ProductIngredients");
 
+                    b.Navigation("Tags");
+
                     b.Navigation("Variants");
+                });
+
+            modelBuilder.Entity("FastFoodOperator.Api.Entities.Tag", b =>
+                {
+                    b.Navigation("ComboTags");
+
+                    b.Navigation("ProductTags");
                 });
 #pragma warning restore 612, 618
         }

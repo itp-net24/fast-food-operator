@@ -4,7 +4,7 @@ namespace FastFoodOperator.Api.Interfaces
 {
 	public interface IOrderService
 	{
-		public Task<int> AddOrder(AddOrderDto orderDto);
+		public Task<OrderReceiptDto> AddOrder(AddOrderDto orderDto);
 		public Task<GetOrderDto> GetOrder(int orderId);
 		public Task<GetOrdernumbersDto> DisplayOrderNumbers();
 		public Task CompleteOrder(UpdateOrderDto order);
