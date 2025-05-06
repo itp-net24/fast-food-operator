@@ -100,7 +100,7 @@ export default () => {
     });
   }
 
-  const selectedIngredients = computed<Ingredient[] | null>(() => main.value?.ingredients ?? null);
+  const selectedIngredients = computed<Ingredient[]>(() => main.value?.ingredients ?? []);
 
   const updateIngredients = (ingredient: Ingredient) => {
     if (!main.value.ingredients) return;

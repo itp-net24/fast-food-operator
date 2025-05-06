@@ -12,19 +12,19 @@ import { isProductCombo } from '@/utils/helpers.ts'
 const products = ref<BaseProduct[]>([])
 
 onMounted(async () => {
-  products.value = await getProductsAsync(20, 0)
+  products.value = await getProductsAsync(20, 0);
 })
 
 async function onCategoryClicked(tagId: number) {
-  products.value = await getProductsByTagAsync(tagId)
+  products.value = await getProductsByTagAsync(tagId);
 }
 
-const visible = ref<boolean>(false)
-const selectedProduct = ref<BaseProduct | null>(null)
+const visible = ref<boolean>(false);
+const selectedProduct = ref<BaseProduct | null>(null);
 
 const handleCardClick = (product: BaseProduct) => {
-  visible.value = true
-  selectedProduct.value = product
+  visible.value = true;
+  selectedProduct.value = product;
 }
 </script>
 

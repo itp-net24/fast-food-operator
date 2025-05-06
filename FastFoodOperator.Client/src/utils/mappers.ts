@@ -1,11 +1,13 @@
 import type {
+  BaseProduct,
+  CartContainer,
   CartItem,
   Combo,
   ComboGroup,
   ComboProduct,
   Ingredient,
-  Product,
-  Variant,
+  Product, Tag,
+  Variant
 } from '@/models/types.ts'
 import { defaultVariantOfProduct, getTaxRate, isProductCombo } from '@/utils/helpers.ts'
 

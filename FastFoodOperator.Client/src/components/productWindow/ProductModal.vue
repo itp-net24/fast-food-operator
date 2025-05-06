@@ -138,12 +138,10 @@ const fetchComboOrProduct = async () => {
           <div class="product-list">
             <h2 class="product-name">Ingredients</h2>
 
-            {{ console.log(builder.selectedIngredients.value) }}
             <IngredientSelector
               v-model:selected-ingredients="builder.selectedIngredients.value"
               @update-ingredients="builder.updateIngredients"
             />
-            {{ console.log(builder.selectedIngredients.value) }}
           </div>
         </div>
 

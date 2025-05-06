@@ -2,6 +2,7 @@
 import { defaultProductOfGroup, isProductCombo } from '@/utils/helpers.ts'
 import { GetComboAsync, GetProductAsync } from '@/services/fetcher.ts'
 import { mapComboProductToCart, mapProductToCart, mapToCartContainer } from '@/utils/mappers.ts'
+import type { BaseProduct, CartContainer } from '@/models/types.ts'
 
 const props = defineProps<Props>()
 
@@ -9,22 +10,22 @@ interface Props {
   baseProduct: BaseProduct
 }
 
-const addToCart = async (): void => {
+const addToCart = async (): Promise<void> => {
   if (!props.baseProduct) return;
 
   let productToAdd: CartContainer;
   if (isProductCombo(props.baseProduct as BaseProduct)) {
     const combo = await GetComboAsync(props.baseProduct.id);
 
-    const items = combo.comboProducts.map(cp => mapComboProductToCart(cp));
-    combo.comboGroups.forEach(group => items.push(mapComboProductToCart(defaultProductOfGroup(group))));
+    const items = combo.comboProducts.map(cp => mapComboProductToCart(cp, false));
+    combo.comboGroups.forEach(group => items.push(mapComboProductToCart(defaultProductOfGroup(group), false)));
 
     productToAdd = mapToCartContainer(combo, items);
   }
   else {
     const product = await GetProductAsync(props.baseProduct.id);
     const item = mapProductToCart(product);
-    productToAdd = mapToCartContainer(product, item);
+    productToAdd = mapToCartContainer(product, [item]);
   }
 
   // Logic to add to cart goes here!
