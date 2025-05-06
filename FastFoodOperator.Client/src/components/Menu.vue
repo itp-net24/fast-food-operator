@@ -3,11 +3,8 @@ import Sidebar from './Sidebar.vue'
 import ProductCard from './ProductCard.vue'
 import { onMounted, ref } from 'vue'
 import CartModal from './CartModal.vue'
-import ProductModal from '@/components/productWindow/ProductModal.vue'
-import { ProductType } from '@/enums/enums.ts'
 import { getProductsAsync, getProductsByTagAsync } from '@/services/fetcher.ts'
 import type { BaseProduct } from '@/models/types.ts'
-import { isProductCombo } from '@/utils/helpers.ts'
 
 const products = ref<BaseProduct[]>([]);
 
