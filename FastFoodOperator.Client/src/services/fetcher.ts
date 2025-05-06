@@ -51,3 +51,9 @@ export const GetIngredientsAsync = async (): Promise<Ingredient[]> => {
 
   return data.map(i => mapToIngredient(i));
 }
+
+export const getTagsAsync = async (): Promise<Tag[]> => {
+  const data = await fetchJson('api/tag');
+
+  return data.map(t => mapToTag(t)) ?? [];
+}
