@@ -1,5 +1,14 @@
 import type {
-  CartContainer, Combo, ComboGroup, ComboProduct, Variant
+  BaseProduct,
+  CartContainer,
+  CartItem,
+  Combo,
+  ComboGroup,
+  ComboProduct,
+  PriceSummary,
+  Tag,
+  TaxSummary,
+  Variant
 } from '@/models/types.ts'
 import { PRECISION_INTERNAL } from '../../config.ts'
 
@@ -23,15 +32,15 @@ export const getProductPriceSummary = (container: CartContainer, precision: numb
     return acc + p.basePrice + variantCost + ingredientsCost;
   }, 0);
 
-  const productWeightMap: Map<Product, number> = container.products.reduce((map: Map<Product, number>, p: CartItem) => {
+  const productWeightMap: Map<CartItem, number> = container.products.reduce((map: Map<CartItem, number>, p: CartItem) => {
     const productCost = p.basePrice + (p.variant?.priceModifier ?? 0) + (p.ingredients?.reduce((acc, i) => acc + i.priceModifier, 0) ?? 0);
 
     map.set(p, productCost / totalProductCost);
     return map;
-  }, new Map<Product, number>());
+  }, new Map<CartItem, number>());
 
   const priceSummary = container.products.reduce((acc: PriceSummary, p) => {
-    const total = productWeightMap.get(p) * getProductTotalPrice(container);
+    const total = productWeightMap.get(p)! * getProductTotalPrice(container);
     acc.total += total;
 
     const net = total / p.tax;
@@ -75,4 +84,4 @@ export const clamp = (value: number, min: number, max: number): number => {
 
 export const defaultProductOfCombo = (combo: Combo): ComboProduct | null => combo.mainComboProduct ?? combo.comboProducts[0] ?? null;
 export const defaultProductOfGroup = (group: ComboGroup): ComboProduct | null => group.defaultComboProduct ?? group.comboProducts[0] ?? null;
-export const defaultVariantOfProduct = (product: ComboProduct): Variant | null => product.defaultProductVariant ?? product.product.variants[0] ?? null;
+export const defaultVariantOfProduct = (product: ComboProduct): Variant | null => product.defaultProductVariant ?? product.product?.variants?.[0] ?? null;
