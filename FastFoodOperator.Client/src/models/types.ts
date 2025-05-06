@@ -4,6 +4,7 @@ export interface BaseProduct {
   description: string | null;
   basePrice: number;
   imageUrl: string | null;
+  tags: Tag[];
 }
 
 export interface Product extends BaseProduct{

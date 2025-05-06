@@ -58,6 +58,12 @@ export const getVariantDiscount = (variant: Variant, defaultVariant: Variant | n
   return roundToPrecision(value, precision);
 }
 
+export const isProductCombo = (product: BaseProduct): boolean => {
+  if (!product || !product.tags) return false;
+
+  return product.tags.some(tag => tag.name.toLowerCase() === 'combo');
+}
+
 export const roundToPrecision = (value: number, precision: number): number => {
   const factor = Math.pow(10, precision);
   return Math.round(value * factor) / factor;

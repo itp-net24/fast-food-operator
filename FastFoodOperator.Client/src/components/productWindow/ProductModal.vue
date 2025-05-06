@@ -5,14 +5,13 @@ import type {
   Product,
 } from '@/models/types.ts'
 import {ProductType} from "@/enums/enums.ts"
-
 import PopupModal from "@/components/PopupModal.vue";
 import IngredientSelector from "@/components/productWindow/IngredientSelector.vue";
 import ProductGroupSelector from "@/components/productWindow/ProductGroupSelector.vue";
 import ValueSelector from '@/components/ValueSelector.vue'
 import VariantSelector from '@/components/productWindow/VariantSelector.vue'
 
-import { GetComboAsync, GetProductAsync } from '@/services/productService.ts'
+import { GetComboAsync, GetProductAsync } from '@/services/fetcher.ts'
 import { defaultVariantOfProduct, roundToPrecision } from '@/utils/helpers.ts'
 import useProduct from "@/composables/useProduct.ts"
 import { CURRENCY_SYMBOL } from '../../../config.ts'
@@ -34,8 +33,6 @@ const handleConfirm = () => {
   console.log(builder.combo.value);
 }
 
-
-// Popup
 const mobileBreakpoint: number = 450;
 const popup = ref<boolean>(true);
 const isMobile = ref<boolean>(false);

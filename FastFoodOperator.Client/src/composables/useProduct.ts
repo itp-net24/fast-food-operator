@@ -10,7 +10,7 @@ import {
   getProductTotalPrice,
   defaultProductOfCombo, defaultProductOfGroup
 } from '@/utils/helpers.ts'
-import { mapComboProductToCart, mapProductToCart } from '@/utils/mappers.ts'
+import { mapComboProductToCart, mapProductToCart, mapToCartContainer } from '@/utils/mappers.ts'
 
 export default () => {
   const main = ref<CartItem>(null!);
@@ -20,31 +20,13 @@ export default () => {
   const initializeProduct = (product: Product) => {
 
     const item = mapProductToCart(product);
-    $combo.value = {
-      id: product.id,
-      type: "product",
-      imageUrl: product.imageUrl,
-      name: product.name,
-      tags: product.tags,
-      price: product.basePrice,
-      quantity: 1,
-      products: [item],
-    }
+    $combo.value = mapToCartContainer(product, [item]);
 
     main.value = item;
   }
 
   const initializeCombo = (combo: Combo) => {
-    $combo.value = {
-      id: combo.id,
-      type: "combo",
-      imageUrl: combo.imageUrl,
-      name: combo.name,
-      tags: combo.tags,
-      price: combo.basePrice,
-      quantity: 1,
-      products: [],
-    };
+    $combo.value = mapToCartContainer(combo);
 
     const mainProduct = defaultProductOfCombo(combo);
     if (!mainProduct) {

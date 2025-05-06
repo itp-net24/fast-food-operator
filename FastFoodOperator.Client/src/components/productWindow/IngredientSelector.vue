@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted } from 'vue'
-  import { GetIngredientsAsync } from "@/services/productService.ts"
+  import { GetIngredientsAsync } from "@/services/fetcher.ts"
   import type {Ingredient} from "@/models/types.ts";
   import { roundToPrecision } from '@/utils/helpers.ts'
   import { CURRENCY_SYMBOL, PRECISION_DISPLAY } from '../../../config.ts'
