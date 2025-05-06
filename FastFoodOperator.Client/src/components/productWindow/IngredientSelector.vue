@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
   import { GetIngredientsAsync } from "@/services/fetcher.ts"
   import type {Ingredient} from "@/models/types.ts";
   import { roundToPrecision } from '@/utils/helpers.ts'
@@ -16,10 +16,10 @@
   }>();
 
   const ingredients = ref<Ingredient[]>([]);
-  const includedIngredients: number[] = props.selectedIngredients.map(i => i.id);
+  const includedIngredients = ref(props.selectedIngredients.map(i => i.id));
 
   const isSelected = (ingredient: Ingredient): boolean =>
-    includedIngredients.some(i => i === ingredient.id)
+    includedIngredients.value.some(i => i === ingredient.id)
 
   const getPrice = (ingredient: Ingredient): number => {
     if (isSelected(ingredient))
@@ -29,13 +29,16 @@
   }
 
   const updateIngredients = (ingredient: Ingredient) => {
-    console.log(props.selectedIngredients);
     emits('update-ingredients', { ...ingredient, priceModifier: getPrice(ingredient) });
   }
 
   onMounted(async () => {
     ingredients.value = await GetIngredientsAsync();
   })
+
+  watch(() => props.selectedIngredients, () => {
+    includedIngredients.value = props.selectedIngredients.map(i => i.id);
+  });
 </script>
 
 <template>
