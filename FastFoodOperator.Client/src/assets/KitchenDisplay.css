@@ -4,7 +4,7 @@
   padding: 1rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
-  background-color: #f4f4f9;
+  background-color: #f8efdd;
   border-radius: 12px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
@@ -66,19 +66,20 @@
   border-color: #a2d8a2;
 }
 
-/*button {*/
-/*  margin-top: 1rem;*/
-/*  padding: 0.6rem 1.2rem;*/
-/*  background-color: #4caf50;*/
-/*  color: white;*/
-/*  border: none;*/
-/*  border-radius: 8px;*/
-/*  cursor: pointer;*/
-/*  font-size: 1rem;*/
-/*  transition: background-color 0.3s ease, transform 0.3s ease;*/
-/*}*/
+.kitchen-action-btn {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
 
-/*button:hover {*/
-/*  background-color: #45a049;*/
-/*  transform: scale(1.05);*/
-/*}*/
+.kitchen-action-btn:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
