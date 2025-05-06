@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import { onMounted, ref, watch } from 'vue'
 import type {
   Combo,
   Product,
 } from '@/models/types.ts'
 import {ProductType} from "@/enums/enums.ts"
-
 import PopupModal from "@/components/PopupModal.vue";
 import IngredientSelector from "@/components/productWindow/IngredientSelector.vue";
 import ProductGroupSelector from "@/components/productWindow/ProductGroupSelector.vue";
 import ValueSelector from '@/components/ValueSelector.vue'
 import VariantSelector from '@/components/productWindow/VariantSelector.vue'
 
-import { GetComboAsync, GetProductAsync } from '@/services/productService.ts'
+import { GetComboAsync, GetProductAsync } from '@/services/fetcher.ts'
 import { defaultVariantOfProduct, roundToPrecision } from '@/utils/helpers.ts'
 import useProduct from "@/composables/useProduct.ts"
 import { CURRENCY_SYMBOL } from '../../../config.ts'
@@ -24,7 +23,12 @@ const props = defineProps<Props>();
 interface Props {
   id: number;
   type: ProductType;
+  visible: boolean;
 }
+
+const emits = defineEmits<{
+  (e: 'close'): void;
+}>();
 
 const product = ref<Product>(null!);
 const combo = ref<Combo | null>(null);
@@ -34,10 +38,7 @@ const handleConfirm = () => {
   console.log(builder.combo.value);
 }
 
-
-// Popup
 const mobileBreakpoint: number = 450;
-const popup = ref<boolean>(true);
 const isMobile = ref<boolean>(false);
 
 const updateIsMobile = () => {
@@ -48,6 +49,14 @@ onMounted(async () => {
   const mediaQuery = window.matchMedia(`(max-width: ${mobileBreakpoint}px)`);
   mediaQuery.addEventListener('change', updateIsMobile);
 
+  await fetchComboOrProduct();
+});
+
+watch([() => props.id, () => props.type], async () => {
+  await fetchComboOrProduct();
+});
+
+const fetchComboOrProduct = async () => {
   if (props.type === ProductType.product) {
     const p = await GetProductAsync(props.id);
     product.value = p;
@@ -61,16 +70,16 @@ onMounted(async () => {
   else {
     console.log("Could not determine product type!");
   }
-});
+}
 </script>
 
-<template v-if="builder.mainProduct.value">
+<template v-if="builder.mainProduct.value && visible">
   <PopupModal
-    v-if="popup && (product || combo)"
+    v-if="visible && (product || combo)"
     :enable-close-button="isMobile"
     :enable-blur="true"
     :close-on-outside-click="true"
-    @close="popup=false">
+    @close="() => emits('close')">
 
     <div class="container">
 
@@ -140,7 +149,7 @@ onMounted(async () => {
           <ValueSelector v-model:value="builder.combo.value.quantity" :min="1" :max="99" :step="1" />
           <button class="cart-button" @click="handleConfirm">Add To Cart</button>
         </div>
-        </div>
+      </div>
 
     </div>
   </PopupModal>
@@ -204,6 +213,7 @@ onMounted(async () => {
   aspect-ratio: 16/9;
   height: auto;
   object-fit: cover;
+  object-position: bottom;
   display: block;
   padding: 0;
 }

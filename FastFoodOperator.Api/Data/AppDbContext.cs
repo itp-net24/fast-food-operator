@@ -1,4 +1,5 @@
 ﻿using FastFoodOperator.Api.Entities;
+using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.EntityFrameworkCore;
 
 namespace FastFoodOperator.Api.Data
@@ -15,7 +16,7 @@ namespace FastFoodOperator.Api.Data
         public DbSet<ComboProduct> ComboProducts { get; set; }
 
         public DbSet<Product> Products { get; set; }
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<ProductIngredient> ProductIngredients { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
 
@@ -24,7 +25,7 @@ namespace FastFoodOperator.Api.Data
 			base.OnModelCreating(modelBuilder);
 
 			// Category
-			modelBuilder.Entity<Category>()
+			modelBuilder.Entity<Tag>()
 				.Property(c => c.Name)
 				.HasMaxLength(100)
 				.IsRequired();
@@ -156,11 +157,6 @@ namespace FastFoodOperator.Api.Data
 				.HasMaxLength(2048)
 				.IsUnicode(false);
 
-			modelBuilder.Entity<Product>()
-				.HasOne(p => p.Category)
-				.WithMany()
-				.HasForeignKey(p => p.CategoryId)
-				.OnDelete(DeleteBehavior.Restrict);
 
 
 			// Product Ingredient
@@ -200,6 +196,37 @@ namespace FastFoodOperator.Api.Data
 				.Property(pv => pv.PriceModifier)
 				.HasColumnType("decimal(10, 2)");
 
+			//Tags
+			modelBuilder.Entity<ProductTag>()
+				.HasKey(pt => new { pt.ProductId, pt.TagId });
+
+			modelBuilder.Entity<ProductTag>()
+				.HasOne(pt => pt.Product)
+				.WithMany(p => p.Tags)  
+				.HasForeignKey(pt => pt.ProductId);
+
+			modelBuilder.Entity<ProductTag>()
+				.HasOne(pt => pt.Tag)
+				.WithMany(t => t.ProductTags)  
+				.HasForeignKey(pt => pt.TagId);
+
+			// ComboTag 
+			modelBuilder.Entity<ComboTag>()
+				.HasKey(ct => new { ct.ComboId, ct.TagId });
+
+			modelBuilder.Entity<ComboTag>()
+				.HasOne(ct => ct.Combo)
+				.WithMany(c => c.Tags)
+				.HasForeignKey(ct => ct.ComboId);
+
+			modelBuilder.Entity<ComboTag>()
+				.HasOne(ct => ct.Tag)
+				.WithMany(t => t.ComboTags) 
+				.HasForeignKey(ct => ct.TagId);
+
+			modelBuilder.Entity<Tag>()
+				.Property(t => t.TaxRate)
+				.HasColumnType("decimal(10, 2)");
 
 			DatabaseSeeder.Seed(modelBuilder);
         }

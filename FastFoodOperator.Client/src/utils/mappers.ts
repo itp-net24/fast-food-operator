@@ -1,4 +1,6 @@
 import type {
+  BaseProduct,
+  CartContainer,
   CartItem,
   Combo,
   ComboGroup,
@@ -6,19 +8,28 @@ import type {
   Ingredient,
   Product,
   Variant,
+  Order,
+  Tag
 } from '@/models/types.ts'
-import { defaultVariantOfProduct } from '@/utils/helpers.ts'
+import { defaultVariantOfProduct, getTaxRate, isProductCombo } from '@/utils/helpers.ts'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export function mapToProduct(data: any): Product {
-  const variants: Variant[] = safeMap(data.variants, mapToProductVariant)
-
+export const mapToBaseProduct = (data: any): BaseProduct => {
   return {
     id: data.id,
     name: data.name,
     description: data.description ?? null,
     basePrice: data.basePrice,
-    imageUrl: data.pictureUrl ?? null,
+    imageUrl: data.imageUrl ?? null,
+    tags: safeMap(data.tags, mapToTag),
+  }
+}
+
+export function mapToProduct(data: any): Product {
+  const variants: Variant[] = safeMap(data.variants, mapToProductVariant)
+
+  return {
+    ...mapToBaseProduct(data),
     variants: variants,
     defaultVariant: variants.find((v) => v.id === data.defaultProductVariantId) ?? null,
     ingredients: data.ingredients,
@@ -34,11 +45,7 @@ export function mapToCombo(data: any): Combo {
   const comboGroups: ComboGroup[] = safeMap(data.comboGroups, (d) => mapToComboGroup(d, uidRef))
 
   return {
-    id: data.id,
-    name: data.name,
-    description: data.description ?? null,
-    basePrice: data.basePrice,
-    imageUrl: data.imageUrl ?? null,
+    ...mapToBaseProduct(data),
 
     mainComboProductId: data.mainComboProductId ?? null,
     mainComboProduct: comboProducts.find((cp) => cp.id === data.mainComboProductId) ?? null,
@@ -91,6 +98,14 @@ export function mapToIngredient(data: any): Ingredient {
   }
 }
 
+export const  mapToTag = (data: any): Tag => {
+  return {
+    id: data.id,
+    name: data.name,
+    tax: data.taxRate,
+  }
+}
+
 export const mapProductToCart = (p: Product): CartItem => {
   const variant = p.defaultVariant ?? p.variants[0]
 
@@ -98,6 +113,8 @@ export const mapProductToCart = (p: Product): CartItem => {
     __uid: -1,
     id: p.id,
     name: p.name,
+    basePrice: p.basePrice,
+    tax: getTaxRate(p.tags),
     variant: variant ? { ...variant, priceModifier: 0 } : null,
     ingredients: p.ingredients.map((i) => ({ ...i, priceModifier: 0 })),
   }
@@ -110,10 +127,39 @@ export const mapComboProductToCart = (cp: ComboProduct, includeIngredients: bool
     __uid: cp.__uid,
     id: cp.product.id,
     name: cp.product.name,
+    basePrice: cp.product.basePrice,
+    tax: getTaxRate(cp.product.tags),
     variant: variant ? { ...variant, priceModifier: 0 } : null,
     ingredients: includeIngredients
       ? cp.product.ingredients.map((i) => ({ ...i, priceModifier: 0 }))
       : null,
+  }
+}
+
+export const mapToCartContainer = (base: BaseProduct, products: CartItem[]): CartContainer => {
+  return {
+    id: base.id,
+    type: isProductCombo(base) ? 'combo' : 'product',
+    imageUrl: base.imageUrl,
+    name: base.name,
+    tags: base.tags,
+    price: base.basePrice,
+    quantity: 1,
+    products: products ?? [],
+  }
+}
+
+export const mapToOrder = (data:any): Order => {
+  return {
+    id: data.orderId,
+    orderNumber: data.orderNumber,
+    customerNote: data.customerNote,
+    orderStatus: data.orderStatus,
+    createdAt: data.createdAt,
+    startedAt: data.startedAt,
+    completedAt: data.completedAt,
+    orderProducts: data.orderProducts || [],
+    orderCombos: data.orderCombos || []
   }
 }
 

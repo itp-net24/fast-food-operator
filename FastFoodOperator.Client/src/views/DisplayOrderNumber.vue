@@ -31,12 +31,7 @@
 
 <script>
 import '@/assets/DisplayOrderNumber.css';
-
-import Fetcher from '../ApiFetcher';
-
-const apiFetcher = new Fetcher();
-
-
+import { GetOrders } from '@/services/fetcher';
 
 export default {
   name: 'DisplayOrder',
@@ -49,7 +44,7 @@ export default {
     };
   },
   mounted() {
-    this.getOrderNumbers();
+    this.getOrderNumbers(); // Kör direkt
     this.intervalId = setInterval(() => {
       this.getOrderNumbers();
       this.cleanupOldOrders();
@@ -62,22 +57,20 @@ export default {
   methods: {
     async getOrderNumbers() {
       try {
-        const orders = await apiFetcher.getOrders();
+        const response = await GetOrders();
 
-        if (!orders) {
-          console.warn('Inga ordrar hämtades.');
-          return;
-        }
+        const orders = await response.json();
 
-        // Oförberedd och förbereds
+        // oförberedad och preparing
         this.activeOrderNumbers = orders
           .filter(order => order.orderStatus === 0 || order.orderStatus === 1)
           .map(order => order.orderNumber);
 
+
         const existingNumbers = this.completedOrderNumbers.map(o => o.number);
 
         const newCompleted = orders
-          .filter(order => order.orderStatus === 2)
+          .filter(order => order.orderStatus === 2) // Endast färdiga ordrar
           .map(order => order.orderNumber)
           .filter(num => !existingNumbers.includes(num))
           .map(num => ({
@@ -85,7 +78,9 @@ export default {
             timestamp: Date.now(),
           }));
 
+
         this.completedOrderNumbers.push(...newCompleted);
+
       } catch (error) {
         console.error('Kunde inte hämta könummer:', error);
       }

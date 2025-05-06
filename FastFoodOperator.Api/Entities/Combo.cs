@@ -8,6 +8,7 @@
         public string? ImageUrl { get; set; }
         
         public int? MainComboProductId { get; set; }
+        public ICollection<ComboTag> Tags { get; set; } = [];
         
         public ICollection<ComboProduct> ComboProducts { get; set; } = [];
         public ICollection<ComboGroup> ComboGroups { get; set; } = [];

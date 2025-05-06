@@ -7,10 +7,10 @@ import type {
   Product, Variant
 } from '@/models/types.ts'
 import {
-  calculateCartContainerTotal,
+  getProductTotalPrice,
   defaultProductOfCombo, defaultProductOfGroup
 } from '@/utils/helpers.ts'
-import { mapComboProductToCart, mapProductToCart } from '@/utils/mappers.ts'
+import { mapComboProductToCart, mapProductToCart, mapToCartContainer } from '@/utils/mappers.ts'
 
 export default () => {
   const main = ref<CartItem>(null!);
@@ -18,32 +18,18 @@ export default () => {
   const $selectGroupProducts = ref<Record<number, ComboProduct>>({});
 
   const initializeProduct = (product: Product) => {
+    resetState();
 
     const item = mapProductToCart(product);
-    $combo.value = {
-      id: product.id,
-      type: "product",
-      imageUrl: product.imageUrl,
-      name: product.name,
-      price: product.basePrice,
-      quantity: 1,
-      products: [item],
-    }
+    $combo.value = mapToCartContainer(product, [item]);
 
     main.value = item;
   }
 
   const initializeCombo = (combo: Combo) => {
-    $combo.value = {
-      id: combo.id,
-      type: "combo",
-      name: combo.name,
-      imageUrl: combo.imageUrl,
-      price: combo.basePrice,
-      quantity: 1,
-      products: [],
-    };
+    resetState();
 
+    $combo.value = mapToCartContainer(combo, []);
     const mainProduct = defaultProductOfCombo(combo);
     if (!mainProduct) {
       console.log(`ERROR: no main product in combo: ${combo.name}`);
@@ -114,7 +100,7 @@ export default () => {
     });
   }
 
-  const selectedIngredients = computed<Ingredient[] | null>(() => main.value?.ingredients ?? null);
+  const selectedIngredients = computed<Ingredient[]>(() => main.value?.ingredients ?? []);
 
   const updateIngredients = (ingredient: Ingredient) => {
     if (!main.value.ingredients) return;
@@ -127,7 +113,13 @@ export default () => {
       main.value.ingredients.splice(index, 1);
   }
 
-  const getTotal = computed(() => calculateCartContainerTotal(combo.value));
+  const getTotal = computed(() => getProductTotalPrice(combo.value));
+
+  const resetState = () => {
+    main.value = null!;
+    $combo.value = null;
+    $selectGroupProducts.value = {};
+  }
 
   return {
     combo: $combo,

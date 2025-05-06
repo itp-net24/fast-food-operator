@@ -30,6 +30,8 @@ namespace FastFoodOperator.Api.DTOs
 				{
 					ComboName = oc.ComboName,
 					Quantity = oc.Quantity,
+					Products = oc.Products,
+					
 				}).ToList()
 			};
 			return orderDto;
