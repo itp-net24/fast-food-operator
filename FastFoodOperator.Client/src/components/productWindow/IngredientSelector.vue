@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+  import { ref, onMounted, watch } from 'vue'
   import { GetIngredientsAsync } from "@/services/fetcher.ts"
   import type {Ingredient} from "@/models/types.ts";
   import { roundToPrecision } from '@/utils/helpers.ts'

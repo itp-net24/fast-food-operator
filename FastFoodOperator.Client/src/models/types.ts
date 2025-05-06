@@ -12,6 +12,7 @@ export interface Product extends BaseProduct{
   variants: Variant[];
 
   ingredients: Ingredient[];
+  tags: Tag[];
 }
 
 export interface Combo extends BaseProduct {
@@ -20,6 +21,8 @@ export interface Combo extends BaseProduct {
 
   comboProducts: ComboProduct[];
   comboGroups: ComboGroup[];
+
+  tags: Tag[];
 }
 
 
