@@ -6,8 +6,10 @@ import type {
   ComboGroup,
   ComboProduct,
   Ingredient,
-  Product, Tag,
-  Variant
+  Product,
+  Variant,
+  Order,
+  Tag
 } from '@/models/types.ts'
 import { defaultVariantOfProduct, getTaxRate, isProductCombo } from '@/utils/helpers.ts'
 
@@ -144,6 +146,20 @@ export const mapToCartContainer = (base: BaseProduct, products: CartItem[]): Car
     price: base.basePrice,
     quantity: 1,
     products: products ?? [],
+  }
+}
+
+export const mapToOrder = (data:any): Order => {
+  return {
+    id: data.orderId,
+    orderNumber: data.orderNumber,
+    customerNote: data.customerNote,
+    orderStatus: data.orderStatus,
+    createdAt: data.createdAt,
+    startedAt: data.startedAt,
+    completedAt: data.completedAt,
+    orderProducts: data.orderProducts || [],
+    orderCombos: data.orderCombos || []
   }
 }
 
