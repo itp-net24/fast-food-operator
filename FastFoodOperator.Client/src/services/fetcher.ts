@@ -1,20 +1,21 @@
-import type { Product, Ingredient, Combo } from "../models/types.ts";
-import { mapToBaseProduct, mapToCombo, mapToIngredient, mapToProduct } from '@/utils/mappers.ts'
+import type { Product, Ingredient, Combo, Order } from "../models/types.ts";
+import { mapToBaseProduct, mapToCombo, mapToIngredient, mapToProduct, mapToOrder } from '@/utils/mappers.ts'
 import { API_BASE_PATH } from '../../config.ts'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const fetchJson = async (url: string): Promise<any> => {
+export const fetchJson = async (url: string, options?: RequestInit): Promise<any> => {
   try {
-    const response = await fetch(API_BASE_PATH + url);
+    const response = await fetch(API_BASE_PATH + url, options);
     if (!response.ok)
       throw new Error(`HTTP error! status: ${response.status}`);
 
     return await response.json();
-  }
-  catch (error) {
+  } catch (error) {
     console.error("Error fetching from API!", error);
   }
-}
+};
+
+
 
 export const getProductsAsync = async (limit: number, offset: number): Promise<BaseProduct[]> => {
   const data = await fetchJson(`api/product?limit=${limit}&offset=${offset}`)
@@ -45,3 +46,38 @@ export const GetIngredientsAsync = async (): Promise<Ingredient[]> => {
 
   return data.map(i => mapToIngredient(i));
 }
+
+export const StartOrder = async (order: any): Promise<any> => {
+  const data = await fetchJson('api/order/startorder', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(order)
+  })
+}
+
+export const CompleteOrder = async (order:any): Promise<any> => {
+  const data = await fetchJson('api/order/completeorder', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(order)
+  })
+}
+
+export const DeleteOrder = async (id: number): Promise<void> => {
+  await fetchJson(`api/order/${id}`, {
+    method: 'DELETE',
+  });
+};
+
+export const GetOrders = async(): Promise<Order[] | null> => {
+    const response = await fetchJson('api/order/getorders');
+    if (!response || response.length === 0) {
+      return [];
+    }
+    return response;
+}
+
