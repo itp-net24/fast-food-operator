@@ -8,12 +8,12 @@ export interface Cart{
     Array<CartContainer>
 }
 
-// ToCart interfaces
 // export interface CartContainer {
 //   id: number;
 //   type: string;
 //   imageUrl: string | null;
 //   name: string;
+//   tags: Tag[];
 //   price: number;
 //   quantity: number;
 //   products: CartItem[];
@@ -23,6 +23,8 @@ export interface Cart{
 //   __uid: number;
 //   id: number;
 //   name: string;
+//   tax: number;
+//   basePrice: number;
 //   variant?: Variant | null;
 //   ingredients?: Ingredient[] | null;
 // }
@@ -37,6 +39,7 @@ export interface Tag{
   name: string;
   taxrate: number;
 }
+
 
 export interface AddOrderDTO
     {
@@ -74,22 +77,23 @@ export interface AddOrderDTO
       }
 
 
-export interface OrderComboDto {
+export interface comboMinimalResponseDto {
+  products:productMinimalResponseDto[]
   comboId: number;
   quantity: number;
-  priceModifier: number;
 }
 
-export interface OrderProductDto {
+
+export interface productMinimalResponseDto {
+  productVariantId: number;
   productId: number;
+  productIngredientsId: number[];
   quantity: number;
-  productVariant: string;
-  productVariantPriceModifier: number;
-  productIngredients: string[];
 }
+
 
 export interface CreateOrderDto {
     customerNote: string;
-    orderComboDtos?: OrderComboDto[];
-    orderProductDtos?: OrderProductDto[];
+    orderComboDtos?: comboMinimalResponseDto[];
+    orderProductDtos?: productMinimalResponseDto[];
   }
