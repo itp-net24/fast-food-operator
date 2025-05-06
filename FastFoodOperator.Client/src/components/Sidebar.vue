@@ -6,6 +6,7 @@ import type { Tag } from '@/models/types.ts'
 const tags = ref<Tag[] | null>();
 
 const sideMenuOpen = ref<boolean>(false);
+const activeCategory = ref<number | null>(null);
 
 function handleTagClicked(tagId: number): void {
     emit('categoryClicked', tagId);
@@ -29,7 +30,11 @@ const emit = defineEmits<{
         </button>
         <h2 class="title">Our Menu</h2>
         <ul class="category-list ul-reset">
-            <li class="category border-menu" v-for="tag in tags" :key="tag.id" v-on:click="handleTagClicked(tag.id)">
+            <li 
+            class="category border-menu popout" 
+            v-bind:class="activeCategory === category.id ? 'active-highlight-vertical-line' : ''"
+            v-for="tag in tags" :key="tag.id" 
+            v-on:click="handleTagClicked(tag.id)">
                 {{ tag.name }}
             </li>
         </ul>
@@ -73,6 +78,7 @@ const emit = defineEmits<{
     cursor: pointer;
 }
 
+
 @media (max-width: 640px)
 {
     .sidebar-toggle {
@@ -84,7 +90,10 @@ const emit = defineEmits<{
     .sidebar-container {
         position:fixed;
         left: 0;
+        top: 25%;
+
         background-color: white;
+
         padding: 1rem;
         margin-left: 2px;
 
