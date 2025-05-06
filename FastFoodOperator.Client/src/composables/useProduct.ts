@@ -7,7 +7,7 @@ import type {
   Product, Variant
 } from '@/models/types.ts'
 import {
-  calculateCartContainerTotal,
+  getProductTotalPrice,
   defaultProductOfCombo, defaultProductOfGroup
 } from '@/utils/helpers.ts'
 import { mapComboProductToCart, mapProductToCart } from '@/utils/mappers.ts'
@@ -25,6 +25,7 @@ export default () => {
       type: "product",
       imageUrl: product.imageUrl,
       name: product.name,
+      tags: product.tags,
       price: product.basePrice,
       quantity: 1,
       products: [item],
@@ -37,8 +38,9 @@ export default () => {
     $combo.value = {
       id: combo.id,
       type: "combo",
-      name: combo.name,
       imageUrl: combo.imageUrl,
+      name: combo.name,
+      tags: combo.tags,
       price: combo.basePrice,
       quantity: 1,
       products: [],
@@ -127,7 +129,7 @@ export default () => {
       main.value.ingredients.splice(index, 1);
   }
 
-  const getTotal = computed(() => calculateCartContainerTotal(combo.value));
+  const getTotal = computed(() => getProductTotalPrice(combo.value));
 
   return {
     combo: $combo,

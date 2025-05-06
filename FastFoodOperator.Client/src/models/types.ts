@@ -9,15 +9,21 @@ export interface BaseProduct {
 export interface Product extends BaseProduct{
   defaultVariant?: Variant | null;
   variants: Variant[];
+
   ingredients: Ingredient[];
+  tags: Tag[];
 }
 
 export interface Combo extends BaseProduct {
   mainComboProductId: number | null;
   mainComboProduct: ComboProduct | null;
+
   comboProducts: ComboProduct[];
   comboGroups: ComboGroup[];
+
+  tags: Tag[];
 }
+
 
 export interface ComboGroup {
   id: number;
@@ -35,6 +41,13 @@ export interface ComboProduct {
   defaultProductVariant: Variant | null;
 }
 
+
+export interface Tag {
+  id: number;
+  name: string;
+  tax: number;
+}
+
 export interface Variant {
   id: number;
   name: string;
@@ -48,13 +61,24 @@ export interface Ingredient {
 }
 
 
+export interface TaxSummary {
+  taxRate: number; // e.g. 0.25 for 25%
+  priceSummary: PriceSummary;
+}
 
-// ToCart interfaces
+export interface PriceSummary {
+  total: number,
+  net: number,
+  gross: number,
+}
+
+
 export interface CartContainer {
   id: number;
   type: string;
   imageUrl: string | null;
   name: string;
+  tags: Tag[];
   price: number;
   quantity: number;
   products: CartItem[];
@@ -64,6 +88,8 @@ export interface CartItem {
   __uid: number;
   id: number;
   name: string;
+  tax: number;
+  basePrice: number;
   variant?: Variant | null;
   ingredients?: Ingredient[] | null;
 }
