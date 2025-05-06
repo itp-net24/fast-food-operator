@@ -15,7 +15,7 @@ export default class Fetcher {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-  
+
       return data.map((p: any) => new Product(
         p.id,
         p.name,
@@ -24,7 +24,7 @@ export default class Fetcher {
         p.imageUrl,
         p.category
       ));
-  
+
     } catch (error) {
       console.error("Failed to fetch products:", error);
       return null;
@@ -52,7 +52,7 @@ export default class Fetcher {
       return null;
     }
   }
-  
+
 
   async getCombos(): Promise<Combo[] | null> {
     try {
@@ -115,6 +115,7 @@ export default class Fetcher {
      }
    }
 
+   //Används inte
    async getOrderNumbers(): Promise<OrderNumber | null> {
       try {
         const response = await fetch(`${this.baseURL}order/displayOrderNumbers`);
