@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import { onMounted, ref, watch } from 'vue'
 import type {
   Combo,
   Product,
@@ -23,7 +23,12 @@ const props = defineProps<Props>();
 interface Props {
   id: number;
   type: ProductType;
+  visible: boolean;
 }
+
+const emits = defineEmits<{
+  (e: 'close'): void;
+}>();
 
 const product = ref<Product>(null!);
 const combo = ref<Combo | null>(null);
@@ -34,7 +39,6 @@ const handleConfirm = () => {
 }
 
 const mobileBreakpoint: number = 450;
-const popup = ref<boolean>(true);
 const isMobile = ref<boolean>(false);
 
 const updateIsMobile = () => {
@@ -45,6 +49,14 @@ onMounted(async () => {
   const mediaQuery = window.matchMedia(`(max-width: ${mobileBreakpoint}px)`);
   mediaQuery.addEventListener('change', updateIsMobile);
 
+  await fetchComboOrProduct();
+});
+
+watch([() => props.id, () => props.type], async () => {
+  await fetchComboOrProduct();
+});
+
+const fetchComboOrProduct = async () => {
   if (props.type === ProductType.product) {
     const p = await GetProductAsync(props.id);
     product.value = p;
@@ -58,16 +70,16 @@ onMounted(async () => {
   else {
     console.log("Could not determine product type!");
   }
-});
+}
 </script>
 
-<template v-if="builder.mainProduct.value">
+<template v-if="builder.mainProduct.value && visible">
   <PopupModal
-    v-if="popup && (product || combo)"
+    v-if="visible && (product || combo)"
     :enable-close-button="isMobile"
     :enable-blur="true"
     :close-on-outside-click="true"
-    @close="popup=false">
+    @close="() => emits('close')">
 
     <div class="container">
 
@@ -126,10 +138,12 @@ onMounted(async () => {
           <div class="product-list">
             <h2 class="product-name">Ingredients</h2>
 
+            {{ console.log(builder.selectedIngredients.value) }}
             <IngredientSelector
               v-model:selected-ingredients="builder.selectedIngredients.value"
               @update-ingredients="builder.updateIngredients"
             />
+            {{ console.log(builder.selectedIngredients.value) }}
           </div>
         </div>
 
@@ -137,7 +151,7 @@ onMounted(async () => {
           <ValueSelector v-model:value="builder.combo.value.quantity" :min="1" :max="99" :step="1" />
           <button class="cart-button" @click="handleConfirm">Add To Cart</button>
         </div>
-        </div>
+      </div>
 
     </div>
   </PopupModal>
@@ -201,6 +215,7 @@ onMounted(async () => {
   aspect-ratio: 16/9;
   height: auto;
   object-fit: cover;
+  object-position: bottom;
   display: block;
   padding: 0;
 }

@@ -38,7 +38,7 @@ const addToCart = async (): void => {
 
     <h2> {{ baseProduct.name }}</h2>
 
-    <button class="button-basic button-menu" @click="addToCart">Add to Cart</button>
+    <button class="button-basic button-menu" @click.stop="addToCart">Add to Cart</button>
   </article>
 </template>
 
