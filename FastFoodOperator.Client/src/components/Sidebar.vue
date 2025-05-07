@@ -1,28 +1,18 @@
 <script setup lang="ts">
 import {ref, onMounted} from 'vue'
-import {Category} from '@/models/category.ts'
-import Fetcher from "@/ApiFetcher.ts"
+import { getTagsAsync } from '@/services/fetcher.ts'
+import type { Tag } from '@/models/types.ts'
 
-const fetcher:Fetcher = new Fetcher();
-const categories = ref<Category[] | null>();
+const tags = ref<Tag[] | null>();
 
 const sideMenuOpen = ref<boolean>(false);
 
-function CategoryClicked(categoryId:number):void {
-    emit('categoryClicked', categoryId);
+function handleTagClicked(tagId: number): void {
+    emit('categoryClicked', tagId);
 }
 
 onMounted( async () => {
-    const result:Category[] | null = await fetcher.getCategories();
-
-    if (result == null)
-    {
-        categories.value = [];
-    } 
-    else 
-    {
-        categories.value = result;
-    }
+   tags.value = await getTagsAsync();
 })
 
 const emit = defineEmits<{
@@ -39,8 +29,8 @@ const emit = defineEmits<{
         </button>
         <h2 class="title">Our Menu</h2>
         <ul class="category-list ul-reset">
-            <li class="category border-menu" v-for="category in categories" :key="category.id" v-on:click="CategoryClicked(category.id)">
-                {{ category.name }}
+            <li class="category border-menu" v-for="tag in tags" :key="tag.id" v-on:click="handleTagClicked(tag.id)">
+                {{ tag.name }}
             </li>
         </ul>
     </div>
@@ -100,7 +90,7 @@ const emit = defineEmits<{
 
         transform: translateX(-170px); /* mostly hidden, leave button peeking out */
         transition: transform 0.3s ease;
-        z-index: 1000;
+        z-index: 997;
     }
 
     .sidebar-container.open {
