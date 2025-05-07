@@ -1,4 +1,3 @@
-import {Product} from '@/models/product'
 import type{CartContainer} from '@/models/types'
 
 export interface Cart{
@@ -8,10 +7,34 @@ export interface Cart{
     Array<CartContainer>
 }
 
-
-
 export interface State{
-    cart: Cart | {cartProducts:[],cartCombos:[]}
+    cart: Cart | {cartProducts:[],cartCombos:[]},
+    receipt:Receipt
+}
+
+export interface Receipt {
+  products: [
+    {
+      productName: string,
+      productPrice: number,
+      quantity: number 
+    }
+  ],
+  combos: 
+  [
+    { 
+      comboName: string,
+       comboPrice: number,
+        quantity: number 
+      }
+    ],
+     createdAt: Date,
+      orderNumber: number,
+      totalVatSixPercent: number,
+      totalVatTwelvePercent: number,
+      totalVatTwentyFivePercent: number,
+      totalTax: number,
+        orderFinalPrice: number
 }
 
 export interface Tag{
@@ -19,7 +42,6 @@ export interface Tag{
   name: string;
   taxrate: number;
 }
-
 
 export interface OrderComboDtos{
   comboMinimalResponseDto:ComboMinimalResponseDto,
@@ -38,14 +60,12 @@ export interface ProductMinimalResponseDto{
   quantity:number
 }
 
-
 export interface ComboMinimalResponseDto {
   
   products:ProductMinimalResponseDto[]
   comboId: number;
   quantity: number;
 }
-
 
 export interface CreateOrderDto {
     customerNote: string;

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { Product } from '@/models/product'
-import type { Cart, State, AddOrderDTO, CreateOrderDto, ProductMinimalResponseDto, ComboMinimalResponseDto, OrderComboDtos, OrderProductDtos  } from '@/models/interfaces'
+import type { Cart, State, CreateOrderDto, ProductMinimalResponseDto, OrderComboDtos, OrderProductDtos  } from '@/models/interfaces'
 import Fetcher from '@/ApiFetcher'
 import type { CartContainer, CartItem } from '@/models/types'
 import {ProductType} from '@/enums/enums'
@@ -309,10 +309,18 @@ export const useCartStore = defineStore('cart', {
       console.log(order)
       console.log(JSON.stringify(order));
 
-    
-      const receipt = fetcher.createOrder(order);
-      console.log(receipt)
+        let receiptResponse;
 
+      fetcher.createOrder(order)
+  .then(response => {
+    receiptResponse = response; 
+    console.log('Full response:', receiptResponse); 
+  });
+
+      console.log('receiptResponse' + receiptResponse)
+
+
+      return{receiptResponse}
       // empty cart for next order
       this.clearCart()
     }
