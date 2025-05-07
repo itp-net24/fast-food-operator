@@ -60,7 +60,10 @@ const addToCart = async (): Promise<void> => {
 
     <h2> {{ baseProduct.name }}</h2>
 
-    <button class="button-basic button-menu" @click.stop="addToCart">Add to Cart</button>
+    <div class="lower-box">
+      <span class="product-price"> {{ baseProduct.basePrice + 'kr' }}</span>
+      <button class="button-basic button-menu" @click.stop="addToCart">Add to Cart</button>
+    </div>
   </article>
 </template>
 
@@ -94,8 +97,22 @@ h2 {
   box-shadow: none;
 }
 
+.lower-box {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.product-price {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
 @media (max-width: 640px)
 {
+  .lower-box {
+    flex-wrap: wrap;
+  }
   article {
     width: auto;
   }
