@@ -58,7 +58,7 @@ namespace FastFoodOperator.Api.Data
 				new Product { Id = 30, Name = "Chocolate Muffin",        Description = "Moist chocolate muffin",                     BasePrice = 32.00m, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-muffinchoklad:nutrition-calculator-tile" },
 				new Product { Id = 31, Name = "MiniDonut Choklad",       Description = "Chocolate-glazed mini donut",                BasePrice = 32.00m, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-mccafe-mini-donutchoklad:nutrition-calculator-tile" },
 				new Product { Id = 32, Name = "Apple Slices",            Description = "Fresh apple snack pack",                     BasePrice = 18.00m, ImageUrl = "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-accessories-apples:nutrition-calculator-tile" },
-				new Product { Id = 33, Name = "Beer",					Description = "Very  cold",									BasePrice = 40.00m }
+				new Product { Id = 33, Name = "Beer",					Description = "A refreshing glass of our in-house beer",									BasePrice = 40.00m, ImageUrl = "https://i.pinimg.com/736x/dd/73/da/dd73da849ff553b4a75a09cd4159c62e.jpg" }
 
 			);
 
@@ -133,8 +133,8 @@ namespace FastFoodOperator.Api.Data
 			);
 
 			modelBuilder.Entity<Combo>().HasData(
-				new Combo { Id = 1, Name = "Cheeseburger Combo", BasePrice = 24.99m, MainComboProductId = 1 },
-				new Combo { Id = 2, Name = "BigMac Combo", BasePrice = 29.99m, MainComboProductId = 2 }
+				new Combo { Id = 1, Name = "Cheeseburger Combo", BasePrice = 24.99m, MainComboProductId = 1, ImageUrl = "https://images.deliveryhero.io/image/menu-import-gateway-prd/regions/EU/chains/mcd_sweden/81f26208cd24bc87543d25761560d32b.png?width=%s" },
+				new Combo { Id = 2, Name = "BigMac Combo", BasePrice = 29.99m, MainComboProductId = 2, ImageUrl = "https://images.deliveryhero.io/image/menu-import-gateway-prd/regions/EU/chains/mcd_sweden/e09c5023b2af710a69b84051b612953e.png?width=%s" }
 			);
 
 			modelBuilder.Entity<ComboTag>().HasData(
