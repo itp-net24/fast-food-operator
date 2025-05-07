@@ -43,19 +43,19 @@
 
     <!-- Action-knapp för att markera som påbörjad eller klar -->
     <button
-      class="button-basic"
+      class="kitchen-action-btn"
       v-if="status === 0"
       @click="$emit('start', order)"
     >Mark as started</button>
 
     <button
-      class="button-basic"
+      class="kitchen-action-btn"
       v-else-if="status === 1"
       @click="$emit('complete', order)"
     >Mark as finished</button>
 
     <!-- Raderaknapp -->
-    <button class="button-basic" @click="$emit('delete', order)">
+    <button class="kitchen-action-btn" @click="$emit('delete', order)">
       Delete order
     </button>
 

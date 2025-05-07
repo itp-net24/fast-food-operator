@@ -3,6 +3,9 @@ import HomeView from '../views/HomeView.vue'
 import MenuView from '../views/MenuView.vue'
 import KitchenDisplay from '../views/KitchenDisplay.vue'
 import DisplayOrderNumber from '../views/DisplayOrderNumber.vue'
+import TestReceipt from '@/views/TestReceipt.vue';
+
+
 
 
 const router = createRouter({
@@ -32,7 +35,13 @@ const router = createRouter({
       path: '/display-order',
       name: 'display-order',
       component: DisplayOrderNumber,
-    }
+    },
+    {
+      path: '/test-receipt',
+      name: 'TestReceipt',
+      component: () => import('@/views/TestReceipt.vue')
+    },
+
 
   ],
 })

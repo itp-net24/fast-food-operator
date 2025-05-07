@@ -57,9 +57,8 @@ export default {
   methods: {
     async getOrderNumbers() {
       try {
-        const response = await GetOrders();
 
-        const orders = await response.json();
+        const orders = await GetOrders();
 
         // oförberedad och preparing
         this.activeOrderNumbers = orders
