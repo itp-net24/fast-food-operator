@@ -90,7 +90,7 @@ const emit = defineEmits<{
 
         transform: translateX(-170px); /* mostly hidden, leave button peeking out */
         transition: transform 0.3s ease;
-        z-index: 1000;
+        z-index: 997;
     }
 
     .sidebar-container.open {

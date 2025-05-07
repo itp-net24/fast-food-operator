@@ -38,7 +38,7 @@ const handleConfirm = () => {
   console.log(builder.combo.value);
 }
 
-const mobileBreakpoint: number = 450;
+const mobileBreakpoint: number = 400;
 const isMobile = ref<boolean>(false);
 
 const updateIsMobile = () => {
@@ -50,6 +50,7 @@ onMounted(async () => {
   mediaQuery.addEventListener('change', updateIsMobile);
 
   await fetchComboOrProduct();
+  updateIsMobile();
 });
 
 watch([() => props.id, () => props.type], async () => {
@@ -149,7 +150,7 @@ const fetchComboOrProduct = async () => {
         </div>
 
         <div class="cart-controls">
-          <ValueSelector v-model:value="builder.combo.value.quantity" :min="1" :max="99" :step="1" />
+          <ValueSelector class="cart-selector" v-model:value="builder.combo.value.quantity" :min="1" :max="99" :step="1" />
           <button class="cart-button" @click="handleConfirm">Add To Cart</button>
         </div>
       </div>
@@ -165,8 +166,8 @@ const fetchComboOrProduct = async () => {
   flex-direction: column;
   justify-content: space-between;
 
-  width: clamp(400px, 50vw, 600px);
-  height: 80vh;
+  width: clamp(360px, 20vw, 600px);
+  height: 90vh;
 
   color: var(--color-dark);
   background-color: var(--color-white);
@@ -175,14 +176,6 @@ const fetchComboOrProduct = async () => {
   box-shadow: var(--box-shadow-default);
 
   overflow: hidden;
-}
-
-@media screen and (max-width: 450px) {
-  .container {
-    width: 100vw;
-    min-width: 400px;
-    height: 100vh;
-  }
 }
 
 .container-scrollable {
@@ -195,20 +188,7 @@ const fetchComboOrProduct = async () => {
 }
 
 .container-scrollable::-webkit-scrollbar {
-  width: 8px;
-}
-
-.container-scrollable::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.container-scrollable::-webkit-scrollbar-thumb {
-  background: rgba(255, 69, 0, 0.75);
-  border-radius: var(--border-radius);
-}
-
-.container-scrollable::-webkit-scrollbar-thumb:hover {
-  background: var(--color-secondary);
+  width: 0;
 }
 
 .product-image {
@@ -226,6 +206,15 @@ const fetchComboOrProduct = async () => {
   justify-content: space-between;
   align-items: start;
 
+  position: sticky;
+  z-index: 999;
+  top: 0;
+  margin: -1rem -1rem;
+
+
+  background-color: var(--color-white);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+
   padding: 1rem;
   margin-bottom: 1rem;
 }
@@ -242,7 +231,7 @@ const fetchComboOrProduct = async () => {
 }
 
 .product-price {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 
@@ -253,6 +242,9 @@ const fetchComboOrProduct = async () => {
   padding: 1rem;
 }
 
+.cart-selector {
+  width: 30%;
+}
 
 .cart-button {
   width: 100%;
@@ -285,4 +277,16 @@ const fetchComboOrProduct = async () => {
 .cart-controls > * {
   margin: 1rem;
 }
+
+@media screen and (max-width: 400px) {
+  .container {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .container {
+    border-radius: 0;
+  }
+}
+
 </style>
