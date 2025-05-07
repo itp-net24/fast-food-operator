@@ -5,7 +5,7 @@ import { mapComboProductToCart, mapProductToCart, mapToCartContainer } from '@/u
 import type { BaseProduct, CartContainer } from '@/models/types.ts'
 import {useCartStore} from '../stores/cart'
 import {storeToRefs} from 'pinia'
-import {onMounted} from 'vue'
+import {onMounted, defineEmits} from 'vue'
 
 
 const props = defineProps<Props>()
@@ -20,6 +20,10 @@ const {cart} = storeToRefs(cartStore)
 onMounted(() =>{
   cartStore.loadCartInstance()
 })
+
+const emit = defineEmits<{
+  (e: 'cart'):void
+}>();
 
 
 const addToCart = async (): Promise<void> => {
@@ -39,6 +43,8 @@ const addToCart = async (): Promise<void> => {
     const item = mapProductToCart(product);
     productToAdd = mapToCartContainer(product, [item]);
   }
+
+  emit('cart'); // Kod till popupmessenger
 
   // Logic to add to cart goes here!
   console.log(productToAdd);
