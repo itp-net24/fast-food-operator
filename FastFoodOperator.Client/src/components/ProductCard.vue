@@ -3,12 +3,24 @@ import { defaultProductOfGroup, isProductCombo } from '@/utils/helpers.ts'
 import { GetComboAsync, GetProductAsync } from '@/services/fetcher.ts'
 import { mapComboProductToCart, mapProductToCart, mapToCartContainer } from '@/utils/mappers.ts'
 import type { BaseProduct, CartContainer } from '@/models/types.ts'
+import {useCartStore} from '../stores/cart'
+import {storeToRefs} from 'pinia'
+import {onMounted} from 'vue'
+
 
 const props = defineProps<Props>()
 
 interface Props {
   baseProduct: BaseProduct
 }
+
+const cartStore = useCartStore()
+const {cart} = storeToRefs(cartStore)
+
+onMounted(() =>{
+  cartStore.loadCartInstance()
+})
+
 
 const addToCart = async (): Promise<void> => {
   if (!props.baseProduct) return;
@@ -30,12 +42,15 @@ const addToCart = async (): Promise<void> => {
 
   // Logic to add to cart goes here!
   console.log(productToAdd);
+  cartStore.addToCart(productToAdd);
+  console.log("cart", cart.value)
+
 }
 </script>
 
 <template>
-  <article class="border-menu">
-    <img id="product-image" v-if="baseProduct.imageUrl" :src="baseProduct.imageUrl" :alt="`image of ${baseProduct.name}`" />
+  <article class="border-menu popout">
+    <img id="product-image" class="popout" v-if="baseProduct.imageUrl" :src="baseProduct.imageUrl" :alt="`image of ${baseProduct.name}`" />
 
     <h2> {{ baseProduct.name }}</h2>
 
@@ -52,19 +67,35 @@ article {
   justify-content: space-between;
   align-items: center;
   gap: 4px;
-
+  cursor: pointer;
+    overflow:hidden;
+    background-color: white;
   background-color: white;
 }
 
 h2 {
   padding: var(--spacing-xs);
   min-height: 60px;
+  
 }
 
 #product-image {
-  height: 256px;
-  width: 256px;
-  background-repeat: no-repeat;
-  background-size: cover;
+  max-height: 256px;
+  max-width: 256px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  box-shadow: none;
+}
+
+@media (max-width: 640px)
+{
+  article {
+    width: auto;
+  }
+  
+  h2 {
+    overflow: hidden;
+  }
 }
 </style>

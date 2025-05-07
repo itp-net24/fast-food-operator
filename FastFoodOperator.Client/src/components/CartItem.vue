@@ -3,10 +3,10 @@ import {onMounted, ref} from 'vue'
 import {Product} from '@/models/product'
 import {useCartStore} from '../stores/cart'
 import {storeToRefs} from 'pinia'
-import type {cartProduct} from '@/models/interfaces'
+import type {CartContainer} from '@/models/types'
 
 interface Props {
-    cartProduct:cartProduct
+    cartProduct:CartContainer
 }
 const props = defineProps<Props>()
 
@@ -21,10 +21,10 @@ function addToCart(){
     cartStore.addToCart(props.cartProduct.product)
         console.log("cart", cart.value)
 }
-function decrementFromCart(){
-    cartStore.decrementFromCart(props.cartProduct.product)
-    console.log("cart", cart.value)
-}
+// function decrementFromCart(){
+//     cartStore.decrementFromCart(props.cartProduct.product)
+//     console.log("cart", cart.value)
+// }
 function removeFromCart(){
     cartStore.removeFromCart(props.cartProduct.product)
     console.log('removing from cart')

@@ -1,147 +1,57 @@
-[
-    {
-        "cartProducts": [
-            {
-                "cartProduct": {
-                    "id": 5,
-                    "name": "Bacon Double Burger",
-                    "description": "Two beef patties, smoked bacon, American cheese, pickles & secret sauce",
-                    "basePrice": 7.49,
-                    "pictureUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
-                },
-                "qty": 10
-            },
-            {
-                "product": {
-                    "id": 5,
-                    "name": "Bacon Double Burger",
-                    "description": "Two beef patties, smoked bacon, American cheese, pickles & secret sauce",
-                    "basePrice": 7.49,
-                    "pictureUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
-                }
-            }
-        ]
-    },
-    {
-        "cartProducts": [
-            {
-                "cartProduct": {
-                    "id": 5,
-                    "name": "Bacon Double Burger",
-                    "description": "Two beef patties, smoked bacon, American cheese, pickles & secret sauce",
-                    "basePrice": 7.49,
-                    "pictureUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
-                },
-                "qty": 1
-            }
-        ]
-    },
-    {
-        "cartProducts": [
-            {
-                "product": {
-                    "id": 4,
-                    "name": "Classic Cheeseburger",
-                    "description": "Grilled beef patty with melted cheddar, lettuce, tomato & onion",
-                    "basePrice": 5.99,
-                    "pictureUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
-                },
-                "qty": 10
-            },
-            {
-                "product": {
-                    "id": 4,
-                    "name": "Classic Cheeseburger",
-                    "description": "Grilled beef patty with melted cheddar, lettuce, tomato & onion",
-                    "basePrice": 5.99,
-                    "pictureUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
-                },
-                "qty": 10
-            },
-            {
-                "product": {
-                    "id": 4,
-                    "name": "Classic Cheeseburger",
-                    "description": "Grilled beef patty with melted cheddar, lettuce, tomato & onion",
-                    "basePrice": 5.99,
-                    "pictureUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
-                },
-                "qty": 10
-            },
-            {
-                "product": {
-                    "id": 4,
-                    "name": "Classic Cheeseburger",
-                    "description": "Grilled beef patty with melted cheddar, lettuce, tomato & onion",
-                    "basePrice": 5.99,
-                    "pictureUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
-                },
-                "qty": 1
-            },
-            {
-                "product": {
-                    "id": 4,
-                    "name": "Classic Cheeseburger",
-                    "description": "Grilled beef patty with melted cheddar, lettuce, tomato & onion",
-                    "basePrice": 5.99,
-                    "pictureUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
-                },
-                "qty": 1
-            }
-        ]
-    },
-    {
-        "cartProducts": [
-            {
-                "product": {
-                    "id": 5,
-                    "name": "Bacon Double Burger",
-                    "description": "Two beef patties, smoked bacon, American cheese, pickles & secret sauce",
-                    "basePrice": 7.49,
-                    "pictureUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
-                },
-                "qty": 4
-            },
-            {
-                "product": {
-                    "id": 4,
-                    "name": "Classic Cheeseburger",
-                    "description": "Grilled beef patty with melted cheddar, lettuce, tomato & onion",
-                    "basePrice": 5.99,
-                    "pictureUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
-                },
-                "qty": 4
-            },
-            {
-                "product": {
-                    "id": 7,
-                    "name": "Spicy Jalapeño Burger",
-                    "description": "Peppered beef patty with pepper jack cheese, jalapeños & chipotle mayo",
-                    "basePrice": 6.79,
-                    "pictureUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
-                },
-                "qty": 3
-            },
-            {
-                "product": {
-                    "id": 6,
-                    "name": "Mushroom Swiss Burger",
-                    "description": "Beef patty smothered in sautéed mushrooms and Swiss cheese",
-                    "basePrice": 6.99,
-                    "pictureUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
-                },
-                "qty": 3
-            },
-            {
-                "product": {
+{
+    "cartProducts": [
+        {
+            "id": 7,
+            "type": "product",
+            "imageUrl": "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-double-cheeseburger-NEW:nutrition-calculator-tile",
+            "name": "Double Cheeseburger",
+            "tags": [
+                {
                     "id": 1,
-                    "name": "Cheeseburger",
-                    "description": "A classic cheeseburger",
-                    "basePrice": 5.99,
-                    "pictureUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyp3wdwtBsAws86q4u0fyCPj12_SiSf9w6jQ&s"
-                },
-                "qty": 2
-            }
-        ]
-    }
-]
+                    "name": "Burgers",
+                    "tax": 1.12
+                }
+            ],
+            "price": 35,
+            "quantity": 1,
+            "products": [
+                {
+                    "__uid": -1,
+                    "id": 7,
+                    "name": "Double Cheeseburger",
+                    "basePrice": 35,
+                    "tax": 1.12,
+                    "variant": null,
+                    "ingredients": []
+                }
+            ]
+        },
+        {
+            "id": 12,
+            "type": "product",
+            "imageUrl": "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-tasty_4_1-burger:nutrition-calculator-tile",
+            "name": "Tasty Burger",
+            "tags": [
+                {
+                    "id": 1,
+                    "name": "Burgers",
+                    "tax": 1.12
+                }
+            ],
+            "price": 79,
+            "quantity": 1,
+            "products": [
+                {
+                    "__uid": -1,
+                    "id": 12,
+                    "name": "Tasty Burger",
+                    "basePrice": 79,
+                    "tax": 1.12,
+                    "variant": null,
+                    "ingredients": []
+                }
+            ]
+        }
+    ],
+    "cartCombos": []
+}

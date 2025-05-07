@@ -449,9 +449,9 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		}
 	}
 
-	public async Task<ProductMinimalResponseDto[]> GetProductsByCategoryIdAsync(int tagId, int limit = 5, int offset = 0)
+	public async Task<ProductMinimalResponseDto[]> GetProductsByCategoryIdAsync(int tagId)
 	{
-		logger.LogInformation("Fetching products for category {CategoryId} with limit {Limit} and offset {Offset}", tagId, limit, offset);
+		logger.LogInformation("Fetching products for category {CategoryId}", tagId);
 		
 		try
 		{
@@ -459,8 +459,6 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				.AsNoTracking()
 				.Where(p => p.Tags.Any(t => t.TagId == tagId))
 				.OrderBy(p => p.Id)
-				.Skip(offset)
-				.Take(limit)
 				.Select(p => new ProductMinimalResponseDto
 				{
 					Id = p.Id,
@@ -485,8 +483,6 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 				.AsNoTracking()
 				.Where(c => c.Tags.Any(t => t.TagId == tagId))
 				.OrderBy(c => c.Id)
-				.Skip(offset)
-				.Take(limit)
 				.Select(c => new ProductMinimalResponseDto
 				{
 					Id = c.Id,
@@ -506,7 +502,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		}
 		catch (Exception ex)
 		{
-			logger.LogError(ex, "Error fetching products for category {CategoryId} with limit {Limit} and offset {Offset}", tagId, limit, offset);
+			logger.LogError(ex, "Error fetching products for category {CategoryId}", tagId);
 			throw;
 		}
 	}
@@ -951,17 +947,15 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		}
 	}
 
-	public async Task<TagMinimalResponseDto[]> GetTagsAsync(int limit = 5, int offset = 0)
+	public async Task<TagMinimalResponseDto[]> GetTagsAsync()
 	{
-		logger.LogInformation("Fetching categories with limit {Limit} and offset {Offset}", limit, offset);
+		logger.LogInformation("Fetching categories all categories");
 
 		try
 		{
 			var categories = await context.Tags
 				.AsNoTracking()
 				.OrderBy(c => c.Id)
-				.Skip(offset)
-				.Take(limit)
 				.Select(p => new TagMinimalResponseDto
 				{
 					Id = p.Id,
@@ -978,7 +972,7 @@ public class ProductService (AppDbContext context, ILogger<ProductService> logge
 		}
 		catch (Exception ex)
 		{
-			logger.LogError(ex, "Error fetching products with limit {Limit} and offset {Offset}", limit, offset);
+			logger.LogError(ex, "Error fetching categories");
 			throw;
 		}
 	}

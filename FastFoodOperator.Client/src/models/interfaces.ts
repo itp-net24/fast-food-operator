@@ -1,19 +1,40 @@
-import {Product} from '@/models/product'
-import type{ProductToCart,CartItem} from '@/models/types'
+import type{CartContainer} from '@/models/types'
 
 export interface Cart{
     cartProducts:
-    Array<ProductToCart>
+    Array<CartContainer>,
+    cartCombos:
+    Array<CartContainer>
 }
 
-export interface cartProduct{
-        product:Product,
-        qty:number
-    }
-
-
 export interface State{
-    cart: Cart | {cartProducts:[]}
+    cart: Cart | {cartProducts:[],cartCombos:[]},
+    receipt:Receipt
+}
+
+export interface Receipt {
+  products: [
+    {
+      productName: string,
+      productPrice: number,
+      quantity: number 
+    }
+  ],
+  combos: 
+  [
+    { 
+      comboName: string,
+       comboPrice: number,
+        quantity: number 
+      }
+    ],
+     createdAt: Date,
+      orderNumber: number,
+      totalVatSixPercent: number,
+      totalVatTwelvePercent: number,
+      totalVatTwentyFivePercent: number,
+      totalTax: number,
+        orderFinalPrice: number
 }
 
 export interface Tag{
@@ -22,58 +43,32 @@ export interface Tag{
   taxrate: number;
 }
 
-export interface AddOrderDTO
-    {
-        customerNote: string,
-        orderComboDtos: [
-          {
-            comboMinimalResponseDto: {
-              products: [
-                {
-                  productVariantId: number,
-                  productId: number,
-                  ingredientsId: [
-                    number
-                  ],
-                  quantity: number
-                }
-              ],
-              comboId: number,
-              quantity: number
-            }
-          }
-        ],
-        orderProductDtos: [
-          {
-            productMinimalResponseDto: {
-              productVariantId: number,
-              productId: number,
-              ingredientsId: [
-                number
-              ],
-              quantity: number
-            }
-          }
-        ]
-      }
-
-
-export interface OrderComboDto {
-  comboId: number;
-  quantity: number;
-  priceModifier: number;
+export interface OrderComboDtos{
+  comboMinimalResponseDto:ComboMinimalResponseDto,
+  comboId:number,
+  quantity:number
 }
 
-export interface OrderProductDto {
-  productId: number;
+export interface OrderProductDtos{
+  productMinimalResponseDto: ProductMinimalResponseDto  
+}
+
+export interface ProductMinimalResponseDto{
+  productVariantId:number,
+  productId:number,
+  IngredientsId:number[],
+  quantity:number
+}
+
+export interface ComboMinimalResponseDto {
+  
+  products:ProductMinimalResponseDto[]
+  comboId: number;
   quantity: number;
-  productVariant: string;
-  productVariantPriceModifier: number;
-  productIngredients: string[];
 }
 
 export interface CreateOrderDto {
     customerNote: string;
-    orderComboDtos?: OrderComboDto[];
-    orderProductDtos?: OrderProductDto[];
+    orderComboDtos?: OrderComboDtos[];
+    orderProductDtos?: OrderProductDtos[];
   }
