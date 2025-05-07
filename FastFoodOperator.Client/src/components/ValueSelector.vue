@@ -25,6 +25,7 @@
     <button class="value-selector-button" @click="updateValue(inputValue - step)" :disabled="value <= min">-</button>
 
     <input
+      class="value-selector-input"
       id="current-value"
       type="number"
       :min="min"
@@ -43,6 +44,11 @@
   input[type=number]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+  }
+
+  .value-selector-input {
+    border: 1px solid black;
+    border-radius: 4px;
   }
 
   #current-value {
