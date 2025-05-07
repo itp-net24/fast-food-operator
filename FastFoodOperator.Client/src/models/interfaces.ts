@@ -8,8 +8,7 @@ export interface Cart{
 }
 
 export interface State{
-    cart: Cart | {cartProducts:[],cartCombos:[]},
-    receipt:Receipt
+    cart: Cart | {cartProducts:[],cartCombos:[]}
 }
 
 export interface Receipt {
