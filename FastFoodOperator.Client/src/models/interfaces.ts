@@ -1,15 +1,15 @@
-import type{CartContainer} from '@/models/types'
+import type { CartContainer, CartItem } from '@/models/types'
 
-export interface Cart{
-    cartProducts:
-    Array<CartContainer>,
-    cartCombos:
-    Array<CartContainer>
-}
+// export interface Cart{
+//     cartProducts:
+//     Array<CartContainer>,
+//     cartCombos:
+//     Array<CartContainer>
+// }
 
 export interface State{
-    cart: Cart | {cartProducts:[],cartCombos:[]},
-    receipt:Receipt
+    cart: CartContainer[],
+    receipt?:Receipt | null
 }
 
 export interface Receipt {
@@ -17,24 +17,24 @@ export interface Receipt {
     {
       productName: string,
       productPrice: number,
-      quantity: number 
+      quantity: number
     }
   ],
-  combos: 
-  [
-    { 
-      comboName: string,
-       comboPrice: number,
-        quantity: number 
+  combos:
+    [
+      {
+        comboName: string,
+        comboPrice: number,
+        quantity: number
       }
     ],
-     createdAt: Date,
-      orderNumber: number,
-      totalVatSixPercent: number,
-      totalVatTwelvePercent: number,
-      totalVatTwentyFivePercent: number,
-      totalTax: number,
-        orderFinalPrice: number
+  createdAt: Date,
+  orderNumber: number,
+  totalVatSixPercent: number,
+  totalVatTwelvePercent: number,
+  totalVatTwentyFivePercent: number,
+  totalTax: number,
+  orderFinalPrice: number
 }
 
 export interface Tag{
@@ -43,32 +43,45 @@ export interface Tag{
   taxrate: number;
 }
 
-export interface OrderComboDtos{
-  comboMinimalResponseDto:ComboMinimalResponseDto,
-  comboId:number,
-  quantity:number
-}
+
 
 export interface OrderProductDtos{
-  productMinimalResponseDto: ProductMinimalResponseDto  
+  productMinimalResponseDto: ProductMinimalResponseDto
 }
+
+
+
+
+
+export interface CreateOrderDto {
+    customerNote: string;
+    orderComboDtos?: OrderComboDtos[];
+    orderProductDtos?: OrderProductDtos[]; // orderProductDtos
+  }
+
+
+
+
+
+
+
 
 export interface ProductMinimalResponseDto{
   productVariantId:number,
   productId:number,
-  IngredientsId:number[],
+  ingredientIds:number[],
   quantity:number
 }
 
 export interface ComboMinimalResponseDto {
-  
+
   products:ProductMinimalResponseDto[]
   comboId: number;
   quantity: number;
 }
 
-export interface CreateOrderDto {
-    customerNote: string;
-    orderComboDtos?: OrderComboDtos[];
-    orderProductDtos?: OrderProductDtos[];
-  }
+export interface OrderComboDtos{
+  comboMinimalResponseDto:ComboMinimalResponseDto,
+  comboId:number,
+  quantity:number
+}
