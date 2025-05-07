@@ -1,4 +1,3 @@
-import { useRouter } from 'vue-router'
 import { defineStore } from 'pinia'
 import type { CartContainer } from '@/models/types.ts'
 import type {
@@ -9,6 +8,7 @@ import type {
 } from '@/models/interfaces.ts'
 import Fetcher from '@/ApiFetcher.ts'
 import { ProductType } from '@/enums/enums.ts'
+import router from "@/router";
 
 export const useCart = defineStore('cart', {
   state: (): State => ({
@@ -41,7 +41,6 @@ export const useCart = defineStore('cart', {
 
     checkout(comment: string = '') {
       const fetcher = new Fetcher();
-
       const products: OrderProductDtos[] = this.cart
         .filter(p => p.type === ProductType.product)
         .map(p => {
@@ -78,10 +77,20 @@ export const useCart = defineStore('cart', {
 
       console.log("IS WORKING:", order);
 
-      fetcher.createOrder(order)
-        .then(response => this.receipt = response);
 
-      this.clearCart();
+      fetcher.createOrder(order)
+      .then(response => {
+        this.clearCart();
+        router.push({
+          path: 'test-receipt',
+          state: { order: response }
+        });
+      })
+      .catch(error => {
+        console.error('Error creating order:', error);
+      });
+    
+
     }
   }
 });
