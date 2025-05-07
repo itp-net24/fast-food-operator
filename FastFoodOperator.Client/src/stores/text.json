@@ -1,22 +1,35 @@
-if(this.cart.cartCombos.length > 0)
-      {
-        checkOutCombos = (this.cart as Cart).cartCombos.map((co:CartContainer): OrderComboDtos =>{
-              return {
-                comboMinimalResponseDto: {
-                  products: co.products.map((ci:CartItem):ProductMinimalResponseDto => {
-                    return{
-                    productVariantId: ci.variant?.id ?? []
-                    ],
-                    productId: ci.id,
-                    IngredientsId: (ci.ingredients?.map(i => i.id) ?? [
-                        0
-                    ]).flat(),
-                    quantity: co.quantity
+{
+    "cartProducts": [],
+    "cartCombos": [
+        {
+            "id": 1,
+            "type": "combo",
+            "imageUrl": null,
+            "name": "Cheeseburger Combo",
+            "price": 24.99,
+            "quantity": 3,
+            "products": [
+                {
+                    "__uid": 0,
+                    "id": 1,
+                    "name": "Cheeseburger",
+                    "basePrice": 14.99,
+                    "tax": 1.12,
+                    "variant": null,
+                    "ingredients": [
+                        {
+                            "id": 1,
+                            "name": "Lettuce",
+                            "priceModifier": 0
+                        },
+                        {
+                            "id": 2,
+                            "name": "Tomato",
+                            "priceModifier": 0
+                        }
+                    ]
                 }
-            }),
-              comboId: co.id,
-              quantity: co.quantity
+            ]
         }
-    })
-}
+    ]
 }

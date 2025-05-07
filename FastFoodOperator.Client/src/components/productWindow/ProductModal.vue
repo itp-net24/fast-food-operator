@@ -3,6 +3,7 @@ import { onMounted, ref, watch } from 'vue'
 import type {
   Combo,
   Product,
+  CartContainer
 } from '@/models/types.ts'
 import {ProductType} from "@/enums/enums.ts"
 import PopupModal from "@/components/PopupModal.vue";
@@ -15,6 +16,9 @@ import { GetComboAsync, GetProductAsync } from '@/services/fetcher.ts'
 import { defaultVariantOfProduct, roundToPrecision } from '@/utils/helpers.ts'
 import useProduct from "@/composables/useProduct.ts"
 import { CURRENCY_SYMBOL } from '../../../config.ts'
+import {useCartStore} from '../../stores/cart.ts'
+import {storeToRefs} from 'pinia'
+
 
 const builder = useProduct();
 
@@ -33,10 +37,18 @@ const emits = defineEmits<{
 const product = ref<Product>(null!);
 const combo = ref<Combo | null>(null);
 
+const cartStore = useCartStore()
+const {cart} = storeToRefs(cartStore)
+
+
 
 const handleConfirm = () => {
   console.log(builder.combo.value);
   // call function to add combo to cart here, also import the cart store
+  console.log(builder.combo.value)
+  const comboToAdd = builder.combo.value ?? ({id:0, type:'combo is null',imageUrl:'', name:'this is null', tags:[],price:0,quantity:0,products:[]} as CartContainer) ;
+  cartStore.addToCart(comboToAdd);
+
 }
 
 const mobileBreakpoint: number = 400;
@@ -52,6 +64,8 @@ onMounted(async () => {
 
   await fetchComboOrProduct();
   updateIsMobile();
+
+  cartStore.loadCartInstance()
 });
 
 watch([() => props.id, () => props.type], async () => {
