@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Sidebar from './Sidebar.vue'
 import ProductCard from './ProductCard.vue'
+import ScrollToTop from './ScrollToTop.vue'
 import { onMounted, ref } from 'vue'
 import CartModal from './CartModal.vue'
 import { getProductsAsync, getProductsByTagAsync } from '@/services/fetcher.ts'
@@ -36,6 +37,9 @@ const handleCardClick = (product: BaseProduct) => {
     :visible="visible"
     @close="() => (visible = false)"
   />
+
+  <ScrollToTop/>
+  
   <div class="company-title">
     <img src="@/assets/Claes_Burgir1.png" alt="Company logo" class="company-logo" />
   </div>
