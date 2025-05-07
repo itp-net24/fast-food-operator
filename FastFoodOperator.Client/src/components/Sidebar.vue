@@ -71,6 +71,7 @@ const emit = defineEmits<{
     padding: 0rem 0.6rem;
     margin: 0;
     text-align: center;
+    opacity: 0.9;
 }
 
 .title {
