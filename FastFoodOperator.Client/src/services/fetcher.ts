@@ -53,7 +53,7 @@ export const GetIngredientsAsync = async (): Promise<Ingredient[]> => {
 }
 
 export const getTagsAsync = async (): Promise<Tag[]> => {
-  const data = await fetchJson('api/tag');
+  const data = await fetchJson('api/tag?limit=100');
 
   return data.map(t => mapToTag(t)) ?? [];
 }

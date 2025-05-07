@@ -57,9 +57,6 @@ const handleCardClick = (product: BaseProduct) => {
 <style scoped>
 .menu-container {
   padding-top: 1rem;
-}
-
-.menu-container {
   display: flex;
 }
 
@@ -70,12 +67,10 @@ main {
 }
 
 @media (max-width: 640px) {
-  main {
-    justify-content: center;
-  }
 
   .articles-container {
     flex-basis: 45%;
+    margin: 0 auto;
   }
 }
 </style>
