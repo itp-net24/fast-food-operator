@@ -1,125 +1,35 @@
 {
-    "id": 1,
-    "name": "Cheeseburger Combo",
-    "basePrice": 24.99,
-    "comboProducts": [
-        {
-            "id": 3,
-            "defaultProductVariantId": null,
-            "product": {
-                "id": 1,
-                "pictureUrl": "",
-                "name": "Cheeseburger",
-                "description": null,
-                "basePrice": 14.99,
-                "categoryId": 0,
-                "variants": [],
-                "ingredients": [
-                    {
-                        "id": 1,
-                        "name": "Lettuce",
-                        "priceModifier": 0.5
-                    },
-                    {
-                        "id": 2,
-                        "name": "Tomato",
-                        "priceModifier": 0.5
-                    }
-                ]
-            },
-            "defaultProductVariant": null
-        },
-        {
-            "id": 5,
-            "defaultProductVariantId": 3,
-            "product": {
-                "id": 3,
-                "pictureUrl": "",
-                "name": "Coke",
-                "description": null,
-                "basePrice": 1.99,
-                "categoryId": 0,
-                "variants": [
-                    {
-                        "id": 1,
-                        "productId": 0,
-                        "name": "Small",
-                        "description": null,
-                        "priceModifier": 0
-                    },
-                    {
-                        "id": 2,
-                        "productId": 0,
-                        "name": "Medium",
-                        "description": null,
-                        "priceModifier": 4.99
-                    },
-                    {
-                        "id": 3,
-                        "productId": 0,
-                        "name": "Large",
-                        "description": null,
-                        "priceModifier": 9.99
-                    }
-                ],
-                "ingredients": []
-            },
-            "defaultProductVariant": {
-                "id": 3,
-                "productId": 3,
-                "name": "Large",
-                "description": null,
-                "priceModifier": 9.99
-            }
-        }
-    ],
-    "groups": [
+    "cartProducts": [],
+    "cartCombos": [
         {
             "id": 1,
-            "name": "Drinks",
-            "defaultComboProductId": 2,
-            "defaultComboProduct": null,
-            "comboProducts": [
+            "type": "combo",
+            "imageUrl": null,
+            "name": "Cheeseburger Combo",
+            "price": 24.99,
+            "quantity": 3,
+            "products": [
                 {
+                    "__uid": 0,
                     "id": 1,
-                    "defaultProductVariantId": 2,
-                    "product": {
-                        "id": 3,
-                        "pictureUrl": "",
-                        "name": "Coke",
-                        "description": null,
-                        "basePrice": 1.99,
-                        "categoryId": 0,
-                        "variants": [
-                            {
-                                "id": 1,
-                                "productId": 0,
-                                "name": "Small",
-                                "description": null,
-                                "priceModifier": 0
-                            },
-                            {
-                                "id": 2,
-                                "productId": 0,
-                                "name": "Medium",
-                                "description": null,
-                                "priceModifier": 4.99
-                            },
-                            {
-                                "id": 3,
-                                "productId": 0,
-                                "name": "Large",
-                                "description": null,
-                                "priceModifier": 9.99
-                            }
-                        ],
-                        "ingredients": []
-                    },
-                    "defaultProductVariant": {
-                        "id": 2,
-                        "productId": 3,
-                        "name": "Medium",
-                        "description": null,
-                        "priceModifier": 4.99
-                    }
+                    "name": "Cheeseburger",
+                    "basePrice": 14.99,
+                    "tax": 1.12,
+                    "variant": null,
+                    "ingredients": [
+                        {
+                            "id": 1,
+                            "name": "Lettuce",
+                            "priceModifier": 0
+                        },
+                        {
+                            "id": 2,
+                            "name": "Tomato",
+                            "priceModifier": 0
+                        }
+                    ]
                 }
+            ]
+        }
+    ]
+}

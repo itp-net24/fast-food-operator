@@ -3,12 +3,24 @@ import { defaultProductOfGroup, isProductCombo } from '@/utils/helpers.ts'
 import { GetComboAsync, GetProductAsync } from '@/services/fetcher.ts'
 import { mapComboProductToCart, mapProductToCart, mapToCartContainer } from '@/utils/mappers.ts'
 import type { BaseProduct, CartContainer } from '@/models/types.ts'
+import {useCartStore} from '../stores/cart'
+import {storeToRefs} from 'pinia'
+import {onMounted} from 'vue'
+
 
 const props = defineProps<Props>()
 
 interface Props {
   baseProduct: BaseProduct
 }
+
+const cartStore = useCartStore()
+const {cart} = storeToRefs(cartStore)
+
+onMounted(() =>{
+  cartStore.loadCartInstance()
+})
+
 
 const addToCart = async (): Promise<void> => {
   if (!props.baseProduct) return;
@@ -30,6 +42,9 @@ const addToCart = async (): Promise<void> => {
 
   // Logic to add to cart goes here!
   console.log(productToAdd);
+  cartStore.addToCart(productToAdd);
+  console.log("cart", cart.value)
+
 }
 </script>
 
