@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { Product } from '@/models/product'
-import type { Cart, State, AddOrderDTO, CreateOrderDto, productMinimalResponseDto, comboMinimalResponseDto } from '@/models/interfaces'
+import type { Cart, State, AddOrderDTO, CreateOrderDto, ProductMinimalResponseDto, ComboMinimalResponseDto, OrderComboDtos, OrderProductDtos  } from '@/models/interfaces'
 import Fetcher from '@/ApiFetcher'
 import type { CartContainer, CartItem } from '@/models/types'
 import {ProductType} from '@/enums/enums'
@@ -22,13 +22,14 @@ export const useCartStore = defineStore('cart', {
 
     addToCart(pro: CartContainer) {
       console.log('start of addToCart')
-      console.log(pro)
+      console.log(JSON.stringify(pro))
       const cs = localStorage.getItem('cart')
 
       let isAdded = false
 
       //determine if cart is empty
       console.log(!cs)
+      console.log('if!cs start here')
       if (!cs) {
         console.log('type:' + pro.type)
         if (pro.type === ProductType.product) {
@@ -47,28 +48,6 @@ export const useCartStore = defineStore('cart', {
             cartCombos: []
           }
         }
-
-        // export interface CartContainer {
-//   id: number;
-//   type: string;
-//   imageUrl: string | null;
-//   name: string;
-//   tags: Tag[];
-//   price: number;
-//   quantity: number;
-//   products: CartItem[];
-// }
-
-// export interface CartItem {
-//   __uid: number;
-//   id: number;
-//   name: string;
-//   tax: number;
-//   basePrice: number;
-//   variant?: Variant | null;
-//   ingredients?: Ingredient[] | null;
-// }
-
         else if (pro.type === ProductType.combo) {
           this.cart = {
             cartProducts: [],
@@ -93,6 +72,7 @@ export const useCartStore = defineStore('cart', {
 
       //logic for when cart is not empty
       else {
+        console.log("else cart not empty starts here")
         console.log(cs)
         let cartLocalStorage = JSON.parse(cs)
         console.log('cart:' + cartLocalStorage)
@@ -191,9 +171,11 @@ export const useCartStore = defineStore('cart', {
 
         console.log(localStorage.getItem('cart'))
 
-        localStorage.setItem('cart', JSON.stringify(this.cart))
+       
 
       }
+
+      localStorage.setItem('cart', JSON.stringify(this.cart))
     },
 
     // decrementFromCart(pro: Product) {
@@ -253,43 +235,65 @@ export const useCartStore = defineStore('cart', {
     checkOut(comment: string = '') {
       const fetcher = new Fetcher();
 
-      console.log('in the checkout action' + comment)
+      console.log('in the checkout action ' + comment)
+      console.log('list of combos in cart: ' + JSON.stringify(this.cart.cartCombos))
+      console.log('list of products in cart: ' + JSON.stringify(this.cart.cartProducts))
+      console.log('cart at the beginnning of checkout: ' + JSON.stringify(this.cart))
     
-      let checkOutCombos:comboMinimalResponseDto
-      let checkOutProducts:productMinimalResponseDto
+      let checkOutCombos:OrderComboDtos[] = []
+      let checkOutProducts:OrderProductDtos[] = []
 
+      console.log('after setting default pseudo-empty values for checkOutCombos and checkOutProducts')
+      console.log('checkOutCombos values: ' + JSON.stringify(checkOutCombos))
+      console.log('checkOutProducts values: ' + JSON.stringify(checkOutProducts))
     
       //map all products in cart to orderProductDtos
-      checkOutProducts = (this.cart as Cart).cartProducts.map((ci: CartContainer) => {
-          return{
-          productVariantId: ci.products.map((vi:CartItem) => vi.variant?.id ?? 0),
-          productId: ci.id,
-          productIngredientsId: ci.products.map(pi => pi.ingredients?.flatMap(i => i.id)),
-          quantity: ci.quantity
-          }
-      })
-    
+      console.log(this.cart.cartProducts.length < 1)
+      if(this.cart.cartProducts.length > 0)
+      {
+        checkOutProducts = (this.cart as Cart).cartProducts.map((ci: CartContainer):OrderProductDtos => {
+            return{
+              productMinimalResponseDto:{
+            productVariantId: ci.products[0].variant?.id ?? 0,
+            productId: ci.id,
+            IngredientsId: (ci.products.map(pi => pi.ingredients?.map(i => i.id) ?? []).flat()),
+            quantity: ci.quantity
+            }}
+        })
+      }
+      //map((vi:CartItem) => vi.variant?.id ?? 0) lol
+    //ci.products.map(pi => pi.ingredients?.Map(i => i.id).flat())
+      //ci.products.map(pi => pi.ingredients?.forEach((i) => {return i.id}))
+      //ci.products.map(pi => pi.ingredients?.map(i => i.id) ?? [].flat())
+
       //verify that orderProductDtos were mapped correctly
-      console.log('after mapping' + checkOutProducts)
+      console.log('after mapping checkOutProducts' + checkOutProducts)
       console.log(JSON.stringify(checkOutProducts))
 
-      
-      checkOutCombos = (this.cart as Cart).cartCombos.map((co:CartContainer) =>{
-          
-        console.log('co.quantity during mapping' + co.quantity)
+      console.log('length of cartCombos: ' + this.cart.cartCombos.length)
+      console.log(this.cart.cartCombos.length > 0)
+
+    if(this.cart.cartCombos.length > 0){
+      checkOutCombos = (this.cart as Cart).cartCombos.map((co:CartContainer):OrderComboDtos => {
         return {
-            products: co.products.map((ci:CartItem) => {
+          comboMinimalResponseDto:{
+            products:co.products.map((ci:CartItem):ProductMinimalResponseDto =>{
               return{
-              productVariantId: ci.variant?.id,
-              productId: ci.id,
-              productIngredientsId: ci.ingredients?.map(i => i.id),
-              quantity: co.quantity
+                productVariantId:ci.variant?.id ?? 0,
+                productId: ci.id,
+                IngredientsId: (ci.ingredients?.map(i => i.id) ?? []).flat(),
+                quantity: co.quantity
               }
             }),
-            comboId: co.id,
-            quantity: co.quantity
-            }
+            comboId:co.id,
+            quantity:co.id//:ComboMinimalresponseDto
+          },
+          comboId:co.id,
+          quantity:co.quantity
+        }
       })
+    }
+
       console.log('after mapping of ceckOutCombos '+checkOutCombos)
       console.log(JSON.stringify(checkOutCombos))
       
@@ -297,15 +301,14 @@ export const useCartStore = defineStore('cart', {
       //assemble complete order from local variables
       let order: CreateOrderDto = {
         customerNote: comment,
-        orderComboDtos: [
-          checkOutCombos
-        ],
-        orderProductDtos: [
-          checkOutProducts
-        ]
-      }
+        orderComboDtos: checkOutCombos,
+        orderProductDtos: checkOutProducts
+        }
     
       console.log(this.cart)
+      console.log(order)
+      console.log(JSON.stringify(order));
+
     
       const receipt = fetcher.createOrder(order);
       console.log(receipt)

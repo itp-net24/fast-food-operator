@@ -16,6 +16,7 @@ interface Props {
 
 const cartStore = useCartStore()
 const {cart} = storeToRefs(cartStore)
+
 onMounted(() =>{
   cartStore.loadCartInstance()
 })
@@ -42,7 +43,7 @@ const addToCart = async (): Promise<void> => {
   // Logic to add to cart goes here!
   console.log(productToAdd);
   cartStore.addToCart(productToAdd);
-  console.log(cart)
+  console.log("cart", cart.value)
 
 }
 </script>

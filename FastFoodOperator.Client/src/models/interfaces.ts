@@ -76,24 +76,34 @@ export interface AddOrderDTO
         ]
       }
 
+export interface OrderComboDtos{
+  comboMinimalResponseDto:ComboMinimalResponseDto,
+  comboId:number,
+  quantity:number
+}
 
-export interface comboMinimalResponseDto {
-  products:productMinimalResponseDto[]
-  comboId: number;
-  quantity: number;
+export interface OrderProductDtos{
+  productMinimalResponseDto: ProductMinimalResponseDto  
+}
+
+export interface ProductMinimalResponseDto{
+  productVariantId:number,
+  productId:number,
+  IngredientsId:number[],
+  quantity:number
 }
 
 
-export interface productMinimalResponseDto {
-  productVariantId: number;
-  productId: number;
-  productIngredientsId: number[];
+export interface ComboMinimalResponseDto {
+  
+  products:ProductMinimalResponseDto[]
+  comboId: number;
   quantity: number;
 }
 
 
 export interface CreateOrderDto {
     customerNote: string;
-    orderComboDtos?: comboMinimalResponseDto[];
-    orderProductDtos?: productMinimalResponseDto[];
+    orderComboDtos?: OrderComboDtos[];
+    orderProductDtos?: OrderProductDtos[];
   }

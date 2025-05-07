@@ -36,6 +36,7 @@ const combo = ref<Combo | null>(null);
 
 const handleConfirm = () => {
   console.log(builder.combo.value);
+  // call function to add combo to cart here, also import the cart store
 }
 
 const mobileBreakpoint: number = 450;

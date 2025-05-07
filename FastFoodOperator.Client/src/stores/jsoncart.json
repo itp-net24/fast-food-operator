@@ -1,74 +1,6 @@
 {
     "cartProducts": [
         {
-            "id": 2,
-            "type": "product",
-            "imageUrl": "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-bigmac-NY2:nutrition-calculator-tile",
-            "name": "Big Mac",
-            "tags": [
-                {
-                    "id": 1,
-                    "name": "Burgers",
-                    "tax": 1.12
-                }
-            ],
-            "price": 64.99,
-            "quantity": 1,
-            "products": [
-                {
-                    "__uid": -1,
-                    "id": 2,
-                    "name": "Big Mac",
-                    "basePrice": 64.99,
-                    "tax": 1.12,
-                    "variant": null,
-                    "ingredients": [
-                        {
-                            "id": 1,
-                            "name": "Lettuce",
-                            "priceModifier": 0
-                        },
-                        {
-                            "id": 2,
-                            "name": "Tomato",
-                            "priceModifier": 0
-                        },
-                        {
-                            "id": 3,
-                            "name": "Pickles",
-                            "priceModifier": 0
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 32,
-            "type": "product",
-            "imageUrl": "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-accessories-apples:nutrition-calculator-tile",
-            "name": "Apple Slices",
-            "tags": [
-                {
-                    "id": 3,
-                    "name": "Sides",
-                    "tax": 1.12
-                }
-            ],
-            "price": 18,
-            "quantity": 1,
-            "products": [
-                {
-                    "__uid": -1,
-                    "id": 32,
-                    "name": "Apple Slices",
-                    "basePrice": 18,
-                    "tax": 1.12,
-                    "variant": null,
-                    "ingredients": []
-                }
-            ]
-        },
-        {
             "id": 7,
             "type": "product",
             "imageUrl": "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-double-cheeseburger-NEW:nutrition-calculator-tile",
@@ -88,6 +20,32 @@
                     "id": 7,
                     "name": "Double Cheeseburger",
                     "basePrice": 35,
+                    "tax": 1.12,
+                    "variant": null,
+                    "ingredients": []
+                }
+            ]
+        },
+        {
+            "id": 12,
+            "type": "product",
+            "imageUrl": "https://s7d1.scene7.com/is/image/mcdonalds/mcd-sv-products-burgers-tasty_4_1-burger:nutrition-calculator-tile",
+            "name": "Tasty Burger",
+            "tags": [
+                {
+                    "id": 1,
+                    "name": "Burgers",
+                    "tax": 1.12
+                }
+            ],
+            "price": 79,
+            "quantity": 1,
+            "products": [
+                {
+                    "__uid": -1,
+                    "id": 12,
+                    "name": "Tasty Burger",
+                    "basePrice": 79,
                     "tax": 1.12,
                     "variant": null,
                     "ingredients": []
