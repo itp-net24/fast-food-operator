@@ -4,6 +4,7 @@ import type { Cart, State, CreateOrderDto, ProductMinimalResponseDto, OrderCombo
 import Fetcher from '@/ApiFetcher'
 import type { CartContainer, CartItem } from '@/models/types'
 import {ProductType} from '@/enums/enums'
+import {useRouter} from 'vue-router'
 
 
 export const useCartStore = defineStore('cart', {
@@ -234,6 +235,7 @@ export const useCartStore = defineStore('cart', {
 
     checkOut(comment: string = '') {
       const fetcher = new Fetcher();
+      const router = useRouter();
 
       console.log('in the checkout action ' + comment)
       console.log('list of combos in cart: ' + JSON.stringify(this.cart.cartCombos))
@@ -320,9 +322,14 @@ export const useCartStore = defineStore('cart', {
       console.log('receiptResponse' + receiptResponse)
 
 
-      return{receiptResponse}
+      
       // empty cart for next order
       this.clearCart()
+
+      router.push({
+        path:"/test-receipt",
+        query:receiptResponse
+      })
     }
     
   }

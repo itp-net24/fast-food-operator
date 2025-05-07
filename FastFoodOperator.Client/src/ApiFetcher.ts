@@ -147,6 +147,9 @@ export default class Fetcher {
           throw new Error(`Failed to add order! status: ${response.status}`);
         }
         const result = await response.json();
+        console.log('logging in api-fetcer' + result);
+        console.log('typeof: ' + typeof(result))
+        console.log(JSON.stringify(result))
         return result;
       } catch (error) {
         console.error("Failed to create order:", error);
