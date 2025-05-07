@@ -86,7 +86,7 @@ const textBox = ref('')
               <div id="cartModal" class="modal">
                 <div class="modal-content">
                   <span class="close">&times;</span>
-            
+             
                 </div>
               </div>
 
@@ -104,8 +104,6 @@ const textBox = ref('')
     </div>
 
     <div>
-      {{ cart }}
-
       <textarea v-model="textBox" placeholder="leave a comment with your order here"></textarea>
 
       <button class="button-basic" @click="checkOut"> Checkout </button>

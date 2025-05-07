@@ -86,7 +86,7 @@ export default () => {
   }
 
   const selectedVariantFromProduct = (product: ComboProduct) => {
-    const selectedProduct = combo.value.products.find(p => p.__uid === product?.__uid);
+    const selectedProduct = combo.value.products.find(p => p.__uid === product.__uid);
 
     return computed<Variant | null>({
       get: (): Variant | null => {

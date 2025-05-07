@@ -1,20 +1,28 @@
 <script setup lang="ts">
 import {ref, onMounted} from 'vue'
-import { getTagsAsync } from '@/services/fetcher.ts'
-import type { Tag } from '@/models/types.ts'
+import {Category} from '@/models/category.ts'
+import Fetcher from "@/ApiFetcher.ts"
 
-const tags = ref<Tag[] | null>();
+const fetcher:Fetcher = new Fetcher();
+const categories = ref<Category[] | null>();
 
 const sideMenuOpen = ref<boolean>(false);
-const activeCategory = ref<number | null>(null);
 
-function handleTagClicked(tagId: number): void {
-    activeCategory.value = tagId;
-    emit('categoryClicked', tagId);
+function CategoryClicked(categoryId:number):void {
+    emit('categoryClicked', categoryId);
 }
 
 onMounted( async () => {
-   tags.value = await getTagsAsync();
+    const result:Category[] | null = await fetcher.getCategories();
+
+    if (result == null)
+    {
+        categories.value = [];
+    } 
+    else 
+    {
+        categories.value = result;
+    }
 })
 
 const emit = defineEmits<{
@@ -31,12 +39,8 @@ const emit = defineEmits<{
         </button>
         <h2 class="title">Our Menu</h2>
         <ul class="category-list ul-reset">
-            <li 
-            class="category border-menu popout" 
-            v-for="tag in tags" :key="tag.id" 
-            v-bind:class="activeCategory === tag.id ? 'active-highlight-vertical-line' : ''"
-            v-on:click="handleTagClicked(tag.id)">
-                {{ tag.name }}
+            <li class="category border-menu" v-for="category in categories" :key="category.id" v-on:click="CategoryClicked(category.id)">
+                {{ category.name }}
             </li>
         </ul>
     </div>
@@ -61,7 +65,6 @@ const emit = defineEmits<{
     padding: 0rem 0.6rem;
     margin: 0;
     text-align: center;
-    opacity: 0.9;
 }
 
 .title {
@@ -75,12 +78,10 @@ const emit = defineEmits<{
 }
 
 .category {
-    padding: 0.5rem;
-    border-radius: 0;
-    white-space: nowrap;
+    font-size: 17px;
+    padding: 1rem;
     cursor: pointer;
 }
-
 
 @media (max-width: 640px)
 {
@@ -93,16 +94,13 @@ const emit = defineEmits<{
     .sidebar-container {
         position:fixed;
         left: 0;
-        top: 25%;
-
         background-color: white;
-
         padding: 1rem;
         margin-left: 2px;
 
         transform: translateX(-170px); /* mostly hidden, leave button peeking out */
         transition: transform 0.3s ease;
-        z-index: 997;
+        z-index: 1000;
     }
 
     .sidebar-container.open {

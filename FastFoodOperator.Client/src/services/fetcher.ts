@@ -1,11 +1,5 @@
-import type { Product, Ingredient, Combo, BaseProduct, Tag, Order } from '../models/types.ts'
-import {
-  mapToBaseProduct,
-  mapToCombo,
-  mapToIngredient,
-  mapToProduct,
-  mapToTag
-} from '@/utils/mappers.ts'
+import type { Product, Ingredient, Combo, Order } from "../models/types.ts";
+import { mapToBaseProduct, mapToCombo, mapToIngredient, mapToProduct, mapToOrder } from '@/utils/mappers.ts'
 import { API_BASE_PATH } from '../../config.ts'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -20,6 +14,7 @@ export const fetchJson = async (url: string, options?: RequestInit): Promise<any
     console.error("Error fetching from API!", error);
   }
 };
+
 
 
 export const getProductsAsync = async (limit: number, offset: number): Promise<BaseProduct[]> => {
@@ -52,11 +47,6 @@ export const GetIngredientsAsync = async (): Promise<Ingredient[]> => {
   return data.map(i => mapToIngredient(i));
 }
 
-export const getTagsAsync = async (): Promise<Tag[]> => {
-  const data = await fetchJson('api/tag?limit=100');
-
-  return data.map(t => mapToTag(t)) ?? [];
-}
 export const StartOrder = async (order: any): Promise<any> => {
   const data = await fetchJson('api/order/startorder', {
     method: 'PUT',
@@ -75,8 +65,6 @@ export const CompleteOrder = async (order:any): Promise<any> => {
     },
     body: JSON.stringify(order)
   })
-
-  return data;
 }
 
 export const DeleteOrder = async (id: number): Promise<void> => {
@@ -86,9 +74,10 @@ export const DeleteOrder = async (id: number): Promise<void> => {
 };
 
 export const GetOrders = async(): Promise<Order[] | null> => {
-  const response = await fetchJson('api/order/getorders');
-  if (!response || response.length === 0) {
-    return [];
-  }
-  return response;
+    const response = await fetchJson('api/order/getorders');
+    if (!response || response.length === 0) {
+      return [];
+    }
+    return response;
 }
+

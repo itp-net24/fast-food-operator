@@ -3,7 +3,6 @@
   import type { Variant } from '@/models/types.ts'
   import { getVariantDiscount } from '@/utils/helpers.ts'
   import { CURRENCY_SYMBOL, PRECISION_DISPLAY, PRECISION_INTERNAL } from '../../../config.ts'
-  import { ref, watch } from 'vue'
 
   const props = defineProps<Props>();
 
@@ -16,23 +15,19 @@
 
   const emits = defineEmits<{ (e: 'update:selection', variant: Variant): void }>();
 
-  const defaultVariant = ref<Variant | null>(props.defaultVariant ?? props.variants[0]) ?? null;
+  const defaultVariant = props.defaultVariant ?? props.variants[0];
 
   const displayPriceMessage = (id: number): string => {
     const variant = props.variants.find(v => v.id === id);
-    const price = getVariantDiscount(variant, defaultVariant.value, PRECISION_DISPLAY);
+    const price = getVariantDiscount(variant, defaultVariant, PRECISION_DISPLAY);
 
     return price > 0 ? `+${price}${CURRENCY_SYMBOL}` : 'Included'
   }
 
   const onVariantSelected = (variant: Variant): void => {
-    const v = { ...variant, priceModifier: getVariantDiscount(variant, defaultVariant.value, PRECISION_INTERNAL) }
+    const v = { ...variant, priceModifier: getVariantDiscount(variant, defaultVariant, PRECISION_INTERNAL) }
     emits('update:selection', v);
   }
-
-  watch(() => props.variants, () => {
-    defaultVariant.value = props.defaultVariant ?? props.variants[0];
-  });
 </script>
 
 <template v-if="selection">

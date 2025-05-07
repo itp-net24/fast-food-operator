@@ -6,8 +6,10 @@ import type {
   ComboGroup,
   ComboProduct,
   Ingredient,
-  Product, Tag,
-  Variant
+  Product,
+  Variant,
+  Order,
+  Tag
 } from '@/models/types.ts'
 import { defaultVariantOfProduct, getTaxRate, isProductCombo } from '@/utils/helpers.ts'
 
