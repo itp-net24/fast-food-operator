@@ -34,8 +34,8 @@ const addToCart = async (): Promise<void> => {
 </script>
 
 <template>
-  <article class="border-menu">
-    <img id="product-image" v-if="baseProduct.imageUrl" :src="baseProduct.imageUrl" :alt="`image of ${baseProduct.name}`" />
+  <article class="border-menu popout">
+    <img id="product-image" class="popout" v-if="baseProduct.imageUrl" :src="baseProduct.imageUrl" :alt="`image of ${baseProduct.name}`" />
 
     <h2> {{ baseProduct.name }}</h2>
 
@@ -70,6 +70,7 @@ h2 {
   width: 100%;
   height: auto;
   aspect-ratio: 1;
+  box-shadow: none;
 }
 
 @media (max-width: 640px)
