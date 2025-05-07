@@ -15,7 +15,7 @@ onMounted(async () => {
   products.value = await getProductsAsync(20, 0);
 })
 
-async function onCategoryClicked(tagId: number) {
+async function handleCategoryChanged(tagId: number) {
   products.value = await getProductsByTagAsync(tagId);
 }
 
@@ -42,7 +42,7 @@ const handleCardClick = (product: BaseProduct) => {
 
   <div class="menu-container">
     <aside>
-      <Sidebar v-on:category-clicked="onCategoryClicked" />
+      <Sidebar @category-clicked="handleCategoryChanged" />
     </aside>
 
     <main>
@@ -72,6 +72,10 @@ main {
 @media (max-width: 640px) {
   main {
     justify-content: center;
+  }
+
+  .articles-container {
+    flex-basis: 45%;
   }
 }
 </style>
