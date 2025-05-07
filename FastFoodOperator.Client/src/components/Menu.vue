@@ -70,9 +70,6 @@ main {
 }
 
 @media (max-width: 640px) {
-  main {
-    justify-content: center;
-  }
 
   .articles-container {
     flex-basis: 45%;

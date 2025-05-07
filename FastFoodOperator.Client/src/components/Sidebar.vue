@@ -9,6 +9,7 @@ const sideMenuOpen = ref<boolean>(false);
 const activeCategory = ref<number | null>(null);
 
 function handleTagClicked(tagId: number): void {
+    activeCategory.value = tagId;
     emit('categoryClicked', tagId);
 }
 
@@ -32,8 +33,8 @@ const emit = defineEmits<{
         <ul class="category-list ul-reset">
             <li 
             class="category border-menu popout" 
-            v-bind:class="activeCategory === category.id ? 'active-highlight-vertical-line' : ''"
             v-for="tag in tags" :key="tag.id" 
+            v-bind:class="activeCategory === tag.id ? 'active-highlight-vertical-line' : ''"
             v-on:click="handleTagClicked(tag.id)">
                 {{ tag.name }}
             </li>
@@ -74,8 +75,9 @@ const emit = defineEmits<{
 }
 
 .category {
-    font-size: 17px;
-    padding: 1rem;
+    padding: 0.5rem;
+    border-radius: 0;
+    white-space: nowrap;
     cursor: pointer;
 }
 
