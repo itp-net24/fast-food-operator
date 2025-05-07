@@ -1,4 +1,4 @@
-import type { Product, Ingredient, Combo, BaseProduct, Tag } from '../models/types.ts'
+import type { Product, Ingredient, Combo, BaseProduct, Tag, Order } from '../models/types.ts'
 import {
   mapToBaseProduct,
   mapToCombo,
@@ -20,7 +20,6 @@ export const fetchJson = async (url: string, options?: RequestInit): Promise<any
     console.error("Error fetching from API!", error);
   }
 };
-
 
 
 export const getProductsAsync = async (limit: number, offset: number): Promise<BaseProduct[]> => {
@@ -57,4 +56,39 @@ export const getTagsAsync = async (): Promise<Tag[]> => {
   const data = await fetchJson('api/tag');
 
   return data.map(t => mapToTag(t)) ?? [];
+}
+export const StartOrder = async (order: any): Promise<any> => {
+  const data = await fetchJson('api/order/startorder', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(order)
+  })
+}
+
+export const CompleteOrder = async (order:any): Promise<any> => {
+  const data = await fetchJson('api/order/completeorder', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(order)
+  })
+
+  return data;
+}
+
+export const DeleteOrder = async (id: number): Promise<void> => {
+  await fetchJson(`api/order/${id}`, {
+    method: 'DELETE',
+  });
+};
+
+export const GetOrders = async(): Promise<Order[] | null> => {
+  const response = await fetchJson('api/order/getorders');
+  if (!response || response.length === 0) {
+    return [];
+  }
+  return response;
 }
