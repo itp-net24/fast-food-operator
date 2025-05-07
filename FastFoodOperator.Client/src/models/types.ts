@@ -94,3 +94,28 @@ export interface CartItem {
   variant?: Variant | null;
   ingredients?: Ingredient[] | null;
 }
+
+export interface orderProduct {
+  id: number;
+  productName: string;
+  quantity: number;
+  ingredients?: Ingredient[] | null;
+}
+
+export interface orderCombo {
+  comboName: string;
+  quantity: number;
+  products: string;
+}
+
+export interface Order {
+  id: number;
+  orderNumber: number;
+  customerNote: string;
+  orderStatus: string;
+  createdAt: Date;
+  startedAt: Date;
+  completedAt: Date;
+  orderProducts?: orderProduct[] | null;
+  orderCombos?: orderCombo[] | null;
+}

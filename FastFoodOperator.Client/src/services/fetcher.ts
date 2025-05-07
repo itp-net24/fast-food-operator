@@ -9,18 +9,19 @@ import {
 import { API_BASE_PATH } from '../../config.ts'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const fetchJson = async (url: string): Promise<any> => {
+export const fetchJson = async (url: string, options?: RequestInit): Promise<any> => {
   try {
-    const response = await fetch(API_BASE_PATH + url);
+    const response = await fetch(API_BASE_PATH + url, options);
     if (!response.ok)
       throw new Error(`HTTP error! status: ${response.status}`);
 
     return await response.json();
-  }
-  catch (error) {
+  } catch (error) {
     console.error("Error fetching from API!", error);
   }
-}
+};
+
+
 
 export const getProductsAsync = async (limit: number, offset: number): Promise<BaseProduct[]> => {
   const data = await fetchJson(`api/product?limit=${limit}&offset=${offset}`)
