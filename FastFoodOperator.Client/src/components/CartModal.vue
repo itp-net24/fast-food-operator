@@ -1,123 +1,83 @@
 <script setup lang="ts">
-    import Sidebar from './Sidebar.vue'
-    import CartItem from './CartItem.vue'
-    import {ref, onMounted, computed} from 'vue'
-    import {Product} from '@/models/product.ts'
-    import Fetcher from "@/ApiFetcher.ts"
-    import {useCartStore} from '../stores/cart'
-    import {storeToRefs} from 'pinia'
-    
-    
-    const fetcher = new Fetcher();
-    
+import {ref} from 'vue'
+import {useCart} from '@/stores/testCart.ts'
+import {storeToRefs} from 'pinia'
+import PopupModal from '@/components/PopupModal.vue'
+import CartItem from '@/components/CartItem.vue'
 
-    onMounted(async () => {
-  try {
-    cartStore.loadCartInstance()
-
-  } catch (err) {
-    console.error('error:', err);
-  }
-})
-
-const cartStore = useCartStore()
+const cartStore = useCart();
 const {cart} = storeToRefs(cartStore)
 
-function checkOut(){
-  console.log(textBox.value)
-  cartStore.checkOut(textBox.value)
+const props = defineProps<Props>();
+
+interface Props {
+  visible: boolean;
+}
+
+const emits = defineEmits<{
+  (e: 'close'): void;
+}>();
+
+const mobileBreakpoint: number = 400;
+const isMobile = ref<boolean>(false);
+
+const updateIsMobile = () => {
+  isMobile.value = window.matchMedia(`(max-width: ${mobileBreakpoint}px)`).matches;
+}
+
+const checkout = () => {
+  cartStore.checkout(textBox.value)
   textBox.value = '';
 }
 
-function clearCart(){
+const clearCart = () => {
   cartStore.clearCart()
 }
 
 const textBox = ref('')
-
-
-
-
-// var modal = document.getElementById("cartModal")!;
-// var cartBtn = document.getElementById("cartButton")!;
-// var span = document.getElementsByClassName("close")[0] as HTMLElement;
-
-
-// cartBtn.onclick = function(){
-//   console.log(modal)
-// modal.style.display = "block";
-// }
-
-// const openCart = () =>{
-
-// modal.style.display = "none";
-// }
-
-// window.onclick = function(event){
-//   if(event.target == modal){
-//     modal.style.display = "none";
-//   }
-// }
-
-
-
-  const CartTotal = computed(()=>{
-    return Math.round(cartStore.cart.cartProducts.reduce((sum, tempProduct) =>{
-      return sum + tempProduct.qty * tempProduct.product.basePrice;
-    }, 0)
-  *100) / 100});
-
-  const TaxTotal = computed(()=> {
-    return Math.round(1.12 * CartTotal.value *100)/100;
-  })
-
 </script>
 
 <template>
+  <PopupModal
+    v-if="visible"
+    :enable-close-button="isMobile"
+    :enable-blur="true"
+    :close-on-outside-click="true"
+    @close="() => emits('close')">
+
     <div class="menu-container">
-        
-            <!-- <aside>
-                <Sidebar />
-            </aside> -->
+      <main>
+        <div v-for="(item, index) in cart" :key="index" class="menu-container">
+          <CartItem :product="item" />
+        </div>
+      </main>
 
-            <main>
-              
-              <button class="button-basic" id="cartButton" @click="openCart">Open Cart </button>
-              <div id="cartModal" class="modal">
-                <div class="modal-content">
-                  <span class="close">&times;</span>
-            
-                </div>
-              </div>
-
-                <div v-for="(cartProduct,index) in cart.cartProducts" :key="index" class="menu-container">
-                    <CartItem :cartProduct="cartProduct" />
-                </div>
-                <div class="menu-container">
-                 Total price without tax: {{ CartTotal }}
-                </div>
-                <div class="menu-container">
-                  Total price with tax: {{ TaxTotal }}
-                </div>
-            </main>
-        
-    </div>
 
     <div>
-      {{ cart }}
-
       <textarea v-model="textBox" placeholder="leave a comment with your order here"></textarea>
 
-      <button class="button-basic" @click="checkOut"> Checkout </button>
-
-      <button class="button-basic" @click="clearCart">Clear Cart</button>
+      <div>
+        <button class="bajs" @click="checkout"> Checkout </button>
+        <button class="bajs" @click="clearCart">Clear Cart</button>
+      </div>
 
     </div>
+    </div>
+  </PopupModal>
 </template>
 
 <style scoped>
 .menu-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
   padding-top: 1rem;
+  color: black;
+  background-color: white;
+  width: 30vw;
+
 }
 
 main {
@@ -126,39 +86,11 @@ main {
   gap: 0.5rem;
 }
 
-.modal{
-  display: none; 
-  position: fixed; 
-  z-index: 1; 
-  left: 0;
-  top: 0;
-  width: 100%; 
-  height: 100%; 
-  overflow: auto; 
-  background-color: rgb(0,0,0); 
-  background-color: rgba(0,0,0,0.4); 
-}
-
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto; 
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%; 
-}
-
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
+.bajs {
+  background-color: lightgray;
+  padding: 1rem;
   color: black;
-  text-decoration: none;
-  cursor: pointer;
+  margin: 1rem;
+  border-radius: 1rem;
 }
-
 </style>

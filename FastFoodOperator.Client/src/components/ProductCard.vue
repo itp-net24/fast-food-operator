@@ -3,9 +3,7 @@ import { defaultProductOfGroup, isProductCombo } from '@/utils/helpers.ts'
 import { GetComboAsync, GetProductAsync } from '@/services/fetcher.ts'
 import { mapComboProductToCart, mapProductToCart, mapToCartContainer } from '@/utils/mappers.ts'
 import type { BaseProduct, CartContainer } from '@/models/types.ts'
-import {useCartStore} from '../stores/cart'
-import {storeToRefs} from 'pinia'
-import {onMounted, defineEmits} from 'vue'
+import {useCart} from '@/stores/testCart.ts'
 
 
 const props = defineProps<Props>()
@@ -14,17 +12,7 @@ interface Props {
   baseProduct: BaseProduct
 }
 
-const cartStore = useCartStore()
-const {cart} = storeToRefs(cartStore)
-
-onMounted(() =>{
-  cartStore.loadCartInstance()
-})
-
-const emit = defineEmits<{
-  (e: 'cart'):void
-}>();
-
+const cartStore = useCart();
 
 const addToCart = async (): Promise<void> => {
   if (!props.baseProduct) return;
@@ -46,10 +34,7 @@ const addToCart = async (): Promise<void> => {
 
   emit('cart'); // Kod till popupmessenger
 
-  // Logic to add to cart goes here!
-  console.log(productToAdd);
   cartStore.addToCart(productToAdd);
-  console.log("cart", cart.value)
 
 }
 </script>
@@ -85,7 +70,7 @@ article {
 h2 {
   padding: var(--spacing-xs);
   min-height: 60px;
-  
+
 }
 
 #product-image {
@@ -116,7 +101,7 @@ h2 {
   article {
     width: auto;
   }
-  
+
   h2 {
     overflow: hidden;
   }

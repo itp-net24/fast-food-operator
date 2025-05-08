@@ -1,26 +1,32 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import {ref} from 'vue'
+import CartModal from '@/components/CartModal.vue'
 
 const adminMenuOpen = ref<boolean>(false);
+const cartVisible = ref<boolean>(false);
 
+const handleCartClick = () => {
+  cartVisible.value = true;
+}
 </script>
 
 <template>
+  <CartModal :visible="cartVisible" @close="cartVisible = false"/>
+
   <header>
-    
     <div class="wrapper">
       <img alt="Claes Burgir logo" class="logo" src="@/assets/Claes_Burgir.svg" width="125" height="125" />
 
       <h1>Admin Tools</h1>
 
-      
       <nav class="drop-down-menu">
         <button class="button-basic admin-menu-toggle button-menu" v-on:click="adminMenuOpen = !adminMenuOpen">
         ☰ Views
         </button>
 
         <ul class="drop-down-list-menu ul-reset" v-bind:class="{dropDownOpen: adminMenuOpen}">
+          <li class="admin-nav-link border-menu cart" @click="handleCartClick">Cart</li>
           <li><RouterLink class="admin-nav-link border-menu" to="/menu">Menu</RouterLink></li>
           <li><RouterLink class="admin-nav-link border-menu" to="/display-order">Display Orders</RouterLink></li>
           <li><RouterLink class="admin-nav-link border-menu" to="/kitchen-display">Kitchen Display</RouterLink></li>
@@ -33,7 +39,9 @@ const adminMenuOpen = ref<boolean>(false);
 </template>
 
 <style scoped>
-
+.cart {
+  width: min-content;
+}
  .wrapper {
   display:flex;
   justify-content: space-between;
