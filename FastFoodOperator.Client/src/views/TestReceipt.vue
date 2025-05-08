@@ -13,21 +13,7 @@ export default {
   },
   data() {
     return {
-      mockOrder: {
-        products: [
-          { productName: 'Beer', productPrice: 40, quantity: 1 }
-        ],
-        combos: [
-          { comboName: 'Cheeseburger Combo', comboPrice: 25.99, quantity: 1 }
-        ],
-        createdAt: '2025-05-03 23:48',
-        orderNumber: 1027,
-        totalVatSixPercent: 0,
-        totalVatTwelvePercent: 2.78,
-        totalVatTwentyFivePercent: 8,
-        totalTax: 10.78,
-        orderFinalPrice: 65.99
-      }
+      mockOrder: window.history.state?.order || null
     };
   },
   methods: {
