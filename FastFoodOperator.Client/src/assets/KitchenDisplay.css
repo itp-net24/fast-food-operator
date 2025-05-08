@@ -1,0 +1,85 @@
+﻿.kitchen-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  background-color: #f8efdd;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.orders-wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap; /* Gör layouten mer responsiv */
+}
+
+.orders-section {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.orders-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.orders-section.ready {
+  background: #e9f7e9;
+  border-left: 6px solid #28a745;
+}
+
+.order-card {
+  border: 1px solid #e0e0e0;
+  padding: 1rem;
+  margin: 0.75rem 0;
+  border-radius: 10px;
+  background-color: #fafafa;
+  text-align: left;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.order-card:hover {
+  background-color: #f1f1f1;
+  transform: translateX(5px);
+}
+
+/* Färger beroende på orderstatus */
+.order-card.pending {
+  border-left: 6px solid #dc3545; /* Röd */
+}
+
+.order-card.in-progress {
+  border-left: 6px solid #ffc107; /* Gul */
+}
+
+.order-card.completed {
+  background-color: #e3f8e3;
+  border-left: 6px solid #28a745; /* Grön */
+  border-color: #a2d8a2;
+}
+
+.kitchen-action-btn {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.kitchen-action-btn:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
