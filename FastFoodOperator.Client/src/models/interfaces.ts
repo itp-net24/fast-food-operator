@@ -1,12 +1,5 @@
 import type { CartContainer, CartItem } from '@/models/types'
 
-// export interface Cart{
-//     cartProducts:
-//     Array<CartContainer>,
-//     cartCombos:
-//     Array<CartContainer>
-// }
-
 export interface State{
     cart: CartContainer[],
     receipt?:Receipt | null
@@ -43,28 +36,15 @@ export interface Tag{
   taxrate: number;
 }
 
-
-
 export interface OrderProductDtos{
   productMinimalResponseDto: ProductMinimalResponseDto
 }
-
-
-
-
 
 export interface CreateOrderDto {
     customerNote: string;
     orderComboDtos?: OrderComboDtos[];
     orderProductDtos?: OrderProductDtos[]; // orderProductDtos
   }
-
-
-
-
-
-
-
 
 export interface ProductMinimalResponseDto{
   productVariantId:number,
@@ -74,7 +54,6 @@ export interface ProductMinimalResponseDto{
 }
 
 export interface ComboMinimalResponseDto {
-
   products:ProductMinimalResponseDto[]
   comboId: number;
   quantity: number;
