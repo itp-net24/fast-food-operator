@@ -19,11 +19,11 @@ async function handleCategoryChanged(tagId: number) {
   products.value = await getProductsByTagAsync(tagId);
 }
 
-const visible = ref<boolean>(false);
+const popupVisible = ref<boolean>(false);
 const selectedProduct = ref<BaseProduct | null>(null);
 
 const handleCardClick = (product: BaseProduct) => {
-  visible.value = true;
+  popupVisible.value = true;
   selectedProduct.value = product;
 }
 </script>
@@ -33,8 +33,8 @@ const handleCardClick = (product: BaseProduct) => {
     v-if="selectedProduct"
     :id="selectedProduct.id"
     :type="isProductCombo(selectedProduct) ? ProductType.combo : ProductType.product"
-    :visible="visible"
-    @close="() => (visible = false)"
+    :visible="popupVisible"
+    @close="popupVisible = false"
   />
   <div class="company-title">
     <img src="@/assets/Claes_Burgir1.png" alt="Company logo" class="company-logo" />

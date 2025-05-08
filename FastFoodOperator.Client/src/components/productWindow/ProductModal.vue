@@ -16,7 +16,6 @@ import { defaultVariantOfProduct, roundToPrecision } from '@/utils/helpers.ts'
 import useProduct from "@/composables/useProduct.ts"
 import { CURRENCY_SYMBOL } from '../../../config.ts'
 import {useCart} from '@/stores/testCart.ts'
-import {storeToRefs} from 'pinia'
 
 
 const builder = useProduct();

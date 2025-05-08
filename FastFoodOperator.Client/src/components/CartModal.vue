@@ -2,16 +2,35 @@
 import {ref} from 'vue'
 import {useCart} from '@/stores/testCart.ts'
 import {storeToRefs} from 'pinia'
+import PopupModal from '@/components/PopupModal.vue'
+import CartItem from '@/components/CartItem.vue'
 
 const cartStore = useCart();
 const {cart} = storeToRefs(cartStore)
 
-function checkOut(){
+const props = defineProps<Props>();
+
+interface Props {
+  visible: boolean;
+}
+
+const emits = defineEmits<{
+  (e: 'close'): void;
+}>();
+
+const mobileBreakpoint: number = 400;
+const isMobile = ref<boolean>(false);
+
+const updateIsMobile = () => {
+  isMobile.value = window.matchMedia(`(max-width: ${mobileBreakpoint}px)`).matches;
+}
+
+const checkout = () => {
   cartStore.checkout(textBox.value)
   textBox.value = '';
 }
 
-function clearCart(){
+const clearCart = () => {
   cartStore.clearCart()
 }
 
@@ -19,50 +38,46 @@ const textBox = ref('')
 </script>
 
 <template>
-  <div class="menu-container">
+  <PopupModal
+    v-if="visible"
+    :enable-close-button="isMobile"
+    :enable-blur="true"
+    :close-on-outside-click="true"
+    @close="() => emits('close')">
 
-    <!-- <aside>
-        <Sidebar />
-    </aside> -->
-
-    <main>
-
-      <!--              <button class="button-basic" id="cartButton" @click="openCart">Open Cart </button>-->
-      <div id="cartModal" class="modal">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-
+    <div class="menu-container">
+      <main>
+        <div v-for="(item, index) in cart" :key="index" class="menu-container">
+          <CartItem :product="item" />
         </div>
+      </main>
+
+
+    <div>
+      <textarea v-model="textBox" placeholder="leave a comment with your order here"></textarea>
+
+      <div>
+        <button class="bajs" @click="checkout"> Checkout </button>
+        <button class="bajs" @click="clearCart">Clear Cart</button>
       </div>
 
-      <div v-for="(cartProduct,index) in cart" :key="index" class="menu-container">
-        <!--                    <CartItem :cartProduct="cartProduct" />-->
-      </div>
-      <div class="menu-container">
-        <!--                 Total price without tax: {{ CartTotal }}-->
-      </div>
-      <div class="menu-container">
-        <!--                  Total price with tax: {{ TaxTotal }}-->
-      </div>
-    </main>
-
-  </div>
-
-  <div>
-    {{ cart }}
-
-    <textarea v-model="textBox" placeholder="leave a comment with your order here"></textarea>
-
-    <button class="button-basic" @click="checkOut"> Checkout </button>
-
-    <button class="button-basic" @click="clearCart">Clear Cart</button>
-
-  </div>
+    </div>
+    </div>
+  </PopupModal>
 </template>
 
 <style scoped>
 .menu-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
   padding-top: 1rem;
+  color: black;
+  background-color: white;
+  width: 30vw;
+
 }
 
 main {
@@ -71,39 +86,11 @@ main {
   gap: 0.5rem;
 }
 
-.modal{
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0,0.4);
-}
-
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-}
-
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
+.bajs {
+  background-color: lightgray;
+  padding: 1rem;
   color: black;
-  text-decoration: none;
-  cursor: pointer;
+  margin: 1rem;
+  border-radius: 1rem;
 }
-
 </style>

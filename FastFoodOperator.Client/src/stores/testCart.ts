@@ -1,4 +1,4 @@
-import { useRouter } from 'vue-router'
+import router from '@/router'
 import { defineStore } from 'pinia'
 import type { CartContainer } from '@/models/types.ts'
 import type {
@@ -28,6 +28,14 @@ export const useCart = defineStore('cart', {
       }
 
       this.cart.push(product);
+      console.log("CART:", this.cart);
+    },
+
+    updateProductQuantity(product: CartContainer) {
+      const item = this.cart.find(p => p.id === product.id);
+      if (item) {
+        item.quantity = product.quantity;
+      }
       console.log("CART:", this.cart);
     },
 
@@ -82,6 +90,8 @@ export const useCart = defineStore('cart', {
         .then(response => this.receipt = response);
 
       this.clearCart();
+
+      router.push('test-receipt').then();
     }
   }
 });
