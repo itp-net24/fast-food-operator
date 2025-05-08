@@ -32,7 +32,6 @@ const addToCart = async (): Promise<void> => {
     productToAdd = mapToCartContainer(product, [item]);
   }
 
-  emit('cart'); // Kod till popupmessenger
 
   cartStore.addToCart(productToAdd);
 

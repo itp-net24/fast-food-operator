@@ -1,4 +1,4 @@
-import { useRouter } from 'vue-router'
+import router from '@/router'
 import { defineStore } from 'pinia'
 import type { CartContainer } from '@/models/types.ts'
 import type {
@@ -80,9 +80,16 @@ export const useCart = defineStore('cart', {
 
 
       fetcher.createOrder(order)
-        .then(response => this.receipt = response);
-
-      this.clearCart();
+      .then(response => {
+        this.clearCart();
+        router.push({
+          path: 'test-receipt',
+          state: { order: response }
+        });
+      })
+      .catch(error => {
+        console.error('Error creating order:', error);
+      });
     }
   }
 });
@@ -95,7 +102,7 @@ export const mapToThing = (container: CartContainer): ProductMinimalResponseDto[
   const products: ProductMinimalResponseDto[] = container.products.map(product => ({
     productVariantId: product.variant?.id ?? 0,
     productId: product.id,
-    ingredientIds: product.ingredients?.map(i => i.id) ?? [],
+    ingredientsId: product.ingredients?.map(i => i.id) ?? [],
     quantity: container.quantity,
   }));
 
