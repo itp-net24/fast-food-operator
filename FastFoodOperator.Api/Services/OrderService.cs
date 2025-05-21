@@ -6,7 +6,9 @@ using FastFoodOperator.Api.DTOs.OrderProduct;
 using FastFoodOperator.Api.DTOs.Orders;
 using FastFoodOperator.Api.DTOs.Product;
 using FastFoodOperator.Api.Entities;
+using FastFoodOperator.Api.Hubs;
 using FastFoodOperator.Api.Interfaces;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace FastFoodOperator.Api.Services
@@ -14,10 +16,12 @@ namespace FastFoodOperator.Api.Services
 	public class OrderService : IOrderService
 	{
 		private readonly AppDbContext _context;
+		private readonly IHubContext<OrderHub> _hub;
 		private readonly ILogger<OrderService> _logger;
-		public OrderService(AppDbContext context, ILogger<OrderService> logger)
+		public OrderService(AppDbContext context, IHubContext<OrderHub> hub, ILogger<OrderService> logger)
 		{
 			_context = context;
+			_hub = hub;
 			_logger = logger;
 		}
 
@@ -228,9 +232,12 @@ namespace FastFoodOperator.Api.Services
 					})
 					.ToList();
 
+				
 				await _context.SaveChangesAsync();
 				await transaction.CommitAsync();
 
+				await _hub.Clients.All.SendAsync("ReceiveOrder", order.OrderToOrderDto());
+				
 				var vat6Rounded = Math.Round(vatSixPercent, 2);
 				var vat12Rounded = Math.Round(vatTwelvePercent, 2);
 				var vat25Rounded = Math.Round(vatTwentyfivePercent, 2);
