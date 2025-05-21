@@ -15,6 +15,7 @@ export const fetchJson = async (url: string, options?: RequestInit): Promise<any
     if (!response.ok)
       throw new Error(`HTTP error! status: ${response.status}`);
 
+    if (response.status === 204) return;
     return await response.json();
   } catch (error) {
     console.error("Error fetching from API!", error);
@@ -81,7 +82,7 @@ export const CompleteOrder = async (order:any): Promise<any> => {
 
 export const DeleteOrder = async (id: number): Promise<void> => {
   await fetchJson(`api/order/${id}`, {
-    method: 'DELETE',
+    method: 'DELETE'
   });
 };
 
