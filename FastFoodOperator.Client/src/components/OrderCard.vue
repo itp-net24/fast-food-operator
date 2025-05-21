@@ -45,40 +45,45 @@
     <button
       class="kitchen-action-btn"
       v-if="status === 0"
-      @click="$emit('start', order)"
+      @click="async() => composable.setInProgressAsync(order)"
     >Mark as started</button>
 
     <button
       class="kitchen-action-btn"
       v-else-if="status === 1"
-      @click="$emit('complete', order)"
+      @click="async() => composable.setCompleteAsync(order)"
     >Mark as finished</button>
 
     <!-- Raderaknapp -->
-    <button class="kitchen-action-btn" @click="$emit('delete', order)">
+    <button class="kitchen-action-btn" @click="async() => composable.deleteOrderAsync(order)">
       Delete order
     </button>
 
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 
-export default {
-  props: {
-    order: Object,
-    status: Number,
-  },
-  computed: {
-    statusClass() {
-      //bara för style
-      switch (this.status) {
-        case 0: return 'pending';    // Ej påbörjad
-        case 1: return 'in-progress'; // Pågående
-        case 2: return 'completed';   // Färdig
-        default: return '';
-      }
-    }
+import type { OrdersComposable } from '@/composables/useOrders.ts'
+
+const props = defineProps<Props>();
+
+interface Props {
+  composable: OrdersComposable;
+  order: object;
+  status: number;
+}
+
+const statusClass = () => {
+  switch (props.status) {
+    case 0:
+      return 'pending';    // Ej påbörjad
+    case 1:
+      return 'in-progress'; // Pågående
+    case 2:
+      return 'completed';   // Färdig
+    default:
+      return '';
   }
 }
 </script>
