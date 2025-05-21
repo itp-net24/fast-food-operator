@@ -1,73 +1,77 @@
 using Microsoft.EntityFrameworkCore;
 using FastFoodOperator.Api.Data;
+using FastFoodOperator.Api.Hubs;
 using FastFoodOperator.Api.Services;
 using FastFoodOperator.Api.Interfaces;
 
-namespace FastFoodOperator.Api
+namespace FastFoodOperator.Api;
+
+public class Program
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            // Add services to the container.
-            var builder = WebApplication.CreateBuilder(args);
+	public static void Main(string[] args)
+	{
+		// Add services to the container.
+		var builder = WebApplication.CreateBuilder(args);
 
 
-			// Development
-			if (builder.Environment.IsDevelopment())
-            {
-                builder.Configuration.AddUserSecrets<Program>();
-            }
+		// Development
+		if (builder.Environment.IsDevelopment())
+		{
+			builder.Configuration.AddUserSecrets<Program>();
+		}
 
-            builder.Services.AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
-                });
+		builder.Services.AddControllers()
+			.AddJsonOptions(options =>
+			{
+				options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
+			});
 
-            // Cors service
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowVue",
-                    policy =>
-                    {
-                        policy.WithOrigins("https://localhost:5173") // Port for vue app
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
-                    });
-            });
+		// Cors service
+		builder.Services.AddCors(options =>
+		{
+			options.AddDefaultPolicy(policy =>
+			{
+				policy.WithOrigins("https://localhost:5173") // Port for vue app
+					.AllowAnyHeader()
+					.AllowAnyMethod()
+					.AllowCredentials();
+			});
+		});
 
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+		builder.Services.AddSignalR();
 
-            builder.Services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
+		builder.Services.AddEndpointsApiExplorer();
+		builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped<IOrderService, OrderService>();
-            builder.Services.AddScoped<ProductService>();
+		builder.Services.AddDbContext<AppDbContext>(options =>
+		{
+			options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+		});
 
-            // Configure middlewares
-            var app = builder.Build();
+		builder.Services.AddScoped<IOrderService, OrderService>();
+		builder.Services.AddScoped<ProductService>();
 
-            // Development
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+		// Configure middlewares
+		var app = builder.Build();
 
-            app.UseCors("AllowLocalhost");
+		// Development
+		if (app.Environment.IsDevelopment())
+		{
+			app.UseSwagger();
+			app.UseSwaggerUI();
+		}
+			
+		app.UseCors();
 
-            app.UseHttpsRedirection();
+		app.UseHttpsRedirection();
             
-            // Activating cors service
-            app.UseCors("AllowVue");
+		// Activating cors service
+		app.UseCors("AllowVue");
 
-            app.MapControllers();
+		app.MapControllers();
 
-            app.Run();
-        }
-    }
+		app.MapHub<OrderHub>("/test");
+
+		app.Run();
+	}
 }
