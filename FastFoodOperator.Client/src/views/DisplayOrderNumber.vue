@@ -1,4 +1,16 @@
-﻿<template>
+﻿<script setup lang="ts">
+import '@/assets/DisplayOrderNumber.css';
+import { orderStore } from '@/stores/orderStore.ts'
+import { computed, onMounted } from 'vue'
+
+const store = orderStore();
+const activeOrderNumbers = computed(() => store.orders.filter(o => o.orderStatus !== 2).map(o => o.orderId));
+const completedOrderNumbers = computed(() => store.orders.filter(o => o.orderStatus === 2).map(o => o.orderId));
+
+onMounted(async() => store.init());
+</script>
+
+<template>
   <div class="display-container">
     <div class="company-title">
       <img src="@/assets/Claes_Burgir1.png" alt="Företagslogotyp" class="company-logo">
@@ -22,77 +34,9 @@
           :key="'ready-' + index"
           class="completed-highlight paragraph"
         >
-          #{{ order.number }}
+          #{{ order }}
         </p>
       </div>
     </div>
   </div>
 </template>
-
-<script>
-import '@/assets/DisplayOrderNumber.css';
-import { GetOrders } from '@/services/fetcher';
-
-export default {
-  name: 'DisplayOrder',
-  data() {
-    return {
-      activeOrderNumbers: [],
-      completedOrderNumbers: [],
-      intervalId: null,
-      cleanupIntervalId: null,
-    };
-  },
-  mounted() {
-    this.getOrderNumbers(); // Kör direkt
-    this.intervalId = setInterval(() => {
-      this.getOrderNumbers();
-      this.cleanupOldOrders();
-    }, 5000);
-  },
-  beforeUnmount() {
-    clearInterval(this.intervalId);
-    clearInterval(this.cleanupIntervalId);
-  },
-  methods: {
-    async getOrderNumbers() {
-      try {
-
-        const orders = await GetOrders();
-
-        // oförberedad och preparing
-        this.activeOrderNumbers = orders
-          .filter(order => order.orderStatus === 0 || order.orderStatus === 1)
-          .map(order => order.orderNumber);
-
-
-        const existingNumbers = this.completedOrderNumbers.map(o => o.number);
-
-        const newCompleted = orders
-          .filter(order => order.orderStatus === 2) // Endast färdiga ordrar
-          .map(order => order.orderNumber)
-          .filter(num => !existingNumbers.includes(num))
-          .map(num => ({
-            number: num,
-            timestamp: Date.now(),
-          }));
-
-
-        this.completedOrderNumbers.push(...newCompleted);
-
-      } catch (error) {
-        console.error('Kunde inte hämta könummer:', error);
-      }
-    },
-
-    cleanupOldOrders() {
-      const now = Date.now();
-      const timeout = 60000;
-
-      this.completedOrderNumbers = this.completedOrderNumbers.filter(order => {
-        return now - order.timestamp < timeout;
-      });
-    }
-  },
-};
-</script>
