@@ -45,17 +45,17 @@
     <button
       class="kitchen-action-btn"
       v-if="status === 0"
-      @click="async() => composable.setInProgressAsync(order)"
+      @click="async() => store.setInProgressAsync(order)"
     >Mark as started</button>
 
     <button
       class="kitchen-action-btn"
       v-else-if="status === 1"
-      @click="async() => composable.setCompleteAsync(order)"
+      @click="async() => store.setCompleteAsync(order)"
     >Mark as finished</button>
 
     <!-- Raderaknapp -->
-    <button class="kitchen-action-btn" @click="async() => composable.deleteOrderAsync(order)">
+    <button class="kitchen-action-btn" @click="async() => store.deleteOrderAsync(order)">
       Delete order
     </button>
 
@@ -63,13 +63,13 @@
 </template>
 
 <script setup lang="ts">
+import { orderStore } from '@/stores/orderStore.ts'
 
-import type { OrdersComposable } from '@/composables/useOrders.ts'
+const store = orderStore();
 
 const props = defineProps<Props>();
 
 interface Props {
-  composable: OrdersComposable;
   order: object;
   status: number;
 }

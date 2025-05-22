@@ -4,9 +4,9 @@
     <div v-if="orders.length === 0">No orders in this section</div>
 
     <OrderCard
+      v-else
       v-for="order in orders"
       :key="order.orderId"
-      :composable="composable"
       :order="order"
       :status="status"
     />
@@ -15,16 +15,17 @@
 
 <script setup lang="ts">
 import OrderCard from './OrderCard.vue';
-import type { OrdersComposable } from '@/composables/useOrders.ts'
+import { orderStore } from '@/stores/orderStore.ts'
 import { computed } from 'vue'
+
+const store = orderStore();
 
 const props = defineProps<Props>();
 
 interface Props {
-  composable: OrdersComposable;
   status: number;
   title: string;
 }
 
-const orders = computed(() => props.composable.orders.value.filter(o => o.orderStatus === props.status));
+const orders = computed(() => store.orders.filter(o => o.orderStatus === props.status));
 </script>
