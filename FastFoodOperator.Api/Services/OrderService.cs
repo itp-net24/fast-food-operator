@@ -374,6 +374,8 @@ namespace FastFoodOperator.Api.Services
 				order.OrderStatus = OrderStatus.Completed;
 				order.CompletedAt = DateTime.UtcNow;
 				await _context.SaveChangesAsync();
+				
+				await _hub.Clients.All.SendAsync("CompleteOrder", order.Id, order.OrderStatus);
 			} 
 			catch (Exception ex)
 			{
@@ -419,6 +421,8 @@ namespace FastFoodOperator.Api.Services
 
 			_context.Orders.Remove(order);
 			await _context.SaveChangesAsync();
+			
+			await _hub.Clients.All.SendAsync("RemoveOrder", orderId);
 		}
 		public async Task<int> GenerateOrderNumber()
 		{
