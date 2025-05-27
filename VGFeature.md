@@ -6,9 +6,23 @@ To resolve this, I implemented a real-time update mechanism using WebSockets. I 
 Order updates are now pushed from the server to the client as they occur. Although the update is currently triggered from `OrderService.cs`— rather than `OrderController.cs`— this approach was necessary due to the controller's current responsibility of returning a receipt rather than the created order. This compromise allows the frontend to react immediately to new orders without redundant polling.
 
 ## Installation Guide
-1. Initialize database
+1. Add connection string to user secrets
+	```
+	{
+		"ConnectionStrings": {
+		"DefaultConnection": "Server=localhost;Database=FFO;Trusted_Connection=True;TrustServerCertificate=True;"
+		}
+	}
+	```
+2. Initialize database
     ```
     dotnet-ef database update
     ```
 3. Run API server
+	```
+	dotnet run --launch-profile https
+	```
 4. Start vue server
+	```
+	npm run dev
+	```
